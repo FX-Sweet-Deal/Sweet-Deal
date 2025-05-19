@@ -1,4 +1,4 @@
-package com.example.goods.controller;
+package com.example.item.controller;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
