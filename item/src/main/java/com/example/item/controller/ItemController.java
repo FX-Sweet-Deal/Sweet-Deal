@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class GoodsController {
+public class ItemController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "Hello from Goods Service!";
+        return "Hello from Item Service!";
     }
 }
