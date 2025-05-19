@@ -1,0 +1,11 @@
+// settings.gradle (프로젝트 최상위에 위치)
+rootProject.name = 'Sweet-Deal'
+
+// 모듈 폴더 이름을 , 로 구분해서 몽땅 포함
+include 'eurekaServer'
+include 'gateway'
+include 'item'
+include 'image'
+include 'order'
+include 'store'
+include 'user'

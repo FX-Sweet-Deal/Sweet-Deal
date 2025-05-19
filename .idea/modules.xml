@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/eurekaServer/Sweet-Deal.eurekaServer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/eurekaServer/Sweet-Deal.eurekaServer.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/image/Sweet-Deal.image.main.iml" filepath="$PROJECT_DIR$/.idea/modules/image/Sweet-Deal.image.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/order/Sweet-Deal.order.main.iml" filepath="$PROJECT_DIR$/.idea/modules/order/Sweet-Deal.order.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/store/Sweet-Deal.store.main.iml" filepath="$PROJECT_DIR$/.idea/modules/store/Sweet-Deal.store.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/user/Sweet-Deal.user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/user/Sweet-Deal.user.main.iml" />
+    </modules>
+  </component>
+</project>
