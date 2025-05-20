@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ItemController {
-
     @GetMapping("/hello")
     public String hello() {
-        return "Hello from Item Service!";
+        return "Hello from item Service";
     }
 }

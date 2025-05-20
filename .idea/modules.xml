@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/eurekaServer/Sweet-Deal.eurekaServer.main.iml" filepath="$PROJECT_DIR$/.idea/modules/eurekaServer/Sweet-Deal.eurekaServer.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/image/Sweet-Deal.image.main.iml" filepath="$PROJECT_DIR$/.idea/modules/image/Sweet-Deal.image.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/order/Sweet-Deal.order.main.iml" filepath="$PROJECT_DIR$/.idea/modules/order/Sweet-Deal.order.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/store/Sweet-Deal.store.main.iml" filepath="$PROJECT_DIR$/.idea/modules/store/Sweet-Deal.store.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/user/Sweet-Deal.user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/user/Sweet-Deal.user.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1626393206/Sweet-Deal.gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-1626393206/Sweet-Deal.gateway.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1389448671/Sweet-Deal.image.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-1389448671/Sweet-Deal.image.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/93733261/Sweet-Deal.item.main.iml" filepath="$PROJECT_DIR$/.idea/modules/93733261/Sweet-Deal.item.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1383755756/Sweet-Deal.order.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-1383755756/Sweet-Deal.order.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1379991129/Sweet-Deal.store.main.iml" filepath="$PROJECT_DIR$/.idea/modules/-1379991129/Sweet-Deal.store.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/94089797/Sweet-Deal.user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/94089797/Sweet-Deal.user.main.iml" />
     </modules>
   </component>
 </project>
