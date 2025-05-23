@@ -4,6 +4,7 @@ rootProject.name = 'Sweet-Deal'
 // 모듈 폴더 이름을 , 로 구분해서 몽땅 포함
 include 'eureka'
 include 'gateway'
+include 'global'
 include 'item'
 include 'image'
 include 'order'
