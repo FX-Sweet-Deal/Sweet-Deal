@@ -19,7 +19,7 @@ public enum CommonErrorCode implements ErrorCode {
 
     private final Integer httpCode;
     private final Integer errorCode;
-    private final String message;
+    private final String description;
 
 
 
