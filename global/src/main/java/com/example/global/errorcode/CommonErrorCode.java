@@ -8,6 +8,11 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum CommonErrorCode implements ErrorCode {
 
+    /*
+    임시 작성 중
+     */
+
+
     //== 200 ==//
     SUCCESS(HttpStatus.OK.value(), 200, "OK"),
 
