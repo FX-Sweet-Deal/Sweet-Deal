@@ -1,7 +1,5 @@
-package com.example.item.repository;
+package com.example.item.domain.item.repository;
 
-import com.example.item.domain.Item;
-import com.example.item.domain.ItemStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
