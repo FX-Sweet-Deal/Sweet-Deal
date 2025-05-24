@@ -1,4 +1,4 @@
-package com.example.item.domain;
+package com.example.item.domain.item.repository;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "item")
@@ -21,6 +22,9 @@ public class Item {
     private LocalDateTime expired_at;
 
     private LocalDateTime registered_at;
+
+    // 추가함. (요구명세서에도 최신화 할 것!.)
+    private LocalDateTime unregistered_at;
 
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
