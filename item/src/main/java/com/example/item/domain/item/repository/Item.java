@@ -29,9 +29,7 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
 
-    /** 전체 10자리 중 2자리 소수점 **/
-    @Column(nullable = false, precision = 10, scale = 2)
-    private float price;
+    private Long price;
 
     @Column(name="store_id")
     private Long storeId;
