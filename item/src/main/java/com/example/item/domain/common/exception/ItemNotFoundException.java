@@ -1,7 +1,6 @@
 package com.example.item.domain.common.exception;
 
 import com.example.global.errorcode.ErrorCode;
-import lombok.RequiredArgsConstructor;
 
 public class ItemNotFoundException extends RuntimeException{
 
