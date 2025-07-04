@@ -1,5 +1,8 @@
 package com.example.item.domain.item.repository;
 
+import com.example.global.domain.PositiveIntegerCount;
+import com.example.item.domain.item.converter.PositiveIntegerCountConverter;
+import com.example.item.domain.item.repository.enums.ItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,19 +19,25 @@ public class Item {
     @Column(nullable = false, name = "item_id")
     private Long id;
 
-    @Column(nullable = false, length=100)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    private LocalDateTime expired_at;
+    @Convert(converter = PositiveIntegerCountConverter.class)
+    private PositiveIntegerCount quantity;
 
-    private LocalDateTime registered_at;
+    @Column(nullable = false, name="expired_at")
+    private LocalDateTime expiredAt;
 
-    // 추가함. (요구명세서에도 최신화 할 것!.)
-    private LocalDateTime unregistered_at;
+    @Column(name="registered_at")
+    private LocalDateTime registeredAt;
+
+    @Column(name="unregistered_at")
+    private LocalDateTime unregisteredAt;
 
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
 
+    @Column(nullable = false)
     private Long price;
 
     @Column(name="store_id")
@@ -36,5 +45,31 @@ public class Item {
 
     @Column(name="order_id")
     private Long orderId;
+
+    public void register() {
+        this.status = ItemStatus.SALE;
+        this.registeredAt = LocalDateTime.now();
+    }
+
+    public void unregister() {
+        this.status = ItemStatus.DELETED;
+        this.unregisteredAt = LocalDateTime.now();
+    }
+
+    public void changeStatus(ItemStatus status) {
+        this.status = status;
+    }
+
+    public int quantity() {
+        return getQuantity().getCount();
+    }
+
+    public void quantityDecrease(int quantity) {
+        getQuantity().decrease(quantity);
+    }
+
+    public void quantityIncrease(int quantity) {
+        getQuantity().increase(quantity);
+    }
 
 }
