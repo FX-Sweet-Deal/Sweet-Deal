@@ -1,4 +1,4 @@
-package com.example.item.domain.item.repository;
+package com.example.item.domain.item.repository.enums;
 
 import lombok.RequiredArgsConstructor;
 
