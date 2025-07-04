@@ -4,6 +4,20 @@ server:
 spring:
   application:
     name: item  # ?? ? ??? service?? ??? ??
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/item
+    username: root
+    password: kmr270191**
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
 
 eureka:
   instance:
@@ -25,3 +39,8 @@ management:
         include: "*"
   server:
     port: 0
+
+logging:
+  level:
+    root: INFO
+    com.example: INFO
