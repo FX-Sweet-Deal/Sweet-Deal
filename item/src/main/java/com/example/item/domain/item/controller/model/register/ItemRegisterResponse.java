@@ -5,11 +5,14 @@ import com.example.item.domain.item.repository.Item;
 import com.example.item.domain.item.repository.enums.ItemStatus;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemRegisterResponse {
 
   private Long id;
