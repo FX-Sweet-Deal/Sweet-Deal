@@ -40,6 +40,9 @@ dependencies {
 
 	// mysql 추가
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Kafka 추가
+	implementation('org.springframework.kafka:spring-kafka')
 }
 
 dependencyManagement {
