@@ -1,4 +1,4 @@
-package com.example.item.domain.common.exception;
+package com.example.item.domain.common.exception.item;
 
 import com.example.global.errorcode.ErrorCode;
 
