@@ -95,4 +95,111 @@ class ItemTest {
     assertEquals(90, item.quantity());
 
   }
+
+  @Test
+  @DisplayName("상품_수량_업데이트_테스트")
+  void givenCreateItem_whenUpdateQuantity_thenEqualsTrueQuantity() throws Exception {
+    //given
+    //when
+    log.info("현재 수량 = {}", item.quantity());
+
+    item.updateQuantity(10);
+
+    log.info("업데이트한 수량 = {}", item.quantity());
+
+    //then
+    assertEquals(10, item.quantity());
+  }
+
+  @Test
+  @DisplayName("상품_수량_예외_발생")
+  void givenCreateItem_whenUpdateQuantity_thenExceptionThrow() throws Exception {
+    //given
+    //when
+    //then
+    String message = assertThrows(IllegalArgumentException.class,
+        () -> item.updateQuantity(0)).getMessage();
+
+    log.info(message);
+  }
+
+  @Test
+  @DisplayName("상품_이름_업데이트_테스트")
+  void givenCreateItem_whenRename_thenEqualsTrueName() throws Exception {
+    //given
+    //when
+    log.info("현재 상품 이름 = {}", item.getName());
+
+    item.rename("초코볼");
+
+    log.info("업데이트한 상품 이름 = {}", item.getName());
+
+    //then
+    assertEquals("초코볼", item.getName());
+  }
+
+  @Test
+  @DisplayName("상품_이름_예외_발생")
+  void givenCreateItem_whenUpdateRename_thenExceptionThrow() throws Exception {
+    //given
+    //when
+    //then
+    String message = assertThrows(IllegalArgumentException.class,
+        () -> item.rename("")).getMessage();
+
+    log.info(message);
+  }
+
+  @Test
+  @DisplayName("상품_유통기한_업데이트_테스트")
+  void givenCreateItem_whenUpdateExpiredAt_thenEqualsFalseExpiredAt() throws Exception {
+    //given
+    //when
+    log.info("현재 상품 유통기한 = {}", item.getExpiredAt());
+
+    item.updateExpiredAt(LocalDateTime.now().plusDays(20));
+
+    log.info("업데이트한 상품 유통기한 = {}", item.getExpiredAt());
+    //then
+  }
+
+  @Test
+  @DisplayName("상품_유통기한_예외_발생")
+  void givenCreateItem_whenUpdateExpiredAt_thenExceptionThrow() throws Exception {
+    //given
+    //when
+    //then
+    String message = assertThrows(IllegalArgumentException.class,
+        () -> item.updateExpiredAt(LocalDateTime.now().minusDays(50))).getMessage();
+
+    log.info(message);
+  }
+
+  @Test
+  @DisplayName("상품_가격_업데이트_테스트 ")
+  public void givenCreateItem_whenUpdatePrice_thenEqualsTruePrice() throws Exception {
+    // given
+    // when
+    log.info("현재 상품 가격 = {}", item.getPrice());
+
+    item.updatePrice(1000L);
+
+    log.info("업데이트한 상품 가격 = {}", item.getPrice());
+
+    // then
+    assertEquals(1000L, item.getPrice());
+
+  }
+
+  @Test
+  @DisplayName("상품_가격_예외_발생")
+  void givenCreateItem_whenUpdatePrice_thenExceptionThrow() throws Exception {
+    //given
+    //when
+    //then
+    String message = assertThrows(IllegalArgumentException.class,
+        () -> item.updatePrice(-1000L)).getMessage();
+
+    log.info(message);
+  }
 }
