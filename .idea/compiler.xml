@@ -5,13 +5,15 @@
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
+          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
         </processorPath>
         <module name="Sweet-Deal.store.main" />
-        <module name="Sweet-Deal.image.main" />
         <module name="Sweet-Deal.gateway.main" />
+        <module name="Sweet-Deal.global.main" />
         <module name="Sweet-Deal.item.main" />
         <module name="Sweet-Deal.order.main" />
+        <module name="Sweet-Deal.item.test" />
+        <module name="Sweet-Deal.image.main" />
         <module name="Sweet-Deal.user.main" />
       </profile>
     </annotationProcessing>
@@ -20,5 +22,33 @@
       <module name="com.example.Sweet-Deal.eureka.main" target="21" />
       <module name="com.example.Sweet-Deal.eureka.test" target="21" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Sweet-Deal.eureka" options="-parameters" />
+      <module name="Sweet-Deal.eureka.main" options="-parameters" />
+      <module name="Sweet-Deal.eureka.test" options="-parameters" />
+      <module name="Sweet-Deal.gateway" options="-parameters" />
+      <module name="Sweet-Deal.gateway.main" options="-parameters" />
+      <module name="Sweet-Deal.gateway.test" options="-parameters" />
+      <module name="Sweet-Deal.global" options="-parameters" />
+      <module name="Sweet-Deal.global.main" options="-parameters" />
+      <module name="Sweet-Deal.global.test" options="-parameters" />
+      <module name="Sweet-Deal.image" options="-parameters" />
+      <module name="Sweet-Deal.image.main" options="-parameters" />
+      <module name="Sweet-Deal.image.test" options="-parameters" />
+      <module name="Sweet-Deal.item" options="-parameters" />
+      <module name="Sweet-Deal.item.main" options="-parameters" />
+      <module name="Sweet-Deal.item.test" options="-parameters" />
+      <module name="Sweet-Deal.order" options="-parameters" />
+      <module name="Sweet-Deal.order.main" options="-parameters" />
+      <module name="Sweet-Deal.order.test" options="-parameters" />
+      <module name="Sweet-Deal.store" options="-parameters" />
+      <module name="Sweet-Deal.store.main" options="-parameters" />
+      <module name="Sweet-Deal.store.test" options="-parameters" />
+      <module name="Sweet-Deal.user" options="-parameters" />
+      <module name="Sweet-Deal.user.main" options="-parameters" />
+      <module name="Sweet-Deal.user.test" options="-parameters" />
+    </option>
   </component>
 </project>

@@ -7,14 +7,15 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal" />
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal/eureka" />
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal/gateway" />
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal/image" />
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal/item" />
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal/order" />
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal/store" />
-            <option value="$PROJECT_DIR$/../../../../대학/f(x) 동아리/temp-sweet-deal/Sweet-Deal/user" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/eureka" />
+            <option value="$PROJECT_DIR$/gateway" />
+            <option value="$PROJECT_DIR$/global" />
+            <option value="$PROJECT_DIR$/image" />
+            <option value="$PROJECT_DIR$/item" />
+            <option value="$PROJECT_DIR$/order" />
+            <option value="$PROJECT_DIR$/store" />
+            <option value="$PROJECT_DIR$/user" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum OrderErrorCode implements ErrorCode {
+    /*
+    수정 필요
+     */
+
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), 1150, "주문을 찾을 수 없습니다."),
     INVALID_ORDER_REQUEST(HttpStatus.BAD_REQUEST.value(), 1151, "주문 생성 요청이 유효하지 않습니다."),
     ORDER_UPDATE_DENIED(HttpStatus.FORBIDDEN.value(), 1152, "주문 수정 권한이 없습니다."),
