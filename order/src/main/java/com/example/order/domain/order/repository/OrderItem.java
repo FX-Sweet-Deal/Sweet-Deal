@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderItem {
 
-
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "order_item_id")
   private Long id;
@@ -27,7 +26,7 @@ public class OrderItem {
   private Long quantity;
 
   @Column(nullable = false)
-  private Long orderPrice;
+  private Long totalPrice;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "order_id", nullable = false)
