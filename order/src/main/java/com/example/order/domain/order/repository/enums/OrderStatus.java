@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum OrderStatus {
-  ORDERED("주문 완료"),
-  CANCELED("주문 취소"),
-  COMPLETED("결제 완료");
+  NEW("주문 생성"),
+  REGISTERED("주문 완료"),
+  PAID("결제 완료"),
+  CANCELLED("주문 취소");
 
   private final String description;
 
