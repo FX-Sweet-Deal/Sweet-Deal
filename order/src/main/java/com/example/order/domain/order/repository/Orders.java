@@ -6,9 +6,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,8 +23,8 @@ public class Orders {
   @Column(name = "ordered_at")
   private LocalDateTime orderedAt;
 
-  @Column(name = "canceled_at")
-  private LocalDateTime canceledAt;
+  @Column(name = "cancelled_at")
+  private LocalDateTime cancelledAt;
 
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
@@ -39,5 +41,16 @@ public class Orders {
 
   @Column(name = "store_id")
   private Long storeId;
+
+  public void register() {
+    this.status = OrderStatus.REGISTERED;
+    this.orderedAt = LocalDateTime.now();
+  }
+
+  public void cancel() {
+    this.status = OrderStatus.CANCELLED;
+    this.cancelledAt = LocalDateTime.now();
+
+  }
 
 }
