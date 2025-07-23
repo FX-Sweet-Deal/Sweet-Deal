@@ -37,4 +37,7 @@ public class Orders {
   @Column(name = "user_id")
   private Long userId;
 
+  @Column(name = "store_id")
+  private Long storeId;
+
 }
