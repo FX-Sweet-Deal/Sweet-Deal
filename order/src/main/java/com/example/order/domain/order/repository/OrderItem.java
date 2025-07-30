@@ -10,20 +10,25 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "order_item_id")
+  @Column(name = "orderItem_id")
   private Long id;
 
   @Column(nullable = false)
   private Long quantity;
+
+  @Column(nullable = false)
+  private Long price;
 
   @Column(nullable = false)
   private Long totalPrice;
@@ -34,4 +39,5 @@ public class OrderItem {
 
   @Column(name = "item_id")
   private Long itemId;
+
 }
