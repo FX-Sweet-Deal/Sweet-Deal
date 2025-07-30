@@ -1,28 +1,32 @@
 package com.example.order.domain.order.repository;
 
 import com.example.order.domain.order.repository.enums.OrderStatus;
+import com.example.order.domain.order.repository.enums.PaymentMethod;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Orders {
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "order_id", nullable = false)
   private Long id;
 
   @Column(name = "ordered_at")
   private LocalDateTime orderedAt;
 
-  @Column(name = "canceled_at")
-  private LocalDateTime canceledAt;
+  @Column(name = "cancelled_at")
+  private LocalDateTime cancelledAt;
 
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
@@ -30,9 +34,11 @@ public class Orders {
   @Column(name = "total_price", nullable = false)
   private Long totalPrice;
 
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "order_item", nullable = false)
-  private List<OrderItem> orderItem;
+  @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL)
+  private List<OrderItem> orderItems;
+
+  @OneToOne(mappedBy = "orderId", cascade = CascadeType.ALL)
+  private Payment payment;
 
   @Column(name = "user_id")
   private Long userId;
@@ -40,4 +46,53 @@ public class Orders {
   @Column(name = "store_id")
   private Long storeId;
 
+  public void create() {
+    this.status = OrderStatus.PENDING_PAYMENT;
+    this.orderedAt = LocalDateTime.now();
+  }
+
+  public void cancel() {
+    this.status = OrderStatus.CANCELLED;
+    this.cancelledAt = LocalDateTime.now();
+    this.payment.cancel();
+  }
+
+  public void complete() {
+    this.status = OrderStatus.COMPLETED;
+  }
+
+  public Long calculateTotalPrice() {
+    return orderItems.stream().mapToLong(orderItem -> {
+      return orderItem.getPrice() * orderItem.getQuantity();
+    }).sum();
+  }
+
+  public boolean isPaymentSuccess() {
+    return this.payment.isSuccess();
+  }
+
+  public PaymentMethod getPaymentMethod() {
+    return this.payment.getPaymentMethod();
+  }
+
+  // 상품 종류 개수
+  public Long countItem() {
+    return (long) orderItems.size();
+  }
+
+  // 각 상품의 총 개수
+  public Long countTotalItemQuantity() {
+    return this.orderItems.stream().mapToLong(OrderItem::getQuantity).sum();
+  };
+
+  public void changeStatus(OrderStatus orderStatus) {
+    this.status = orderStatus;
+  }
+
+  public void addOrderItems(OrderItem orderItem) {
+    this.orderItems.add(orderItem);
+  }
+
+
 }
+
