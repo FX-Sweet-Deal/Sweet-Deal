@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum OrderStatus {
-  NEW("주문 생성"),
-  REGISTERED("주문 완료"),
-  PAID("결제 완료"),
+  PENDING_PAYMENT("결제 대기중"),
+  PROCESSING("주문 처리중"),
+  COMPLETED("주문 완료"),
   CANCELLED("주문 취소");
 
   private final String description;
