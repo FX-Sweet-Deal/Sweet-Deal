@@ -26,10 +26,20 @@ dependencies {
 
 	// Lombok 추가
 	implementation 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// Spring Data JPA 추가
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// openFeign Client 추가
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	// mysql 추가
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// kafka 추가
+	implementation 'org.springframework.kafka:spring-kafka'
 }
 
 dependencyManagement {
