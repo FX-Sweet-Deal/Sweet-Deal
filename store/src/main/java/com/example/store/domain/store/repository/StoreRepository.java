@@ -33,7 +33,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
       @Param("radius") BigDecimal radiusInMeters
   );
 }
-  
 
-
-}
