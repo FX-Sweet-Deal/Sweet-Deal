@@ -15,7 +15,7 @@ public class StoreService {
 
   private final StoreRepository storeRepository;
 
-  public void register(Store store) {
+  public void save(Store store) {
     storeRepository.save(store);
   }
 
@@ -44,7 +44,7 @@ public class StoreService {
     return storeRepository.existsByBusinessNumber(businessNumber);
   }
 
-  public void unregister(Store store) {
+  public void delete(Store store) {
     storeRepository.save(store);
   }
 }
