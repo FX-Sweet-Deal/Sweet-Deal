@@ -1,6 +1,5 @@
 package com.example.store.domain.store.repository;
 
-import com.example.store.domain.store.repository.enums.StoreCategory;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,12 +10,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
-  Optional<Store> findFirstByUserIdAndStoreStatusNot(Long userId, StoreStatus storeStatus);
+  // 점장 조회
   Optional<Store> findFirstByUserIdAndStoreStatus(Long userId, StoreStatus storeStatus);
-  List<Store> findListByUserIdAndStoreStatusNot(Long userId, StoreStatus storeStatus);
+  List<Store> findListByUserIdAndStoreStatus(Long userId, StoreStatus storeStatus);
   Optional<Store> findByIdAndUserIdAndStoreStatus(Long storeId, Long userId, StoreStatus storeStatus);
   Optional<Store> findByIdOrderByIdDesc(Long id);
 
+  boolean existsByBusinessNumber(String businessNumber);
+
+  // 주소 기준 스토어 조회 목록
   @Query(value = "SELECT * " +
           "FROM store s " +
           "WHERE s.sido = :sido " +
