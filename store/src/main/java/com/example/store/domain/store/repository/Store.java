@@ -11,8 +11,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Store {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,13 +50,46 @@ public class Store {
 
   @Enumerated
   @Column(nullable = false)
-  private StoreStatus StoreStatus;
+  private StoreStatus storeStatus;
 
   @Column(nullable = false)
   private LocalDateTime registeredAt;
 
   @Column(nullable = false)
   private LocalDateTime unregisteredAt;
+
   @Column(name = "user_id", nullable = false)
   private Long userId;
+
+  public void register() {
+    this.registeredAt = LocalDateTime.now();
+    this.storeStatus = StoreStatus.REGISTERED;
+  }
+
+  public void unregister() {
+    this.unregisteredAt = LocalDateTime.now();
+    this.storeStatus = StoreStatus.UNREGISTERED;
+  }
+
+  public void updateName(String name) {
+    this.name = name;
+  }
+
+  public void updateAddress(Address address) {
+    this.address = address;
+  }
+
+  public void updatePhone(String phone) {
+    this.phone = phone;
+  }
+
+  public void updateBusinessNumber(String businessNumber) {
+    this.businessNumber = businessNumber;
+  }
+
+  public void updateCategory(StoreCategory category) {
+    this.category = category;
+  }
+
 }
+
