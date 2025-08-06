@@ -5,6 +5,15 @@ spring:
   application:
     name: store  # ?? ? ??? service?? ??? ??
 
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
 eureka:
   instance:
     prefer-ip-address: true
