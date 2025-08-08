@@ -2,6 +2,7 @@ package com.example.store.domain.store.service;
 
 import com.example.store.domain.store.repository.Store;
 import com.example.store.domain.store.repository.StoreRepository;
+import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,6 +34,10 @@ public class StoreService {
 
   public Optional<Store> getStoreById(Long storeId) {
     return storeRepository.findByIdOrderByIdDesc(storeId);
+  }
+
+  public List<Store> getStoresByNameKeyword(String name) {
+    return storeRepository.findStoresByName(name);
   }
 
   public List<Store> getStoresByRegionAndRadius(String sido, String sigungu, String eupMyeonDong,
