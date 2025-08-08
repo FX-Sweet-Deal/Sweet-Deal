@@ -1,13 +1,17 @@
 package com.example.store.domain.store.repository;
 
+import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
   // 점장 조회
@@ -16,7 +20,14 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
   Optional<Store> findByIdAndUserIdAndStoreStatus(Long storeId, Long userId, StoreStatus storeStatus);
   Optional<Store> findByIdOrderByIdDesc(Long id);
 
-  boolean existsByBusinessNumber(String businessNumber);
+  Boolean existsByBusinessNumber(String businessNumber);
+
+
+  // :name 키워드 들어가는 스토어 모두 검색
+  @Query(value = "SELECT * " +
+          "FROM store s " +
+          "WHERE s.name like %:name%", nativeQuery = true)
+  List<Store> findStoresByName(String name);
 
   // 주소 기준 스토어 조회 목록
   @Query(value = "SELECT * " +
