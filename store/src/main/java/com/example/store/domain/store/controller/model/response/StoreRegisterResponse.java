@@ -5,6 +5,7 @@ import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreCategory;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,14 +29,13 @@ public class StoreRegisterResponse {
 
   private StoreCategory category;
 
-  private OperatingStatus operatingStatus;
-
   private StoreStatus storeStatus;
 
   private LocalDateTime registeredAt;
 
-  private LocalDateTime unregisteredAt;
+  private LocalTime openingTime;
 
-  private Long userId;
+  private LocalTime closingTime;
 
+  private OperatingStatus operatingStatus;
 }
