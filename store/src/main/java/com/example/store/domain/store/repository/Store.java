@@ -6,11 +6,13 @@ import com.example.store.domain.store.repository.enums.StoreStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,25 +42,29 @@ public class Store {
   @Column(name = "business_number", nullable = false)
   private String businessNumber;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private StoreCategory category;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private OperatingStatus operatingStatus;
 
-  @Enumerated
+  @Embedded
+  @Column(nullable = false)
+  private OperatingTime operatingTime;
+
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private StoreStatus storeStatus;
 
   @Column(nullable = false)
   private LocalDateTime registeredAt;
 
-  @Column(nullable = false)
+  @Column(nullable = true)
   private LocalDateTime unregisteredAt;
 
-  @Column(name = "user_id", nullable = false)
+  @Column(name = "user_id")
   private Long userId;
 
   public void register() {
@@ -89,6 +95,31 @@ public class Store {
 
   public void updateCategory(StoreCategory category) {
     this.category = category;
+  }
+
+  public void updateOperatingTime(LocalTime openingTime, LocalTime closingTime) {
+    this.operatingTime.setOpeningTime(openingTime);
+    this.operatingTime.setClosingTime(closingTime);
+  }
+
+  public boolean isOperating() {
+    if (operatingStatus == OperatingStatus.DAY_OFF) {
+      return false;
+    }
+
+    if (operatingTime.isOpenAllDay()) {
+      return true;
+    }
+
+    LocalTime now = LocalTime.now();
+    LocalTime open = this.operatingTime.getOpeningTime();
+    LocalTime close = this.operatingTime.getClosingTime();
+
+    if(!now.isAfter(close)) {
+      return !now.isBefore(open) && !now.isAfter(close);
+    }
+
+    return !now.isBefore(open) || !now.isAfter(close);
   }
 
 }
