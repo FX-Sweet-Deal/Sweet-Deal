@@ -1,7 +1,7 @@
 package com.example.store.domain.common.exception;
 
 import com.example.global.errorcode.ErrorCode;
-import com.example.store.domain.common.exception.ntsBusiness.OdcloudApiException;
+import com.example.store.domain.common.exception.ntsBusiness.OpenApiException;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class NtsBusinessExceptionHandler {
-    @ExceptionHandler(OdcloudApiException.class)
-    public ResponseEntity<?> handleOdcloud(OdcloudApiException ex) {
+    @ExceptionHandler(OpenApiException.class)
+    public ResponseEntity<?> handleOdcloud(OpenApiException ex) {
       ErrorCode code = ex.getErrorCode();
       return ResponseEntity.status(code.getHttpCode())
           .body(Map.of(
