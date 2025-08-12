@@ -3,7 +3,14 @@ server:
 
 spring:
   application:
-    name: store  # ?? ? ??? service?? ??? ??
+    name: store # ?? ? ??? service?? ??? ??
+  datasource:
+    url: jdbc:mysql://localhost:3306/store
+      ?serverTimezone=Asia/Seoul
+      &characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     show-sql: true
@@ -34,3 +41,13 @@ management:
         include: "*"
   server:
     port: 0
+
+publicdata:
+  api:
+    base-url: api.odcloud.kr/api
+    key: ${PUBLICDATA_SERVICE_KEY}
+
+logging:
+  level:
+    root: DEBUG
+    com.example: DEBUG

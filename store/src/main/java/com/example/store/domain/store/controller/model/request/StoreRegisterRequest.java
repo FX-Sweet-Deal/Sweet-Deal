@@ -1,11 +1,14 @@
 package com.example.store.domain.store.controller.model.request;
 
 import com.example.store.domain.store.repository.Address;
+import com.example.store.domain.store.repository.OperatingTime;
 import com.example.store.domain.store.repository.enums.StoreCategory;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +28,7 @@ public class StoreRegisterRequest {
   private String name;
 
   @Valid
-  @NotBlank(message = "주소 정보는 필수입니다.")
+  @NotNull(message = "주소 정보는 필수입니다.")
   private Address address;
 
   @NotBlank(message = "전화번호는 필수입니다.")
@@ -36,7 +39,9 @@ public class StoreRegisterRequest {
   @Size(min = 10, max = 10, message = "사업자등록번호는 숫자 10자리여야 합니다.")
   private String businessNumber;
 
-  @NotBlank(message = "카테고리는 필수입니다.")
+  @NotNull(message = "카테고리는 필수입니다.")
   private StoreCategory category;
 
+  @NotNull(message = "영업 시간은 필수입니다.")
+  private OperatingTime operatingTime;
 }

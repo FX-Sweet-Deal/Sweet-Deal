@@ -1,6 +1,7 @@
 package com.example.store.domain.store.controller.model.request;
 
 import com.example.store.domain.store.repository.Address;
+import com.example.store.domain.store.repository.OperatingTime;
 import com.example.store.domain.store.repository.enums.StoreCategory;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -30,5 +31,7 @@ public class StoreUpdateRequest {
   private String businessNumber;
 
   private StoreCategory category;
+
+  private OperatingTime operatingTime;
 
 }

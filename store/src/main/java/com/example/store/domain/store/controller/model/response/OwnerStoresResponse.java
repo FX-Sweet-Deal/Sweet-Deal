@@ -1,41 +1,23 @@
 package com.example.store.domain.store.controller.model.response;
 
 import com.example.store.domain.store.repository.Address;
-import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreCategory;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class StoreRegisterResponse {
-
-  private Long id;
-
+public class OwnerStoresResponse {
+  private Long storeId;
   private String name;
-
   private Address address;
-
   private String phone;
-
   private String businessNumber;
-
   private StoreCategory category;
-
-  private StoreStatus storeStatus;
-
+  private StoreStatus status;
   private LocalDateTime registeredAt;
 
-  private LocalTime openingTime;
-
-  private LocalTime closingTime;
-
-  private OperatingStatus operatingStatus;
 }

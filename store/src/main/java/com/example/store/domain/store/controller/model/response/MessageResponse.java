@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StoreUpdateResponse {
+public class MessageResponse {
+
+  private String message;
 
 }
