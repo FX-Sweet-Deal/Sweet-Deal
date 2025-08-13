@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum StoreErrorCode implements ErrorCode {
+public enum StoreErrorCode implements ErrorCodeIfs {
     /*
     수정 필요
      */
