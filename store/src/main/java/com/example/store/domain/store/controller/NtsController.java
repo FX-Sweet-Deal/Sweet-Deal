@@ -1,10 +1,9 @@
 package com.example.store.domain.store.controller;
 
-import com.example.global.api.Api;
 import com.example.store.domain.store.controller.model.request.BusinessStatusRequest;
 import com.example.store.domain.store.controller.model.request.BusinessValidateRequest;
-import com.example.store.domain.store.controller.model.response.BusinessStatusResponse;
-import com.example.store.domain.store.controller.model.response.BusinessValidateResponse;
+import com.example.store.domain.store.controller.model.response.openApi.BusinessStatusResponse;
+import com.example.store.domain.store.controller.model.response.openApi.BusinessValidateResponse;
 import com.example.store.domain.store.service.OpenApiClient;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -6,8 +6,8 @@ import com.example.store.domain.common.exception.ntsBusiness.HttpException;
 import com.example.store.domain.common.exception.ntsBusiness.OpenApiException;
 import com.example.store.domain.store.controller.model.request.BusinessStatusRequest;
 import com.example.store.domain.store.controller.model.request.BusinessValidateRequest;
-import com.example.store.domain.store.controller.model.response.BusinessStatusResponse;
-import com.example.store.domain.store.controller.model.response.BusinessValidateResponse;
+import com.example.store.domain.store.controller.model.response.openApi.BusinessStatusResponse;
+import com.example.store.domain.store.controller.model.response.openApi.BusinessValidateResponse;
 import com.example.store.domain.store.repository.OpenApiErrorBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
@@ -22,8 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.DefaultUriBuilderFactory;
-import org.springframework.web.util.DefaultUriBuilderFactory.EncodingMode;
 
 @Data
 @Slf4j
@@ -41,27 +39,25 @@ public class OpenApiClient {
 
   private OpenApiErrorBody OpenApiErrorBody;
 
-  public OpenApiClient(RestClient.Builder builder, PublicDataProps props) {
+  public OpenApiClient(RestClient.Builder builder, PublicDataProps props, ObjectMapper mapper) {
     Assert.hasText(props.getBaseUrl(), "publicData.api.base-url must not be empty");
-
-    // EncodingMode.NONE을 설정하여 추가적인 인코딩을 하지 않음.
-    DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(props.getBaseUrl());
-    uriBuilderFactory.setEncodingMode(EncodingMode.NONE);
-
-    this.restClient = builder
-        .uriBuilderFactory(uriBuilderFactory)
+    this.restClient = builder.baseUrl(props.getBaseUrl())
+        .requestInterceptor((request, body, execution) -> {
+          log.info("NTS URI => {}", request.getURI());
+          return execution.execute(request, body);
+        })
         .build();
-
     this.serviceKey = Objects.requireNonNull(props.getServiceKey());
+    this.mapper = mapper;
   }
 
   public BusinessValidateResponse validate(BusinessValidateRequest req) {
     return restClient.post()
         .uri(u -> u.path("/validate")
-            .queryParam("serviceKey", serviceKey)
+//            .queryParam("serviceKey", serviceKey)
             .queryParam("returnType", "JSON")
             .build())
-        // .header("Authorization", "Infuser " + serviceKey) // 헤더 인증(디코딩키) 사용시
+        .header("Authorization", "Infuser " + serviceKey) // 헤더 인증(디코딩키) 사용시
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(req)
@@ -69,12 +65,12 @@ public class OpenApiClient {
         .onStatus(HttpStatusCode::isError, (request, response) -> {
           byte[] bytes =
               response.getBody() != null ? response.getBody().readAllBytes() : new byte[0];
-          log.info("",  response.getBody());
+          log.warn("NTS error body: {}", new String(bytes, StandardCharsets.UTF_8));
 
           OpenApiErrorBody body;
           try {
             body = mapper.readValue(bytes,
-                com.example.store.domain.store.repository.OpenApiErrorBody.class);
+                OpenApiErrorBody.class);
           } catch (Exception e) {
             throw new HttpException(OpenApiError.HTTP_ERROR,
                 new String(bytes, java.nio.charset.StandardCharsets.UTF_8));
@@ -114,10 +110,10 @@ public class OpenApiClient {
   public BusinessStatusResponse status(BusinessStatusRequest req) {
     return restClient.post()
         .uri(u -> u.path("/status")
-            .queryParam("serviceKey", serviceKey)   // 헤더 인증으로 바꾸면 이 줄 제거 + header 추가
+//            .queryParam("serviceKey", serviceKey)   // 헤더 인증으로 바꾸면 이 줄 제거 + header 추가
             .queryParam("returnType", "JSON")
             .build())
-        // .header("Authorization", "Infuser " + serviceKey) // (헤더 방식: 디코딩키일 때)
+        .header("Authorization", "Infuser " + serviceKey) // (헤더 방식: 디코딩키일 때)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(req)

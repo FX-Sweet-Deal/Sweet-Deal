@@ -1,6 +1,7 @@
 package com.example.store.domain.store.controller.model.request;
 
 import com.example.store.domain.store.repository.Business;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
