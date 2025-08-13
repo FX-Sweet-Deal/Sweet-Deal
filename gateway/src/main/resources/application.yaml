@@ -4,13 +4,12 @@ server:
 spring:
   application:
     name: gateway
-
   cloud:
     gateway:
       discovery:
         locator:
-          enabled: true                # ? ??? ?? ??? ???
-          lower-case-service-id: true # ? ?? ?? ???? (ex. /user-service/**)
+          enabled: true
+          lower-case-service-id: true
 
 eureka:
   client:
@@ -18,3 +17,79 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://admin:1234@localhost:8761/eureka
+
+jwt:
+  secret:
+    # jjwt HS256은 32바이트(>=256bit) 이상 권장
+    key: "qV3Xr8T2A6b9C1dE4fG7hJ0kL2nP5sU8"
+
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id : baobab-article
+          uri : lb://BAOBAB-ARTICLE
+          predicates:
+            - Path=/article-service/**
+          filters:
+            - RewritePath=/article-service/(open-api|api)/(?<segment>.*), /$\{segment}
+
+        - id: baobab-users
+          uri: lb://BAOBAB-USERS
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - RewritePath=/user-service/(open-api|api)/(?<segment>.*), /$\{segment}
+
+        - id: baobab-chat
+          uri: lb://BAOBAB-CHAT
+          predicates:
+            - Path=/chat-service/**
+          filters:
+            - RewritePath=/chat-service/(open-api|api)/(?<segment>.*), /$\{segment}
+
+        - id: baobab-messages
+          uri: lb://BAOBAB-MESSAGES
+          predicates:
+            - Path=/message-service/**
+          filters:
+            - RewritePath=/message-service/(open-api|api)/(?<segment>.*), /$\{segment}
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+# logging
+logging:
+  level:
+    org:
+      springframework.web: DEBUG
+      hibernate: ERROR
+
+log:
+  config:
+    path: ${LOG_CONFIG_PATH}
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
