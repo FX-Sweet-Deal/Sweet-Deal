@@ -17,7 +17,7 @@ public class StoreInternalApiController {
   private final StoreBusiness storeBusiness;
 
   @GetMapping("/store/{userId}")
-  public Api<StoreSimpleResponse> getItem(@PathVariable Long userId) {
+  public Api<StoreSimpleResponse> getStore(@PathVariable Long userId) {
     StoreSimpleResponse storeSimpleResponse = storeBusiness.getSimpleStore(userId);
     return Api.ok(storeSimpleResponse);
   }
