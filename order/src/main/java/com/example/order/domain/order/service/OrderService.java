@@ -1,8 +1,12 @@
 package com.example.order.domain.order.service;
 
+import com.example.global.errorcode.OrderErrorCode;
+import com.example.order.domain.common.exception.order.InvalidOrderException;
+import com.example.order.domain.order.repository.OrderItem;
 import com.example.order.domain.order.repository.OrderRepository;
 import com.example.order.domain.order.repository.Orders;
 import com.example.order.domain.order.repository.enums.OrderStatus;
+import com.example.order.domain.order.repository.enums.PaymentMethod;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,13 +21,28 @@ public class OrderService {
 
   // 유효성 검증, 상태 변환
 
+
   // 주문 생성
   public void order(Orders orders) {
     if(orders.getStatus() != null) {
       throw new IllegalArgumentException("이미 등록된 상품입니다.");
     }
+
     orders.create();
     orderRepository.save(orders);
+  }
+
+  public void initPaymentMethod(Orders orders, PaymentMethod paymentMethod) {
+    orders.initPaymentMethod(paymentMethod);
+    orderRepository.save(orders);
+  }
+
+  public void addOrderItem(Orders orders, OrderItem orderItem) {
+    orders.addOrderItems(orderItem);
+  }
+
+  public void calculateTotalPrice(Orders orders) {
+    orders.calculateTotalPrice();
   }
 
   // 주문 취소
@@ -41,15 +60,16 @@ public class OrderService {
   }
 
   // 결제 완료
-  public void completePayment(Orders orders) {
+  public void completePayment(Orders orders, boolean isSuccess) {
     if(orders.getStatus() != OrderStatus.PENDING_PAYMENT) {
       throw new IllegalArgumentException("결제를 처리할 수 없는 상태의 주문입니다.");
     }
 
     orders.changeStatus(OrderStatus.PROCESSING); // 주문 처리 중
 
-    if(orders.isPaymentSuccess()) {
+    if(isSuccess) {
       orders.getPayment().complete();
+      orders.getPayment().setPaymentAt();
     } else {
       orders.getPayment().fail();
     }
@@ -65,7 +85,7 @@ public class OrderService {
       throw new IllegalArgumentException("결제가 완료되지 않은 주문은 완료할 수 없습니다.");
     }
 
-    orders.changeStatus(OrderStatus.COMPLETED);
+    orders.complete();
 
     orderRepository.save(orders);
   }
@@ -74,13 +94,13 @@ public class OrderService {
   @Transactional(readOnly = true)
   public Orders getOrderByOrderId(Long orderId) {
     return orderRepository.findById(orderId).orElseThrow(()
-        -> new IllegalArgumentException("ORDER NOT FOUND"));
+        -> new InvalidOrderException(OrderErrorCode.ORDER_NOT_FOUND));
   }
 
   @Transactional(readOnly = true)
   public Orders getOrderByOrderIdAndStatus(Long orderId, OrderStatus status) {
     return orderRepository.findByIdAndStatus(orderId, status)
-        .orElseThrow(() -> new IllegalArgumentException("ORDER NOT FOUND"));
+        .orElseThrow(() -> new InvalidOrderException(OrderErrorCode.ORDER_NOT_FOUND));
   }
 
   // user가 주문한 주문 목록 조회
@@ -89,7 +109,7 @@ public class OrderService {
 
     List<Orders>  ordersList = orderRepository.findByUserId(userId);
     if(ordersList.isEmpty()) {
-      throw new IllegalArgumentException("ORDER NOT FOUND");
+      throw new InvalidOrderException(OrderErrorCode.ORDER_NOT_FOUND);
     }
     return ordersList;
   }
@@ -99,7 +119,7 @@ public class OrderService {
   public List<Orders> getOrderListByStoreId(Long storeId) {
     List<Orders> ordersList = orderRepository.findByStoreId(storeId);
     if(ordersList.isEmpty()) {
-        throw new IllegalArgumentException("ORDER NOT FOUND");
+        throw new InvalidOrderException(OrderErrorCode.ORDER_NOT_FOUND);
     }
     return ordersList;
   }
