@@ -2,8 +2,10 @@ package com.example.order.domain.order.repository;
 
 import com.example.order.domain.order.repository.enums.OrderStatus;
 import com.example.order.domain.order.repository.enums.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +36,9 @@ public class Orders {
   @Column(name = "total_price", nullable = false)
   private Long totalPrice;
 
+  @Builder.Default
   @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL)
-  private List<OrderItem> orderItems;
+  private List<OrderItem> orderItems = new ArrayList<>();
 
   @OneToOne(mappedBy = "orderId", cascade = CascadeType.ALL)
   private Payment payment;
@@ -45,6 +48,11 @@ public class Orders {
 
   @Column(name = "store_id")
   private Long storeId;
+
+  @JsonProperty("paymentMethod")
+  public PaymentMethod getPaymentMethod() {
+    return this.payment.getPaymentMethod();
+  }
 
   public void create() {
     this.status = OrderStatus.PENDING_PAYMENT;
@@ -71,10 +79,6 @@ public class Orders {
     return this.payment.isSuccess();
   }
 
-  public PaymentMethod getPaymentMethod() {
-    return this.payment.getPaymentMethod();
-  }
-
   // 상품 종류 개수
   public Long countItem() {
     return (long) orderItems.size();
@@ -91,8 +95,16 @@ public class Orders {
 
   public void addOrderItems(OrderItem orderItem) {
     this.orderItems.add(orderItem);
+    orderItem.addOrders(this);
+  }
+
+  public void initPaymentMethod(PaymentMethod paymentMethod) {
+    this.payment = Payment.createPayment(paymentMethod, calculateTotalPrice(), this);
+
   }
 
 
 }
+
+
 
