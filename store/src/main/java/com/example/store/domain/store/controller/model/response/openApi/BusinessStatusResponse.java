@@ -1,4 +1,4 @@
-package com.example.store.domain.store.controller.model.response;
+package com.example.store.domain.store.controller.model.response.openApi;
 
 import java.util.List;
 
