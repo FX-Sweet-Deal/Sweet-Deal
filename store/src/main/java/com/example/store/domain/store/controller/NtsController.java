@@ -1,6 +1,5 @@
 package com.example.store.domain.store.controller;
 
-import com.example.global.api.Api;
 import com.example.store.domain.store.controller.model.request.openApi.BusinessStatusRequest;
 import com.example.store.domain.store.controller.model.request.openApi.BusinessValidateRequest;
 import com.example.store.domain.store.controller.model.response.openApi.BusinessStatusResponse;

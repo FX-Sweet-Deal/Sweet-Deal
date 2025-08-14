@@ -17,21 +17,21 @@ public class ItemExceptionHandler {
 
   @ExceptionHandler(value = ItemNotFoundException.class)
   public ResponseEntity<Api<Object>> itemNotFoundException(ItemNotFoundException e) {
-    log.info("", e);
+    log.error("", e);
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body(Api.error(ItemErrorCode.ITEM_NOT_FOUND));
   }
 
   @ExceptionHandler(value = ItemAlreadyExistsException.class)
   public ResponseEntity<Api<Object>> itemAlreadyExistsException(ItemAlreadyExistsException e) {
-    log.info("", e);
+    log.error("", e);
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(Api.error(ItemErrorCode.ITEM_ALREADY_EXISTS));
   }
 
   @ExceptionHandler(value = ItemCannotDeleteException.class)
   public ResponseEntity<Api<Object>> itemCannotDeleteException(ItemCannotDeleteException e) {
-    log.info("", e);
+    log.error("", e);
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(Api.error(ItemErrorCode.ITEM_ALREADY_DELETED));
   }

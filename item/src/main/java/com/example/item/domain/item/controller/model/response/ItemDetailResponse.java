@@ -1,4 +1,4 @@
-package com.example.item.domain.item.controller.model.detail;
+package com.example.item.domain.item.controller.model.response;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemListResponse {
+public class ItemDetailResponse {
+
   private Long id;
   private String name;
-  private Integer quantity;
+  private Long quantity;
   private LocalDateTime expiredAt;
   private Long price;
+  private Long storeId;
 
 }

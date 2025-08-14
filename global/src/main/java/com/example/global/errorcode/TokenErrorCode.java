@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum TokenErrorCode implements ErrorCodeIfs {
+public enum TokenErrorCode implements ErrorCode {
 
     // 1100 ~ 1149
     NOT_AUTHENTICATION_USER(401,1100,"로그인이 필요합니다."),

@@ -1,6 +1,8 @@
 package com.example.store.domain.store.business;
 
 import com.example.global.anntation.Business;
+import com.example.global.errorcode.StoreErrorCode;
+import com.example.store.domain.common.exception.IsBlankException;
 import com.example.store.domain.store.controller.model.response.NearbyStoreResponse;
 import com.example.store.domain.store.controller.model.request.LocationRequest;
 import com.example.store.domain.store.controller.model.request.StoreRegisterRequest;
@@ -36,7 +38,14 @@ public class StoreBusiness {
 //      throw new IllegalArgumentException("사업자 번호가 유효하지 않습니다.");
 //    }
 
+    // 임시 userId 삭제 할것 !!!
+    Long userId = 0L;
+
     Store store = storeConverter.toEntity(storeRegisterRequest);
+
+    // 삭제 할 것!!
+    store.setUserId(userId);
+
     store.register();
     storeService.save(store);
     return storeConverter.toResponse(store);
@@ -77,6 +86,7 @@ public class StoreBusiness {
     return storeConverter.toStoreSimpleResponse(store);
   }
 
+  // 점주의 스토어 리스트 조회
   public List<OwnerStoresResponse> getOwnerStore(Long userId) {
     List<Store> stores = storeService.getStoresByUserId(userId);
     if(stores.isEmpty()) {
@@ -91,6 +101,7 @@ public class StoreBusiness {
         .orElseThrow(() -> new IllegalArgumentException("STORE NOT FOUND"));
   }
 
+  // 고객이 조회하는 스토어
   public UserStoreResponse userStore(Long storeId) {
     Store store = storeService.getStoreById(storeId)
         .orElseThrow(() -> new IllegalArgumentException("STORE NOT FOUND"));
@@ -99,6 +110,11 @@ public class StoreBusiness {
   }
 
   public List<StoreNameKeywordResponse> getStoresByNameKeyword(String name) {
+    if (name.isBlank()) {
+      throw new IsBlankException(StoreErrorCode.IS_BLANK);
+
+    }
+
     List<Store> stores = storeService.getStoresByNameKeyword(name);
     if (stores.isEmpty()) {
       throw new IllegalArgumentException("STORE NOT FOUND");

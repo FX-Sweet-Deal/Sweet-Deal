@@ -42,12 +42,12 @@ management:
   server:
     port: 0
 
-publicdata:
+publicData:
   api:
-    base-url: api.odcloud.kr/api
-    key: ${PUBLICDATA_SERVICE_KEY}
+    base-url: "https://api.odcloud.kr/api/nts-businessman/v1"
+    service-key: ${PUBLIC_DATA_SERVICE_KEY}
 
 logging:
   level:
-    root: DEBUG
-    com.example: DEBUG
+    root: INFO
+    com.example: INFO

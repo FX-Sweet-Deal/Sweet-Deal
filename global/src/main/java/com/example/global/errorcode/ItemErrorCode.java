@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum ItemErrorCode implements ErrorCodeIfs {
+public enum ItemErrorCode implements ErrorCode {
     /*
     수정 필요
      */
@@ -19,7 +19,7 @@ public enum ItemErrorCode implements ErrorCodeIfs {
     ITEM_ALREADY_EXISTS(HttpStatus.CONFLICT.value(), 1104, "상품이 이미 존재합니다."),
     ITEM_ALREADY_SOLD(HttpStatus.BAD_REQUEST.value(), 1105, "판매된 상품은 삭제할 수 없습니다."),
     ITEM_ALREADY_DELETED(HttpStatus.BAD_REQUEST.value(), 1106, "이미 삭제된 상품입니다."),
-    ITEM_ALREADY_REGISTERED(HttpStatus.CONFLICT.value(), 1107, "이미 등록된 상품입니다.");
+    ITEM_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST.value(), 1107, "이미 등록된 상품입니다.");
 
 
     private final Integer httpCode;

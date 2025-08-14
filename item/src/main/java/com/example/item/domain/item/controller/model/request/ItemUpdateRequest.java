@@ -1,8 +1,7 @@
-package com.example.item.domain.item.controller.model.update;
+package com.example.item.domain.item.controller.model.request;
 
 import com.example.item.domain.item.repository.enums.ItemStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -13,8 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @Data
 @Builder
@@ -43,6 +40,6 @@ public class ItemUpdateRequest {
   private Long price;
 
   @Pattern(regexp = "^[0-9]$", message = "숫자만 입력할 수 있습니다.")
-  private Integer quantity;
+  private Long quantity;
 
 }
