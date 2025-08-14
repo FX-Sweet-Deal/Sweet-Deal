@@ -10,6 +10,15 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: item-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.example.order.domain.order.controller.model.request.MessageUpdateRequest
+
   jpa:
     show-sql: true
     hibernate:
@@ -30,7 +39,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://admin:1234@localhost:8761/eureka
 
 management:
   endpoints:
