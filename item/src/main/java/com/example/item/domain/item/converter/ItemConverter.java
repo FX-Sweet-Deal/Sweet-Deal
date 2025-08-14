@@ -1,11 +1,12 @@
 package com.example.item.domain.item.converter;
 
 import com.example.global.anntation.Converter;
-import com.example.global.domain.PositiveIntegerCount;
-import com.example.item.domain.item.controller.model.detail.ItemDetailResponse;
-import com.example.item.domain.item.controller.model.detail.ItemListResponse;
-import com.example.item.domain.item.controller.model.register.ItemRegisterRequest;
-import com.example.item.domain.item.controller.model.register.ItemRegisterResponse;
+import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
+import com.example.item.domain.item.controller.model.response.ItemInform;
+import com.example.item.domain.item.controller.model.response.ItemInternalResponse;
+import com.example.item.domain.item.controller.model.response.ItemListResponse;
+import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
+import com.example.item.domain.item.controller.model.response.ItemRegisterResponse;
 import com.example.item.domain.item.repository.Item;
 import java.util.List;
 
@@ -14,8 +15,9 @@ public class ItemConverter {
 
   public Item toEntity(ItemRegisterRequest req, Long storeId) {
         return Item.builder()
+
             .name(req.getName())
-            .quantity(new PositiveIntegerCount(req.getQuantity()))
+            .quantity(req.getQuantity())
             .expiredAt(req.getExpiredAt())
             .price(req.getPrice())
             .storeId(storeId)
@@ -42,7 +44,7 @@ public class ItemConverter {
           .id(item.getId())
           .name(item.getName())
           .expiredAt(item.getExpiredAt())
-          .quantity(item.quantity())
+          .quantity(item.getQuantity())
           .price(item.getPrice())
           .build();
     }).toList();
@@ -52,10 +54,30 @@ public class ItemConverter {
     return ItemDetailResponse.builder()
         .id(item.getId())
         .name(item.getName())
-        .quantity(item.quantity())
+        .quantity(item.getQuantity())
         .expiredAt(item.getExpiredAt())
         .price(item.getPrice())
         .storeId(item.getStoreId())
         .build();
+  }
+
+  public ItemInternalResponse toInternalResponse(List<Item> items) {
+
+    return ItemInternalResponse.builder()
+        .itemInforms(
+            items.stream().map(
+                item ->{
+                     return ItemInform.builder()
+                        .id(item.getId())
+                        .name(item.getName())
+                        .quantity(item.getQuantity())
+                        .expiredAt(item.getExpiredAt())
+                        .registerAt(item.getRegisteredAt())
+                        .status(item.getStatus())
+                        .price(item.getPrice())
+                        .storeId(item.getStoreId())
+                        .build();
+                }
+            ).toList()).build();
   }
 }
