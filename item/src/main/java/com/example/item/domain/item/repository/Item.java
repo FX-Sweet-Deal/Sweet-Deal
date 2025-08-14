@@ -1,7 +1,5 @@
 package com.example.item.domain.item.repository;
 
-import com.example.global.domain.PositiveIntegerCount;
-import com.example.item.domain.item.converter.PositiveIntegerCountConverter;
 import com.example.item.domain.item.repository.enums.ItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,8 +20,8 @@ public class Item {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Convert(converter = PositiveIntegerCountConverter.class)
-    private PositiveIntegerCount quantity;
+    @Column(nullable = false)
+    private Long quantity;
 
     @Column(nullable = false, name="expired_at")
     private LocalDateTime expiredAt;
@@ -59,24 +57,11 @@ public class Item {
     public void changeStatus(ItemStatus status) {
         this.status = status;
     }
-
-    public int quantity() {
-        return getQuantity().getCount();
-    }
-
-    public void quantityDecrease(int quantity) {
-        getQuantity().decrease(quantity);
-    }
-
-    public void quantityIncrease(int quantity) {
-        getQuantity().increase(quantity);
-    }
-
-    public void updateQuantity(int quantity) {
+    public void updateQuantity(Long quantity) {
         if(quantity <= 0) {
             throw new IllegalArgumentException("상품 갯수는 1개 이상이어야 합니다."); // 예외 수정 할것
         }
-        this.quantity = new PositiveIntegerCount(quantity);
+        this.quantity = quantity;
     }
 
     public void rename(String name) {
