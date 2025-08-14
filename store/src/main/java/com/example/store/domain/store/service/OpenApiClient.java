@@ -4,8 +4,8 @@ import com.example.global.errorcode.OpenApiError;
 import com.example.store.domain.common.config.PublicDataProps;
 import com.example.store.domain.common.exception.ntsBusiness.HttpException;
 import com.example.store.domain.common.exception.ntsBusiness.OpenApiException;
-import com.example.store.domain.store.controller.model.request.BusinessStatusRequest;
-import com.example.store.domain.store.controller.model.request.BusinessValidateRequest;
+import com.example.store.domain.store.controller.model.request.openApi.BusinessStatusRequest;
+import com.example.store.domain.store.controller.model.request.openApi.BusinessValidateRequest;
 import com.example.store.domain.store.controller.model.response.openApi.BusinessStatusResponse;
 import com.example.store.domain.store.controller.model.response.openApi.BusinessValidateResponse;
 import com.example.store.domain.store.repository.OpenApiErrorBody;
@@ -22,6 +22,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.DefaultUriBuilderFactory.EncodingMode;
 
 @Data
 @Slf4j
@@ -41,12 +43,15 @@ public class OpenApiClient {
 
   public OpenApiClient(RestClient.Builder builder, PublicDataProps props, ObjectMapper mapper) {
     Assert.hasText(props.getBaseUrl(), "publicData.api.base-url must not be empty");
-    this.restClient = builder.baseUrl(props.getBaseUrl())
-        .requestInterceptor((request, body, execution) -> {
-          log.info("NTS URI => {}", request.getURI());
-          return execution.execute(request, body);
-        })
+
+    // EncodingMode.NONE을 설정하여 추가적인 인코딩을 하지 않음.
+    DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(props.getBaseUrl());
+    uriBuilderFactory.setEncodingMode(EncodingMode.NONE);
+
+    this.restClient = builder
+        .uriBuilderFactory(uriBuilderFactory)
         .build();
+
     this.serviceKey = Objects.requireNonNull(props.getServiceKey());
     this.mapper = mapper;
   }
@@ -65,12 +70,12 @@ public class OpenApiClient {
         .onStatus(HttpStatusCode::isError, (request, response) -> {
           byte[] bytes =
               response.getBody() != null ? response.getBody().readAllBytes() : new byte[0];
-          log.warn("NTS error body: {}", new String(bytes, StandardCharsets.UTF_8));
+          log.info("",  response.getBody());
 
           OpenApiErrorBody body;
           try {
             body = mapper.readValue(bytes,
-                OpenApiErrorBody.class);
+                com.example.store.domain.store.repository.OpenApiErrorBody.class);
           } catch (Exception e) {
             throw new HttpException(OpenApiError.HTTP_ERROR,
                 new String(bytes, java.nio.charset.StandardCharsets.UTF_8));
@@ -113,7 +118,7 @@ public class OpenApiClient {
 //            .queryParam("serviceKey", serviceKey)   // 헤더 인증으로 바꾸면 이 줄 제거 + header 추가
             .queryParam("returnType", "JSON")
             .build())
-        .header("Authorization", "Infuser " + serviceKey) // (헤더 방식: 디코딩키일 때)
+         .header("Authorization", "Infuser " + serviceKey) // (헤더 방식: 디코딩키일 때)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(req)
