@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum UserErrorCode implements ErrorCodeIfs {
+public enum UserErrorCode implements ErrorCode {
 
     // 1150 ~ 1199
     USER_NOT_FOUND(404, 1150, "사용자를 찾을 수 없습니다."),

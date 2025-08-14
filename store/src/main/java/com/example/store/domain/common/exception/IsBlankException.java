@@ -10,7 +10,6 @@ public class IsBlankException extends RuntimeException{
 
   public IsBlankException(ErrorCode errorCode) {
     super(errorCode.getDescription());
-    this.errorCode = errorCode;
     this.description = errorCode.getDescription();
   }
 
