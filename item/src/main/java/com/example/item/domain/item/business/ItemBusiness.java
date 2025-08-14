@@ -1,185 +1,144 @@
 package com.example.item.domain.item.business;
 
 import com.example.global.anntation.Business;
-import com.example.global.errorcode.ItemErrorCode;
-import com.example.item.domain.common.exception.item.ItemAlreadyExistsException;
-import com.example.item.domain.common.exception.item.ItemCannotDeleteException;
-import com.example.item.domain.common.exception.item.ItemNotFoundException;
-import com.example.item.domain.item.controller.model.update.ItemUpdateRequest;
+import com.example.item.domain.item.converter.MessageConverter;
+import com.example.item.domain.common.response.MessageResponse;
+import com.example.item.domain.item.controller.model.request.ItemInternalRequest;
+import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
+import com.example.item.domain.item.controller.model.response.ItemInternalResponse;
+import com.example.item.domain.item.controller.model.response.ItemListResponse;
+import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
+import com.example.item.domain.item.controller.model.response.ItemRegisterResponse;
+import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
+import com.example.item.domain.item.converter.ItemConverter;
 import com.example.item.domain.item.repository.Item;
-import com.example.item.domain.item.repository.ItemRepository;
 import com.example.item.domain.item.repository.enums.ItemStatus;
+import com.example.item.domain.item.service.ItemService;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 @Business
 @RequiredArgsConstructor
-@Transactional(readOnly = false)
 public class ItemBusiness {
 
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;
+    private final ItemConverter itemConverter;
+    private final MessageConverter messageConverter;
 
-    /*
-    상품을 등록
-     */
-    public Item register(Item item) {
-        item.register();
-        return itemRepository.save(item);
-    }
+    // 상품 등록
+    public ItemRegisterResponse register(ItemRegisterRequest req, Long userId) {
 
-    /*
-    상품을 등록할 수 있는지 검증
-     */
-    public void validateRegister(Item item) {
-        if(item.getStatus() == ItemStatus.SALE) {
-            throw new ItemAlreadyExistsException(ItemErrorCode.ITEM_ALREADY_EXISTS);
-        }
-    }
+        // kafka or feign 메시지 받기
+        // storeRepository에서 userId와 storeId 검증(userId가 소유한 store 중에 storeId가 있는지)
 
-    /*
-    상품을 삭제
-     */
-    public void unregister(Item item) {
-        item.unregister();
-        itemRepository.save(item);
-    }
+        // storeService.findAllBy(userId);
+        Long storeId = 0L; // 임시 작성 ( 변경할 것!)
 
-    /*
-    삭제 가능한지 검증 (판매된 상품은 삭제 불가)
-     */
-    public void validateDeletable(Item item) {
-        if (item.getStatus() == ItemStatus.SOLD) { // 상품이 판매된 상태일 때
-            throw new ItemCannotDeleteException(ItemErrorCode.ITEM_ALREADY_SOLD);
-        }
-        if (item.getStatus() == ItemStatus.DELETED){ // 상품이 이미 삭제된 상태일 때
-            throw new ItemCannotDeleteException(ItemErrorCode.ITEM_ALREADY_DELETED);
-        }
+        Item registeredItem = itemConverter.toEntity(req, storeId);
+
+        // 중복 상품 검증
+        itemService.existsByItemWithThrow(storeId, req.getName(), req.getExpiredAt(),
+            List.of(ItemStatus.SALE, ItemStatus.RESERVED));
+
+        // 검증
+        itemService.validateRegister(registeredItem);
+
+        return itemConverter.toResponse(itemService.register(registeredItem));
 
     }
 
-    /*
-    상품 판매
-     */
-    public void saleItem(Item item, Integer quantity) {
+    // 상품 삭제
+    public MessageResponse unregister(Long itemId, Long userId) {
 
-        item.quantityDecrease(quantity);
+        // kafka 메시지 받기
+        // storeId
+        Long storeId = 0L;
 
-        item.changeStatus(ItemStatus.SOLD);
-    }
+        // 상품이 존재하지 않을 시 예외 발생
+        // 판매된 상품과 삭제된 상품은 제외 (SOLD, DELETED)
+        itemService.notExistsByItemWithThrow(itemId, storeId);
 
-    /*
-    상품이 판매 가능한지 검증
-     */
-    public void validateSaleable(Item item) {
-        if(item.getStatus() != ItemStatus.SALE) { // 상품이 판매중인 상태가 아닐 때
-            throw new IllegalArgumentException("판매중인 상품이 아닙니다.");
-        }
+        Item targetItem = itemService.getItemByIdAndStatusList(itemId,
+            List.of(ItemStatus.SALE, ItemStatus.RESERVED));
+
+        itemService.unregister(targetItem);
+        return messageConverter.toResponse("상품이 삭제되었습니다.");
+
     }
 
     /*
     판매된 상품은 30일 보관후 자동으로 삭제한다.
+    (SOLD -> DELETED 변경)
+    스케줄러에서 사용
      */
-    public void deleteSoldItemAfter30Days(LocalDateTime expiredDate) {
+    public void deleteExpiredSoldItems() {
 
-        List<Item> expiredItemList = itemRepository.findAllByStatusAndUnregisteredAtBefore(
-            ItemStatus.SOLD, expiredDate);
+        LocalDateTime expiredDate = LocalDateTime.now().minusDays(30);
 
-        expiredItemList.forEach(item -> item.changeStatus(ItemStatus.DELETED));
-
-        itemRepository.saveAll(expiredItemList);
+        itemService.deleteSoldItemAfter30Days(expiredDate);
     }
 
+    /* 유통기한이 지났는지 확인 후 삭제 상태로 변경 스케줄러 사용*/
+    public void deleteExpiredAtOver() {
+        LocalDateTime present = LocalDateTime.now();
 
-    /*
-    현재 시간 기준으로 유통기간이 지난 상품 상태 DELETED로 자동 변경
-    삭제 상태로 변경
-     */
-    public void expireItemsToDeleted(LocalDateTime present) {
-
-        // 상품 상태가 SALE or RESERVED
-        // where status in ('SALE' , 'RESERVED')
-        List<Item> expiredAtOverItemList = itemRepository.findAllByStatusInAndExpiredAtBefore(
-            List.of(ItemStatus.SALE, ItemStatus.RESERVED), present);
-
-        expiredAtOverItemList.forEach(item -> item.changeStatus(ItemStatus.DELETED));
-
-        itemRepository.saveAll(expiredAtOverItemList);
+        itemService.expireItemsToDeleted(present);
     }
 
-    /*
-    중복 상품 검증
-    같은 상품이 등록되어 있는 경우 예외 발생
-     */
-    public void existsByItemWithThrow(Long storeId, String name, LocalDateTime expiredAt,
-        List<ItemStatus> itemStatuses) {
+    /* 수정 */
+    public MessageResponse update(ItemUpdateRequest request, Long userId) {
+        // kafka
+        Long storeId = 0L;
 
-        // 상품이 존재하는지 검증
-        Boolean existsByItem = itemRepository.existsByStoreIdAndNameAndExpiredAtAndStatusIn(storeId,
-            name, expiredAt, List.of(ItemStatus.SALE, ItemStatus.RESERVED));
+        // 상품이 존재하지 않으면 예외 발생
+        itemService.notExistsByItemWithThrow(request.getId(), storeId);
 
-        if(existsByItem) {
-            throw new ItemAlreadyExistsException(ItemErrorCode.ITEM_ALREADY_EXISTS);
+        Item targetItem = itemService.getItemByIdAndStatus(request.getId(), ItemStatus.SALE);
+
+        itemService.update(request, targetItem);
+
+        return messageConverter.toResponse("상품 정보가 수정되었습니다.");
+
+    }
+
+    public ItemDetailResponse getItemBy(Long itemId, Long userId) {
+        // storeService.findAllByUserId(userId);
+        // = storeid;
+        Long storeId = 0L;
+
+        // 해당 스토어에 특정 상품이 없을 시 예외 발생
+        itemService.notExistsByItemWithThrow(itemId, storeId);
+        Item item = itemService.getItemById(itemId);
+
+        return itemConverter.toDetailResponse(item);
+
+    }
+
+    public List<ItemListResponse> getItemListBy(Long userId) {
+        // storeService.findAllByUserId(userId);
+        // = storeid;
+        Long storeId = 0L;
+
+        // storeId에 해당하는 SALE중인 상품 목록 조회
+        List<Item> saleItemList = itemService.getItemListByStoreIdAndStatus(storeId,
+            ItemStatus.SALE);
+
+       return itemConverter.toListResponse(saleItemList);
+    }
+
+    public ItemInternalResponse getItemInternal(ItemInternalRequest itemInternalRequest) {
+        List<Long> itemIds = itemInternalRequest.getItemIds().stream().toList();
+
+        List<Item> items = new ArrayList<>();
+
+        for (Long itemId : itemIds) {
+            Item item = itemService.getItemById(itemId); // 상품의 정보들이 저장됨.
+            items.add(item);
         }
 
-    }
-
-    // storeId에 itemId가 존재하지 않을 때
-    public void notExistsByItemWithThrow(Long itemId, Long storeId) {
-
-        Boolean existByItem = itemRepository.existsByIdAndStoreIdAndStatusIn(itemId, storeId,
-            List.of(ItemStatus.SALE, ItemStatus.RESERVED));
-
-        if(!existByItem) {
-            throw new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND);
-        }
-    }
-
-    // id와 status로 아이템 조회
-    @Transactional(readOnly = true)
-    public Item getItemByIdAndStatus(Long itemId, ItemStatus status) {
-        return itemRepository.findByIdAndStatus(itemId, status).
-            orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
-    }
-
-    // id와 statusList로 아이템 조회
-    @Transactional(readOnly = true)
-    public Item getItemByIdAndStatusList(Long itemId, List<ItemStatus> statuses) {
-        return itemRepository.findByIdAndStatusIn(itemId, statuses).
-            orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
-    public Item getItemById(Long itemId) {
-        return itemRepository.findById(itemId).
-            orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
-
-    }
-
-    // 해당 스토어에 상품 상태에 따라 상품 조회
-    @Transactional(readOnly = true)
-    public List<Item> getItemListByStoreIdAndStatus(Long storeId, ItemStatus status) {
-
-        // 상품 리스트가 완전히 비어있을 때, 예외 발생
-        List<Item> itemList = itemRepository.findByStoreIdAndStatusOrderByIdDesc(storeId, status);
-        if(itemList.isEmpty()) {
-            throw new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND);
-        }
-        return itemList;
-    }
-
-    public void update(ItemUpdateRequest request, Item targetItem) {
-        targetItem.rename(request.getName());
-        targetItem.updateStatus(request.getStatus());
-        targetItem.updateExpiredAt(request.getExpiredAt());
-        targetItem.updatePrice(request.getPrice());
-        targetItem.updateQuantity(request.getQuantity());
-        itemRepository.save(targetItem);
+        return itemConverter.toInternalResponse(items);
     }
 }
-
-
-
-
