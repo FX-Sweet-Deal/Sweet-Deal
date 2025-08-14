@@ -1,4 +1,4 @@
-package com.example.store.domain.store.controller.model.request;
+package com.example.store.domain.store.controller.model.request.openApi;
 
 import com.example.store.domain.store.repository.Business;
 import com.fasterxml.jackson.annotation.JsonProperty;
