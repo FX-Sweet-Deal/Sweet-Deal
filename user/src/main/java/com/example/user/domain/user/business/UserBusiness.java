@@ -1,0 +1,41 @@
+package com.example.user.domain.user.business;
+
+
+import com.example.global.anntation.Business;
+import com.example.user.common.response.MessageConverter;
+import com.example.user.common.response.MessageResponse;
+import com.example.user.domain.jwt.model.TokenResponse;
+import com.example.user.domain.user.controller.model.login.UserLoginRequest;
+import com.example.user.domain.user.controller.model.register.UserRegisterRequest;
+import com.example.user.domain.user.converter.UserConverter;
+import com.example.user.domain.user.repository.UserEntity;
+import com.example.user.domain.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Business
+public class UserBusiness {
+
+    private final UserService userService;
+    private final UserConverter userConverter;
+    private final MessageConverter messageConverter;
+    private final TokenBusiness tokenBusiness;
+    
+
+    public MessageResponse register(UserRegisterRequest userRegisterRequest) {
+
+        userService.existsByEmailWithThrow(userRegisterRequest.getEmail());
+        userService.existsByNameWithThrow(userRegisterRequest.getName());
+
+        UserEntity userEntity = userConverter.toEntity(userRegisterRequest);
+        userService.register(userEntity);
+
+        return messageConverter.toResponse("회원가입이 완료되었습니다.");
+
+    }
+
+    public TokenResponse login(UserLoginRequest userLoginRequest) {
+        UserEntity userEntity = userService.login(userLoginRequest);
+        return toKenBu
+    }
+}

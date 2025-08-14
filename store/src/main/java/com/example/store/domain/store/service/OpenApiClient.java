@@ -6,8 +6,8 @@ import com.example.store.domain.common.exception.ntsBusiness.HttpException;
 import com.example.store.domain.common.exception.ntsBusiness.OpenApiException;
 import com.example.store.domain.store.controller.model.request.BusinessStatusRequest;
 import com.example.store.domain.store.controller.model.request.BusinessValidateRequest;
-import com.example.store.domain.store.controller.model.response.openApi.BusinessStatusResponse;
-import com.example.store.domain.store.controller.model.response.openApi.BusinessValidateResponse;
+import com.example.store.domain.store.controller.model.response.BusinessStatusResponse;
+import com.example.store.domain.store.controller.model.response.BusinessValidateResponse;
 import com.example.store.domain.store.repository.OpenApiErrorBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
@@ -41,7 +41,7 @@ public class OpenApiClient {
 
   private OpenApiErrorBody OpenApiErrorBody;
 
-  public OpenApiClient(RestClient.Builder builder, PublicDataProps props, ObjectMapper mapper) {
+  public OpenApiClient(RestClient.Builder builder, PublicDataProps props) {
     Assert.hasText(props.getBaseUrl(), "publicData.api.base-url must not be empty");
 
     // EncodingMode.NONE을 설정하여 추가적인 인코딩을 하지 않음.
@@ -53,7 +53,6 @@ public class OpenApiClient {
         .build();
 
     this.serviceKey = Objects.requireNonNull(props.getServiceKey());
-    this.mapper = mapper;
   }
 
   public BusinessValidateResponse validate(BusinessValidateRequest req) {
