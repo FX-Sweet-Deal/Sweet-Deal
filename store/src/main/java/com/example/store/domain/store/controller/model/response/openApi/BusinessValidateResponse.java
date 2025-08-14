@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Getter;
 
 @Getter
-@JsonPropertyOrder({ "status_code", "request_cnt", "valid_cnt", "data" }) // ← 순서 지정
+@JsonPropertyOrder({ "status_code", "request_cnt", "valid_cnt", "data" }) //  순서 지정
 public class BusinessValidateResponse {
 
   @JsonProperty("status_code")
