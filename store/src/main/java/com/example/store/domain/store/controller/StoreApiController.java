@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,7 +29,7 @@ public class StoreApiController {
 
     public final StoreBusiness storeBusiness;
 
-    @PostMapping("/register")
+    @PostMapping("/register") // 200
     public Api<StoreRegisterResponse> register(@RequestBody @Valid StoreRegisterRequest storeRegisterRequest,
         Long userId) { // userId 임시 객체
         StoreRegisterResponse response = storeBusiness.register(storeRegisterRequest);
@@ -41,7 +42,7 @@ public class StoreApiController {
         return Api.ok(messageResponse);
     }
 
-    @PostMapping("/{storeId}/update")
+    @PostMapping("/{storeId}/update") // 200
     public Api<MessageResponse> update(@PathVariable Long storeId,
         @RequestBody @Valid StoreUpdateRequest storeUpdateRequest) {
         MessageResponse messageResponse = storeBusiness.update(storeId, storeUpdateRequest);
@@ -54,7 +55,7 @@ public class StoreApiController {
         return Api.ok(ownerStores);
     }
 
-    @GetMapping("/{storeId}")
+    @GetMapping("/{storeId}") // 200
     public Api<UserStoreResponse> userStore(@PathVariable Long storeId) {
         UserStoreResponse userStoreResponse = storeBusiness.userStore(storeId);
         return Api.ok(userStoreResponse);
@@ -66,8 +67,8 @@ public class StoreApiController {
         return Api.ok((storesByNearby));
     }
 
-    @GetMapping("/{name}")
-    public Api<List<StoreNameKeywordResponse>> nameKeyword(@PathVariable String name) {
+    @GetMapping("/search") // 200
+    public Api<List<StoreNameKeywordResponse>> nameKeyword(@RequestParam String name) {
         List<StoreNameKeywordResponse> stores = storeBusiness.getStoresByNameKeyword(
             name);
         return Api.ok(stores);
