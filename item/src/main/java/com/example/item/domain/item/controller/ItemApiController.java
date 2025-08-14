@@ -3,12 +3,12 @@ package com.example.item.domain.item.controller;
 
 import com.example.global.api.Api;
 import com.example.item.domain.common.response.MessageResponse;
-import com.example.item.domain.item.controller.model.detail.ItemDetailResponse;
-import com.example.item.domain.item.controller.model.detail.ItemListResponse;
-import com.example.item.domain.item.controller.model.register.ItemRegisterRequest;
-import com.example.item.domain.item.controller.model.register.ItemRegisterResponse;
-import com.example.item.domain.item.controller.model.update.ItemUpdateRequest;
-import com.example.item.domain.item.service.ItemService;
+import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
+import com.example.item.domain.item.controller.model.response.ItemListResponse;
+import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
+import com.example.item.domain.item.controller.model.response.ItemRegisterResponse;
+import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
+import com.example.item.domain.item.business.ItemBusiness;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,47 +24,46 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/item")
 public class ItemApiController {
 
-    private final ItemService itemService;
+    private final ItemBusiness itemBusiness;
 
     @PostMapping()
     public Api<ItemRegisterResponse> register(
         @RequestBody @Valid ItemRegisterRequest request,
         Long userId) { // userId 임시 객체
 
-        ItemRegisterResponse response = itemService.register(request, userId);
+        ItemRegisterResponse response = itemBusiness.register(request, userId);
 
         return Api.ok(response);
 
     }
 
-    @PostMapping("/unregister/{itemId}")
+    @PostMapping("/unregister/{itemId}") // 수정
     public Api<MessageResponse> unregister(@PathVariable Long itemId, Long userId) {
-        MessageResponse messageResponse = itemService.unregister(itemId, userId);
 
+        MessageResponse messageResponse = itemBusiness.unregister(itemId, userId);
         return Api.ok(messageResponse);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/update") // 수정
     public Api<MessageResponse> update(@RequestBody ItemUpdateRequest itemUpdateRequest,
         Long userId) {
-        MessageResponse messageResponse = itemService.update(itemUpdateRequest, userId);
 
+        MessageResponse messageResponse = itemBusiness.update(itemUpdateRequest, userId);
         return Api.ok(messageResponse);
     }
 
-    @GetMapping("/{itemId}") // 스토어 매니저 조회
+
+    @GetMapping("/{itemId}")
     public Api<ItemDetailResponse> getItem(@PathVariable Long itemId, Long userId) {
 
-        ItemDetailResponse itemDetailResponse = itemService.getItemBy(itemId, userId);
-
+        ItemDetailResponse itemDetailResponse = itemBusiness.getItemBy(itemId, userId);
         return Api.ok(itemDetailResponse);
     }
 
-    @GetMapping("/list") //
+    @GetMapping("/list")
     public Api<List<ItemListResponse>> getItemList(Long userId) {
 
-        List<ItemListResponse> itemList = itemService.getItemListBy(userId);
-
+        List<ItemListResponse> itemList = itemBusiness.getItemListBy(userId);
         return Api.ok(itemList);
     }
 
