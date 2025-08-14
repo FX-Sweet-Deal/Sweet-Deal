@@ -44,6 +44,15 @@ public class Payment {
   @ToString.Exclude
   private Orders orderId;
 
+  public static Payment createPayment(PaymentMethod paymentMethod, Long calculatedPrice, Orders orders) {
+    return new Payment(null, PaymentStatus.PENDING, paymentMethod, LocalDateTime.now(),
+        calculatedPrice, orders);
+  }
+
+  public void setPaymentAt() {
+    this.paymentAt = LocalDateTime.now();
+  }
+
   public void complete() {
     if(paymentStatus != PaymentStatus.PENDING) {
       throw new IllegalArgumentException("결제 대기중에만 완료할 수 있습니다.");

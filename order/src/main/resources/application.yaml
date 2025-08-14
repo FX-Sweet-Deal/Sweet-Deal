@@ -3,18 +3,14 @@ server:
 
 spring:
   application:
-    name: ${DB_NAME}  # ?? ? ??? service?? ??? ??
+    name: orders # ?? ? ??? service?? ??? ??
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/order
+    url: jdbc:mysql://localhost:3306/orders
+      ?serverTimezone=Asia/Seoul
+      &characterEncoding=UTF-8
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-
-  kafka:
-      bootstrap-servers: localhost:9092
-      producer:
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     show-sql: true
@@ -24,6 +20,12 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
+
+  kafka:
+      bootstrap-servers: localhost:9092
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   cloud:
     openfeign:
@@ -37,22 +39,16 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${random.int}
-    metadata-map:
-      management.port: ${management.server.port:0}
 
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://admin:1234@localhost:8761/eureka
 
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  server:
-    port: 0
-
+logging:
+  level:
+    root: INFO
+    com.example: INFO
 
