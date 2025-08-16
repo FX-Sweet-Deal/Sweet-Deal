@@ -1,0 +1,50 @@
+package com.example.user.domain.jwt.business;
+
+
+import com.example.global.anntation.Business;
+import com.example.global.errorcode.ErrorCode;
+import com.example.user.common.exception.jwt.TokenException;
+import com.example.user.domain.jwt.converter.TokenConverter;
+import com.example.user.domain.jwt.model.TokenDto;
+import com.example.user.domain.jwt.model.TokenEntity;
+import com.example.user.domain.jwt.model.TokenResponse;
+import com.example.user.domain.jwt.service.TokenService;
+import com.example.user.domain.user.repository.UserEntity;
+import com.example.user.domain.user.repository.enums.UserRole;
+import java.util.Map;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.errors.ApiException;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+@Business
+public class TokenBusiness {
+
+    private final TokenService tokenService;
+
+    private final TokenConverter tokenConverter;
+    @Transactional
+    public TokenResponse issueToken(UserEntity userEntity) {
+
+        if (userEntity == null) {
+            throw new TokenException(ErrorCode.NULL_POINT);
+        }
+
+        Long userId = userEntity.getId();
+
+        TokenDto accessToken = tokenService.issueAccessToken(userId, userEntity.getRole());
+
+        TokenDto refreshToken = tokenService.issueRefreshToken(userId, userEntity.getRole());
+
+        TokenEntity tokenEntity = tokenConverter.toRefreshTokenEntity(
+            userEntity.getId(), refreshToken.getToken());
+
+        tokenService.deleteRefreshToken(userId);
+
+        tokenService.saveRefreshToken(tokenEntity);
+
+        return tokenConverter.toResponse(accessToken, refreshToken);
+    }
+
+}

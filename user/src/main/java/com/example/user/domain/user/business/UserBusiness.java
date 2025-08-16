@@ -4,8 +4,10 @@ package com.example.user.domain.user.business;
 import com.example.global.anntation.Business;
 import com.example.user.common.response.MessageConverter;
 import com.example.user.common.response.MessageResponse;
+import com.example.user.domain.jwt.business.TokenBusiness;
 import com.example.user.domain.jwt.model.TokenResponse;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;
+import com.example.user.domain.user.controller.model.login.UserResponse;
 import com.example.user.domain.user.controller.model.register.UserRegisterRequest;
 import com.example.user.domain.user.converter.UserConverter;
 import com.example.user.domain.user.repository.UserEntity;
@@ -34,8 +36,9 @@ public class UserBusiness {
 
     }
 
-    public TokenResponse login(UserLoginRequest userLoginRequest) {
-        UserEntity userEntity = userService.login(userLoginRequest);
-        return toKenBu
+    public TokenResponse login(UserLoginRequest UserLoginRequest) {
+        UserEntity userEntity = userService.login(UserLoginRequest);
+        return tokenBusiness.issueToken(userEntity);
+
     }
 }

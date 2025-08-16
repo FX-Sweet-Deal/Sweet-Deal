@@ -53,32 +53,23 @@ public class UserService {
 
     public UserEntity login(UserLoginRequest userLoginRequest) {
 
-        // 1) 이메일로 사용자를 조회하되, 상태가 UNREGISTERED(탈퇴) 가 아닌 계정만 검색
-        UserEntity userEntity = userRepository
-            .findFirstByEmailAndStatusNotOrderByEmailDesc(
+        // UNREGISTERED 가 아닌 UserEntity 반환
+        UserEntity userEntity = userRepository.findFirstByEmailAndStatusNotOrderByEmailDesc(
                 userLoginRequest.getEmail(), UserStatus.UNREGISTERED)
             .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
 
-        // 2) BCrypt로 비밀번호 비교
         if (BCrypt.checkpw(userLoginRequest.getPassword(), userEntity.getPassword())) {
-            // 3) 마지막 로그인 시각 업데이트
             userEntity.setLastLoginAt(LocalDateTime.now());
-
-            // 4) 변경사항 저장
             userRepository.save(userEntity);
-
-            // 5) FCM 토큰 저장(디바이스 푸시용)
-            this.saveFcmToken(userEntity.getId(), userLoginRequest.getFcmToken());
-
             return userEntity;
         }
-        // 6) 비밀번호 불일치 시 로그인 실패
+
         throw new LoginFailException(UserErrorCode.LOGIN_FAIL);
     }
+
 
 
     private void saveFcmToken(Long userId, String fcmToken) {
         redisTemplate.opsForHash().put(String.valueOf(userId), "fcmToken", fcmToken);
     }
-
 }
