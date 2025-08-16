@@ -23,7 +23,7 @@ public class UserOpenApiController {
     private final UserBusiness userBusiness;
 
     @PostMapping()
-    @Operation(summary = "[회워가입]")
+    @Operation(summary = "[회원가입]")
     public Api<MessageResponse> register(
         @RequestBody
         @Valid Api<UserRegisterRequest> userRegisterRequest
