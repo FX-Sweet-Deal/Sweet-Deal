@@ -6,19 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponse {
+@Builder
+public class TokenDto {
 
-    private String accessToken;
+    private String token;
 
-    private LocalDateTime accessTokenExpiresAt;
-
-    private String refreshToken;
-
-    private LocalDateTime refreshTokenExpiredAt;
+    private LocalDateTime expiredAt;
 
 }

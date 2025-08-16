@@ -24,8 +24,4 @@ public class UserLoginRequest {
     )
     private String password;
 
-    @NotBlank(message = "필수 입력 사항입니다.")
-    @Size(max = 200, message = "최대 255자까지 입력 가능합니다.")
-    private String fcmToken;
-
 }
