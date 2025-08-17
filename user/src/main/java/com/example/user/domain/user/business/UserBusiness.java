@@ -41,4 +41,11 @@ public class UserBusiness {
         return tokenBusiness.issueToken(userEntity);
 
     }
+
+    public UserResponse getUserInformation(Long userId) {
+        UserEntity userEntity = userService.getUserWithThrow(userId);
+        return userConverter.toResponse(userEntity);
+
+    }
+
 }

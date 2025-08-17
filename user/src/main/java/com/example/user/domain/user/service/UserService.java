@@ -12,6 +12,7 @@ import com.example.user.domain.user.repository.UserRepository;
 import com.example.user.domain.user.repository.enums.UserStatus;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.errors.ApiException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,16 @@ public class UserService {
         }
 
         throw new LoginFailException(UserErrorCode.LOGIN_FAIL);
+    }
+
+    public UserEntity getUserWithThrow(
+        Long userId
+    ) {
+        return userRepository.findFirstByIdAndStatusOrderByIdDesc(
+            userId,
+            UserStatus.REGISTERED
+        ).orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
+
     }
 
 
