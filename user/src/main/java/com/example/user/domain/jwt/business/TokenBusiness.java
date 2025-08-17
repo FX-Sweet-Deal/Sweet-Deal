@@ -5,6 +5,7 @@ import com.example.global.anntation.Business;
 import com.example.global.errorcode.ErrorCode;
 import com.example.user.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.converter.TokenConverter;
+import com.example.user.domain.jwt.model.TokenClaimsData;
 import com.example.user.domain.jwt.model.TokenDto;
 import com.example.user.domain.jwt.model.TokenEntity;
 import com.example.user.domain.jwt.model.TokenResponse;
@@ -47,4 +48,9 @@ public class TokenBusiness {
         return tokenConverter.toResponse(accessToken, refreshToken);
     }
 
+    public TokenClaimsData validationAccessToken(String accessToken) {
+        var userId = tokenService.validationToken(accessToken);
+
+        return userId;
+    }
 }
