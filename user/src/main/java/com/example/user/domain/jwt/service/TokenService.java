@@ -59,7 +59,7 @@ public class  TokenService {
         Object userRole = userData.get("userRole");
 
         Objects.requireNonNull(userId, () -> {
-            throw new TokenException(ErrorCode.NULL_POINT);
+            throw new TokenException(TokenErrorCode.TOKEN_EXCEPTION);
         });
         return new TokenClaimsData(Long.parseLong(userId.toString()), UserRole.valueOf(userRole.toString()));
     }

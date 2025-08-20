@@ -2,7 +2,9 @@ package com.example.user.common.interceptor;
 
 import com.example.global.errorcode.ErrorCode;
 import com.example.global.errorcode.TokenErrorCode;
+import com.example.global.errorcode.UserErrorCode;
 import com.example.user.common.exception.jwt.TokenException;
+import com.example.user.common.exception.user.UserNotFoundException;
 import com.example.user.domain.jwt.business.TokenBusiness;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,40 +25,37 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
-    private final TokenBusiness tokenBusiness;
-
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("Authorization Interceptor url : {}", request.getRequestURI());
 
         // WEB ,chrome 의 경우 GET, POST OPTRIONS = pass
-        if(HttpMethod.OPTIONS.matches(request.getMethod())){
+        if (HttpMethod.OPTIONS.matches(request.getMethod())) {
             return true;
         }
 
         // js. html. png resource 를 요청하는 경우 = pass
-        if(handler instanceof ResourceHttpRequestHandler){
+        if (handler instanceof ResourceHttpRequestHandler) {
             return true;
         }
 
-        // TODD header 검증
-        var accessToken = request.getHeader("authorization-token");
+        // Gateway 에서 전달한 Header 추출
+        String userId = request.getHeader("x-user-id");
+        String email = request.getHeader("x-user-email");
+        String role = request.getHeader("x-user-role");
 
-        if(accessToken == null) {
-            throw new TokenException(TokenErrorCode.AUTHORIZATION_TOKEN_NOT_FOUND);
+        if (userId == null) {
+            throw new UserNotFoundException(UserErrorCode.USER_NOT_FOUND,
+                "x-user-id header가 존재하지 않습니다.");
         }
 
-        var userId = tokenBusiness.validationAccessToken(accessToken);
+        RequestAttributes requestContext = Objects.requireNonNull(
+            RequestContextHolder.getRequestAttributes());
 
-        if(userId != null) {
-            var requestContext = Objects.requireNonNull(
-                RequestContextHolder.getRequestAttributes());
-            requestContext.setAttribute("userId", userId, RequestAttributes.SCOPE_REQUEST);
-            return true;
-        }
+        requestContext.setAttribute("userId", userId, RequestAttributes.SCOPE_REQUEST);
+        requestContext.setAttribute("email", email, RequestAttributes.SCOPE_REQUEST);
+        requestContext.setAttribute("role", role, RequestAttributes.SCOPE_REQUEST);
 
-        throw new TokenException(ErrorCode.BAD_REQUEST, "인증실패");
-
+        return true;
     }
 }

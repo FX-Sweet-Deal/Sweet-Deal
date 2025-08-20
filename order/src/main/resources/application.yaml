@@ -52,3 +52,11 @@ logging:
     root: INFO
     com.example: INFO
 
+
+openapi:
+  service:
+    # 예: user 모듈
+    url: http://localhost:8080/user
+    # 운영: https://api.example.com/user-service
+
+

@@ -1,95 +1,130 @@
 server:
   port: 8080
+  forward-headers-strategy: framework
 
 spring:
   application:
     name: gateway
+  main:
+    web-application-type: reactive
+
   cloud:
     gateway:
+      add-to-simple-url-handler-mapping: true
+
+      # 자동 라우팅 끔: 우리가 정의한 라우트만 사용
       discovery:
         locator:
-          enabled: true
+          enabled: false
           lower-case-service-id: true
 
+      routes:
+        # ============ user ============
+        # 공개(스웨거/로그인 등) - 필터 없음
+        - id: user-open
+          order: -1
+          uri: lb://user
+          predicates:
+            - Path=/user/open-api/**,/user/v3/api-docs/**,/user/swagger-ui/**,/user/swagger-ui.html
+          filters:
+            - StripPrefix=1
+
+        # 보호(업무 API) - 필터 적용
+        - id: user-api
+          order: -1
+          uri: lb://user
+          predicates:
+            - Path=/user/api/**
+          filters:
+            - StripPrefix=1
+            - ServiceApiPrivateFilter
+
+        # ============ item ============
+        - id: item
+          uri: http://localhost:51001
+          predicates:
+            - Path=/item/**
+          filters:
+            - StripPrefix=1
+
+        # ============ order ============
+        - id: order
+          uri: http://localhost:51002
+          predicates:
+            - Path=/order/**
+          filters:
+            - StripPrefix=1
+
+        # ============ store ============
+        - id: store
+          uri: http://localhost:51003
+          predicates:
+            - Path=/store/**
+          filters:
+            - StripPrefix=1
+
+        # ============ image ============
+        - id: image
+          uri: http://localhost:51004
+          predicates:
+            - Path=/image/**
+          filters:
+            - StripPrefix=1
+
+        # ============ account (토큰 검증 호출 대상) ============
+        - id: account
+          uri: http://localhost:8081
+          predicates:
+            - Path=/account/**
+          filters:
+            - StripPrefix=1
+
+      # CORS
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: [GET, POST, PUT, DELETE, PATCH, OPTIONS]
+            allowedHeaders: "*"
+            exposedHeaders: "*"
+            allowCredentials: false
+            maxAge: 3600
+
+      httpclient:
+        wiretap: true
+
+# 통합 Swagger UI
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: user
+        url: /user/v3/api-docs
+      - name: item
+        url: /item/v3/api-docs
+      - name: order
+        url: /order/v3/api-docs
+      - name: store
+        url: /store/v3/api-docs
+      - name: image
+        url: /image/v3/api-docs
+      - name: account
+        url: /account/v3/api-docs
+
 eureka:
+  instance:
+    appname: gateway
+    prefer-ip-address: true
+    metadata-map:
+      management.port: ${management.server.port:8080}
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
       defaultZone: http://admin:1234@localhost:8761/eureka
 
-jwt:
-  secret:
-    # jjwt HS256은 32바이트(>=256bit) 이상 권장
-    key: "qV3Xr8T2A6b9C1dE4fG7hJ0kL2nP5sU8"
-
-
-spring:
-  main:
-    web-application-type: reactive
-  application:
-    name: gateway
-  cloud:
-    gateway:
-      routes:
-        - id : baobab-article
-          uri : lb://BAOBAB-ARTICLE
-          predicates:
-            - Path=/article-service/**
-          filters:
-            - RewritePath=/article-service/(open-api|api)/(?<segment>.*), /$\{segment}
-
-        - id: baobab-users
-          uri: lb://BAOBAB-USERS
-          predicates:
-            - Path=/user-service/**
-          filters:
-            - RewritePath=/user-service/(open-api|api)/(?<segment>.*), /$\{segment}
-
-        - id: baobab-chat
-          uri: lb://BAOBAB-CHAT
-          predicates:
-            - Path=/chat-service/**
-          filters:
-            - RewritePath=/chat-service/(open-api|api)/(?<segment>.*), /$\{segment}
-
-        - id: baobab-messages
-          uri: lb://BAOBAB-MESSAGES
-          predicates:
-            - Path=/message-service/**
-          filters:
-            - RewritePath=/message-service/(open-api|api)/(?<segment>.*), /$\{segment}
-
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            allowedHeaders: "*"
-            allowCredentials: true
-
-# logging
 logging:
   level:
-    org:
-      springframework.web: DEBUG
-      hibernate: ERROR
-
-log:
-  config:
-    path: ${LOG_CONFIG_PATH}
-
-jwt:
-  secret:
-    key: ${JWT_SECRET_KEY}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: prometheus
+    com.example.gateway.filter: DEBUG
+    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: TRACE

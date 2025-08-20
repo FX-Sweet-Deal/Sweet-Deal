@@ -1,30 +1,31 @@
 package com.example.user.common.exception.user;
 
+import com.example.global.errorcode.ErrorCode;
 import com.example.global.errorcode.ErrorCodeIfs;
 
 public class ExistUserNameException extends RuntimeException {
 
-    private final ErrorCodeIfs errorCodeIfs;
+    private final ErrorCode errorCodeIfs;
     private final String description;
 
-    public ExistUserNameException(ErrorCodeIfs errorCodeIfs) {
+    public ExistUserNameException(ErrorCode errorCodeIfs) {
         super(errorCodeIfs.getDescription());
         this.errorCodeIfs = errorCodeIfs;
         this.description = errorCodeIfs.getDescription();
     }
 
-    public ExistUserNameException(ErrorCodeIfs errorCodeIfs, String errorDescription) {
+    public ExistUserNameException(ErrorCode errorCodeIfs, String errorDescription) {
         this.errorCodeIfs = errorCodeIfs;
         this.description = errorDescription;
     }
 
-    public ExistUserNameException(ErrorCodeIfs errorCodeIfs, Throwable throwable) {
+    public ExistUserNameException(ErrorCode errorCodeIfs, Throwable throwable) {
         super(throwable);
         this.errorCodeIfs = errorCodeIfs;
         this.description = errorCodeIfs.getDescription();
     }
 
-    public ExistUserNameException(ErrorCodeIfs errorCodeIfs, Throwable throwable,
+    public ExistUserNameException(ErrorCode errorCodeIfs, Throwable throwable,
         String errorDescription) {
         super(throwable);
         this.errorCodeIfs = errorCodeIfs;

@@ -1,31 +1,32 @@
 package com.example.user.common.exception.jwt;
 
-import com.example.global.errorcode.ErrorCodeIfs;
+import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 
 
 public class TokenExpiredException extends RuntimeException{
 
-    private final ErrorCodeIfs errorCodeIfs;
+    private final ErrorCode errorCodeIfs;
     private final String description;
 
-    public TokenExpiredException(ErrorCodeIfs errorCodeIfs) {
+    public TokenExpiredException(ErrorCode errorCodeIfs) {
         super(errorCodeIfs.getDescription());
         this.errorCodeIfs = errorCodeIfs;
         this.description = errorCodeIfs.getDescription();
     }
 
-    public TokenExpiredException(ErrorCodeIfs errorCodeIfs, String errorDescription) {
+    public TokenExpiredException(ErrorCode errorCodeIfs, String errorDescription) {
         this.errorCodeIfs = errorCodeIfs;
         this.description = errorDescription;
     }
 
-    public TokenExpiredException(ErrorCodeIfs errorCodeIfs, Throwable throwable) {
+    public TokenExpiredException(ErrorCode errorCodeIfs, Throwable throwable) {
         super(throwable);
         this.errorCodeIfs = errorCodeIfs;
         this.description = errorCodeIfs.getDescription();
     }
 
-    public TokenExpiredException(ErrorCodeIfs errorCodeIfs, Throwable throwable,
+    public TokenExpiredException(ErrorCode errorCodeIfs, Throwable throwable,
         String errorDescription) {
         super(throwable);
         this.errorCodeIfs = errorCodeIfs;

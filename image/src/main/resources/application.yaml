@@ -25,3 +25,11 @@ management:
         include: "*"
   server:
     port: 0
+
+
+
+openapi:
+  service:
+    # 예: user 모듈
+    url: http://localhost:8080/image
+    # 운영: https://api.example.com/user-service

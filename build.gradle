@@ -1,14 +1,16 @@
 plugins {
-    id 'org.springframework.boot' version '3.3.5' apply false
-    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'org.springframework.boot' apply false
+    id 'io.spring.dependency-management' apply false
 }
 
 allprojects {
     group = 'com.example'
     version = '0.0.1-SNAPSHOT'
 
+
     repositories {
         mavenCentral()
+        maven { url = uri("https://repo.spring.io/release") } // 네트워크/미러 이슈 대비
     }
 }
 
@@ -16,6 +18,12 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
 
+    // ★ Spring Cloud BOM (Boot 3.3.x 매칭: 2023.0.x)
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.6")
+        }
+    }
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
@@ -29,15 +37,14 @@ subprojects {
     }
 
     dependencies {
+        // 각 모듈 공통 test/lombok
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
 
     tasks.withType(Test).configureEach {
         useJUnitPlatform()
     }
-
-
 }
-

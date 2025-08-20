@@ -3,6 +3,7 @@ package com.example.user.domain.jwt.business;
 
 import com.example.global.anntation.Business;
 import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorcode.TokenErrorCode;
 import com.example.user.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.converter.TokenConverter;
 import com.example.user.domain.jwt.model.TokenClaimsData;
@@ -29,7 +30,7 @@ public class TokenBusiness {
     public TokenResponse issueToken(UserEntity userEntity) {
 
         if (userEntity == null) {
-            throw new TokenException(ErrorCode.NULL_POINT);
+            throw new TokenException(TokenErrorCode.TOKEN_EXCEPTION);
         }
 
         Long userId = userEntity.getId();

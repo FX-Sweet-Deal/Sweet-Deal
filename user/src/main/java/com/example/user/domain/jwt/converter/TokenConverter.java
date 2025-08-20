@@ -3,6 +3,7 @@ package com.example.user.domain.jwt.converter;
 
 import com.example.global.anntation.Converter;
 import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorcode.TokenErrorCode;
 import com.example.user.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.model.TokenDto;
 import com.example.user.domain.jwt.model.TokenEntity;
@@ -27,11 +28,11 @@ public class TokenConverter {
     ) {
 
         Objects.requireNonNull(accessToken, () -> {
-            throw new TokenException(ErrorCode.NULL_POINT);
+            throw new TokenException(TokenErrorCode.TOKEN_EXCEPTION);
         });
 
         Objects.requireNonNull(refreshToken, () -> {
-            throw new TokenException(ErrorCode.NULL_POINT);
+            throw new TokenException(TokenErrorCode.TOKEN_EXCEPTION);
         });
 
 

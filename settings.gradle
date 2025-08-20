@@ -1,12 +1,20 @@
-// settings.gradle (프로젝트 최상위에 위치)
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    plugins {
+        id("org.springframework.boot") version "3.3.6"
+        id("io.spring.dependency-management") version "1.1.6"
+    }
+}
+
+
 rootProject.name = 'Sweet-Deal'
 
-// 모듈 폴더 이름을 , 로 구분해서 몽땅 포함
-include 'eureka'
-include 'gateway'
-include 'global'
-include 'item'
-include 'image'
-include 'order'
-include 'store'
-include 'user'
+include 'eureka', 'gateway', 'global', 'item', 'image', 'order', 'store', 'user', 'account'
+
+
+
+
+
