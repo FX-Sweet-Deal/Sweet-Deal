@@ -13,6 +13,7 @@ public class BusinessValidateResponse {
   private int requestCnt;
   @JsonProperty("valid_cnt")
   private int validCnt;
-
+  @JsonProperty("data")
+  private List<InfoResponse> data;
 
 }
