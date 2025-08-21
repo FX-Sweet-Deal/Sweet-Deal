@@ -1,9 +1,8 @@
 package com.example.user.domain.jwt.service;
 
 
-import com.example.global.errorcode.ErrorCode;
 import com.example.global.errorcode.TokenErrorCode;
-import com.example.user.common.exception.jwt.TokenException;
+import com.example.user.domain.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.ifs.TokenHelperIfs;
 import com.example.user.domain.jwt.model.TokenClaimsData;
 import com.example.user.domain.jwt.model.TokenDto;

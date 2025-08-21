@@ -2,9 +2,8 @@ package com.example.user.domain.jwt.business;
 
 
 import com.example.global.anntation.Business;
-import com.example.global.errorcode.ErrorCode;
 import com.example.global.errorcode.TokenErrorCode;
-import com.example.user.common.exception.jwt.TokenException;
+import com.example.user.domain.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.converter.TokenConverter;
 import com.example.user.domain.jwt.model.TokenClaimsData;
 import com.example.user.domain.jwt.model.TokenDto;
@@ -12,11 +11,7 @@ import com.example.user.domain.jwt.model.TokenEntity;
 import com.example.user.domain.jwt.model.TokenResponse;
 import com.example.user.domain.jwt.service.TokenService;
 import com.example.user.domain.user.repository.UserEntity;
-import com.example.user.domain.user.repository.enums.UserRole;
-import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.errors.ApiException;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor

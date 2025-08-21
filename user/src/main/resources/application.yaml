@@ -45,6 +45,8 @@ management:
 token:
   secret:
     key: SpringBootJWTHeplerTokenSecretKeyValue123!@#
+
+
   access-token:
     plus-hour: 1
   refresh-token:

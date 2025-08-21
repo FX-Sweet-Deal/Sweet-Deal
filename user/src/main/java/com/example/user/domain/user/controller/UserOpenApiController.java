@@ -2,7 +2,7 @@ package com.example.user.domain.user.controller;
 
 
 import com.example.global.api.Api;
-import com.example.user.common.response.MessageResponse;
+import com.example.user.domain.common.response.MessageResponse;
 import com.example.user.domain.jwt.model.TokenResponse;
 import com.example.user.domain.user.business.UserBusiness;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;

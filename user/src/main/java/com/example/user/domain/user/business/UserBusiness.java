@@ -2,8 +2,8 @@ package com.example.user.domain.user.business;
 
 
 import com.example.global.anntation.Business;
-import com.example.user.common.response.MessageConverter;
-import com.example.user.common.response.MessageResponse;
+import com.example.user.domain.common.response.MessageConverter;
+import com.example.user.domain.common.response.MessageResponse;
 import com.example.user.domain.jwt.business.TokenBusiness;
 import com.example.user.domain.jwt.model.TokenResponse;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;

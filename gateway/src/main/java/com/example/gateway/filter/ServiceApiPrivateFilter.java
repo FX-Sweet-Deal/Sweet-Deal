@@ -1,7 +1,7 @@
 package com.example.gateway.filter;
 
 import com.example.gateway.common.exception.token.TokenException;
-import com.example.gateway.user.model.TokeDto;
+import com.example.gateway.user.model.TokenDto;
 import com.example.gateway.user.model.TokenValidationRequest;
 import com.example.gateway.user.model.TokenValidationResponse;
 import com.example.global.errorcode.TokenErrorCode;
@@ -60,7 +60,7 @@ public class ServiceApiPrivateFilter extends
                 .build();
 
             // TokenValidationRequest 객체 생성
-            TokenValidationRequest request = new TokenValidationRequest(new TokeDto(token));
+            TokenValidationRequest request = new TokenValidationRequest(new TokenDto(token));
 
             return webClient.post()
                 .body(BodyInserters.fromValue(request))

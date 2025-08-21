@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TokenValidationRequest {
 
-    private TokeDto tokenDto;
+    private TokenDto tokenDto;
 
 }
