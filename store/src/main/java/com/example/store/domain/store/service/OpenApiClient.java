@@ -59,10 +59,9 @@ public class OpenApiClient {
   public BusinessValidateResponse validate(BusinessValidateRequest req) {
     return restClient.post()
         .uri(u -> u.path("/validate")
-            .queryParam("serviceKey", serviceKey)
             .queryParam("returnType", "JSON")
             .build())
-        // .header("Authorization", "Infuser " + serviceKey) // 헤더 인증(디코딩키) 사용시
+        .header("Authorization", "Infuser " + serviceKey) // 헤더 인증(디코딩키) 사용시
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(req)
@@ -115,10 +114,9 @@ public class OpenApiClient {
   public BusinessStatusResponse status(BusinessStatusRequest req) {
     return restClient.post()
         .uri(u -> u.path("/status")
-            .queryParam("serviceKey", serviceKey)   // 헤더 인증으로 바꾸면 이 줄 제거 + header 추가
             .queryParam("returnType", "JSON")
             .build())
-        // .header("Authorization", "Infuser " + serviceKey) // (헤더 방식: 디코딩키일 때)
+        .header("Authorization", "Infuser " + serviceKey) // (헤더 방식: 디코딩키일 때)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
         .body(req)

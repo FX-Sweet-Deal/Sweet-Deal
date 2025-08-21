@@ -17,12 +17,11 @@
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.34/ec547ef414ab1d2c040118fb9c1c265ada63af14/lombok-1.18.34.jar" />
         </processorPath>
-        <module name="Sweet-Deal.eureka.main" />
-        <module name="Sweet-Deal.store.main" />
+        <module name="Sweet-Deal.account.test" />
         <module name="Sweet-Deal.image.main" />
-        <module name="Sweet-Deal.gateway.main" />
+        <module name="Sweet-Deal.account.main" />
         <module name="Sweet-Deal.global.main" />
-        <module name="Sweet-Deal.order.main" />
+        <module name="Sweet-Deal.global.test" />
       </profile>
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
@@ -30,6 +29,23 @@
           <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.34/ec547ef414ab1d2c040118fb9c1c265ada63af14/lombok-1.18.34.jar" />
         </processorPath>
         <module name="Sweet-Deal.store.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="Sweet-Deal.eureka.main" />
+        <module name="Sweet-Deal.store.main" />
+        <module name="Sweet-Deal.order.main" />
+      </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.36/5a30490a6e14977d97d9c73c924c1f1b5311ea95/lombok-1.18.36.jar" />
+          <entry name="$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/3.3.6/3b0ecc19e201037302628e9f8084c93caf6b9439/spring-boot-configuration-processor-3.3.6.jar" />
+        </processorPath>
+        <module name="Sweet-Deal.gateway.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="21">
@@ -40,15 +56,15 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Sweet-Deal.account" options="-parameters" />
+      <module name="Sweet-Deal.account.main" options="-parameters" />
+      <module name="Sweet-Deal.account.test" options="-parameters" />
       <module name="Sweet-Deal.eureka" options="-parameters" />
       <module name="Sweet-Deal.eureka.main" options="-parameters" />
       <module name="Sweet-Deal.eureka.test" options="-parameters" />
       <module name="Sweet-Deal.gateway" options="-parameters" />
       <module name="Sweet-Deal.gateway.main" options="-parameters" />
       <module name="Sweet-Deal.gateway.test" options="-parameters" />
-      <module name="Sweet-Deal.global" options="-parameters" />
-      <module name="Sweet-Deal.global.main" options="-parameters" />
-      <module name="Sweet-Deal.global.test" options="-parameters" />
       <module name="Sweet-Deal.image" options="-parameters" />
       <module name="Sweet-Deal.image.main" options="-parameters" />
       <module name="Sweet-Deal.image.test" options="-parameters" />
