@@ -1,4 +1,4 @@
-package com.example.store.common.config;
+package com.example.store.domain.common.config;
 
 
 import io.swagger.v3.oas.models.OpenAPI;
