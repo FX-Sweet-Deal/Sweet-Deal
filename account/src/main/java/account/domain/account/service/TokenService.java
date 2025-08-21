@@ -2,9 +2,8 @@ package account.domain.account.service;
 
 
 import account.domain.account.ifs.TokenHelperIfs;
-import com.example.global.errorcode.ErrorCode;
 import com.example.global.errorcode.TokenErrorCode;
-import com.example.user.common.exception.jwt.TokenException;
+import com.example.user.domain.common.exception.jwt.TokenException;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class TokenService {
 
     private final TokenHelperIfs tokenHelperIfs;
+
 
     public Long validationToken(String token) {
 

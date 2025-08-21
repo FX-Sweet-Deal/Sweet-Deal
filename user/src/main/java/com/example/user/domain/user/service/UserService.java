@@ -2,21 +2,23 @@ package com.example.user.domain.user.service;
 
 
 import com.example.global.errorcode.UserErrorCode;
-import com.example.user.common.exception.user.ExistUserEmailException;
-import com.example.user.common.exception.user.ExistUserNameException;
-import com.example.user.common.exception.user.LoginFailException;
-import com.example.user.common.exception.user.UserNotFoundException;
+import com.example.user.domain.common.exception.user.ExistUserEmailException;
+import com.example.user.domain.common.exception.user.ExistUserNameException;
+import com.example.user.domain.common.exception.user.LoginFailException;
+import com.example.user.domain.common.exception.user.UserNotFoundException;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.UserRepository;
 import com.example.user.domain.user.repository.enums.UserStatus;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.errors.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -71,6 +73,8 @@ public class UserService {
     public UserEntity getUserWithThrow(
         Long userId
     ) {
+        log.info("userId={}", userId);
+
         return userRepository.findFirstByIdAndStatusOrderByIdDesc(
             userId,
             UserStatus.REGISTERED

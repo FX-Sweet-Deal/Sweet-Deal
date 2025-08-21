@@ -2,9 +2,9 @@ package com.example.user.domain.jwt.helper;
 
 
 import com.example.global.errorcode.TokenErrorCode;
-import com.example.user.common.exception.jwt.TokenException;
-import com.example.user.common.exception.jwt.TokenExpiredException;
-import com.example.user.common.exception.jwt.TokenSignatureException;
+import com.example.user.domain.common.exception.jwt.TokenException;
+import com.example.user.domain.common.exception.jwt.TokenExpiredException;
+import com.example.user.domain.common.exception.jwt.TokenSignatureException;
 import com.example.user.domain.jwt.ifs.TokenHelperIfs;
 import com.example.user.domain.jwt.model.TokenDto;
 import io.jsonwebtoken.Claims;
@@ -15,7 +15,7 @@ import io.jsonwebtoken.Jwts;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
+import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -53,7 +53,9 @@ public class JwtTokenHelper implements TokenHelperIfs {
     @Override
     public Map<String, Object> validationTokenWithThrow(String token) {
 
-        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+
+        SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
 
         JwtParser parser = Jwts.parser().setSigningKey(key).build();
 

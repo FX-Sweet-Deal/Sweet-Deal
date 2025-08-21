@@ -6,7 +6,7 @@ import account.domain.account.model.TokenDto;
 import account.domain.account.service.TokenService;
 import com.example.global.anntation.Business;
 import com.example.global.errorcode.UserErrorCode;
-import com.example.user.common.exception.user.UserNotFoundException;
+import com.example.user.domain.common.exception.user.UserNotFoundException;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,11 @@ public class TokenBusiness {
 
     public TokenValidationResponse tokenValidation(TokenDto tokenDto) {
 
-        Long userId = tokenService.validationToken(tokenDto.getToken().substring(7));
 
+        String token = tokenDto.getToken();              // 자르지 말 것!
+        Long userId = tokenService.validationToken(token);
+
+        log.info("token userId={}" , userId);
         UserEntity userEntity = userRepository.findFirstByIdAndStatusOrderByIdDesc(userId, UserStatus.REGISTERED)
             .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
 
