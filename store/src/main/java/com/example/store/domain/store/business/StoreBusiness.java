@@ -79,6 +79,7 @@ public class StoreBusiness {
     return messageConverter.toResponse("스토어 정보가 수정되었습니다.");
   }
 
+  // 점주의 스토어 단건 조회
   public StoreSimpleResponse getSimpleStore(Long userId) {
     Store store = storeService.getStoreByUserId(userId)
         .orElseThrow(() -> new IllegalArgumentException("STORE NOT FOUND"));
