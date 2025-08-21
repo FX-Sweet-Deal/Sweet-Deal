@@ -36,9 +36,10 @@ public class StoreApiController {
         return Api.ok(response);
     }
 
-    @PostMapping("/{storeId}/unregister")
+    @PostMapping("/{storeId}/unregister") // 200
     public Api<MessageResponse> unregister(@PathVariable Long storeId, Long userId) {
-        MessageResponse messageResponse = storeBusiness.unregister(storeId, userId);
+        Long fakeUserId = 0L; // 삭제할 것!!
+        MessageResponse messageResponse = storeBusiness.unregister(storeId, fakeUserId);
         return Api.ok(messageResponse);
     }
 
@@ -49,9 +50,10 @@ public class StoreApiController {
         return Api.ok(messageResponse);
     }
 
-    @GetMapping("/owner")
+    @GetMapping("/owner") // 200
     public Api<List<OwnerStoresResponse>> ownerStores(Long userId) {
-        List<OwnerStoresResponse> ownerStores = storeBusiness.getOwnerStore(userId);
+        Long fakeUserId = 0L; // 삭제 할것
+        List<OwnerStoresResponse> ownerStores = storeBusiness.getOwnerStore(fakeUserId);
         return Api.ok(ownerStores);
     }
 
