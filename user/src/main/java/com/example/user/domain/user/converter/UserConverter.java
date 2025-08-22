@@ -2,16 +2,11 @@ package com.example.user.domain.user.converter;
 
 
 import com.example.global.anntation.Converter;
-import com.example.global.errorcode.ErrorCode;
+import com.example.global.resolver.UserRole;
 import com.example.user.domain.user.controller.model.login.UserResponse;
 import com.example.user.domain.user.controller.model.register.UserRegisterRequest;
 import com.example.user.domain.user.repository.UserEntity;
-import com.example.user.domain.user.repository.enums.UserRole;
-import com.example.user.domain.user.repository.enums.UserStatus;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.errors.ApiException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Converter

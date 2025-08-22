@@ -9,9 +9,11 @@ import com.example.user.domain.jwt.model.TokenResponse;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;
 import com.example.user.domain.user.controller.model.login.UserResponse;
 import com.example.user.domain.user.controller.model.register.UserRegisterRequest;
+import com.example.user.domain.user.controller.model.update.UserUpdateRequest;
 import com.example.user.domain.user.converter.UserConverter;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -51,6 +53,12 @@ public class UserBusiness {
     public MessageResponse unregister(Long userId) {
         userService.unregister(userId);
         return messageConverter.toResponse("회원탈퇴가 완료되었습니다.");
+
+    }
+
+    public UserResponse updateUser(Long userId, @Valid UserUpdateRequest request) {
+        UserEntity UserEntity = userService.updateUser(userId, request);
+        return userConverter.toResponse(UserEntity);
 
     }
 }
