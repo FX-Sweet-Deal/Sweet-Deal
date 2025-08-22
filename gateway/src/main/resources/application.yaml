@@ -40,36 +40,87 @@ spring:
             - ServiceApiPrivateFilter
 
         # ============ item ============
-        - id: item
-          uri: http://localhost:51001
+        # 공개(스웨거/로그인 등) - 필터 없음
+        - id: item-open
+          order: -1
+          uri: lb://item
           predicates:
-            - Path=/item/**
+            - Path=/item/open-api/**,/item/v3/api-docs/**,/item/swagger-ui/**,/item/swagger-ui.html
           filters:
             - StripPrefix=1
 
-        # ============ order ============
-        - id: order
-          uri: http://localhost:51002
+        # 보호(업무 API) - 필터 적용
+        - id: item-api
+          order: -1
+          uri: lb://item
           predicates:
-            - Path=/order/**
+            - Path=/item/api/**
           filters:
             - StripPrefix=1
+            - ServiceApiPrivateFilter
+
+
+        # ============ order ===========
+        # 공개(스웨거/로그인 등) - 필터 없음
+        - id: order-open
+          order: -1
+          uri: lb://order
+          predicates:
+            - Path=/order/open-api/**,/order/v3/api-docs/**,/order/swagger-ui/**,/order/swagger-ui.html
+          filters:
+            - StripPrefix=1
+
+        # 보호(업무 API) - 필터 적용
+        - id: order-api
+          order: -1
+          uri: lb://order
+          predicates:
+            - Path=/order/api/**
+          filters:
+            - StripPrefix=1
+            - ServiceApiPrivateFilter
 
         # ============ store ============
-        - id: store
-          uri: http://localhost:51003
+        # 공개(스웨거/로그인 등) - 필터 없음
+        - id: store-open
+          order: -1
+          uri: lb://store
           predicates:
-            - Path=/store/**
+            - Path=/store/open-api/**,/store/v3/api-docs/**,/store/swagger-ui/**,/store/swagger-ui.html
           filters:
             - StripPrefix=1
 
-        # ============ image ============
-        - id: image
-          uri: http://localhost:51004
+        # 보호(업무 API) - 필터 적용
+        - id: store-api
+          order: -1
+          uri: lb://store
           predicates:
-            - Path=/image/**
+            - Path=/store/api/**
           filters:
             - StripPrefix=1
+            - ServiceApiPrivateFilter
+
+
+        # ============ image ============
+        # 공개(스웨거/로그인 등) - 필터 없음
+        - id: image-open
+          order: -1
+          uri: lb://image
+          predicates:
+            - Path=/image/open-api/**,/image/v3/api-docs/**,/image/swagger-ui/**,/image/swagger-ui.html
+          filters:
+            - StripPrefix=1
+
+        # 보호(업무 API) - 필터 적용
+        - id: image-api
+          order: -1
+          uri: lb://image
+          predicates:
+            - Path=/image/api/**
+          filters:
+            - StripPrefix=1
+            - ServiceApiPrivateFilter
+
 
         # ============ account (토큰 검증 호출 대상) ============
         - id: account
