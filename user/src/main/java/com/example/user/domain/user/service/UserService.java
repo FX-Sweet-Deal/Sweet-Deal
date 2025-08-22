@@ -6,6 +6,7 @@ import com.example.user.domain.common.exception.user.ExistUserEmailException;
 import com.example.user.domain.common.exception.user.ExistUserNameException;
 import com.example.user.domain.common.exception.user.LoginFailException;
 import com.example.user.domain.common.exception.user.UserNotFoundException;
+import com.example.user.domain.common.exception.user.UserUnregisterException;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.UserRepository;
@@ -86,5 +87,17 @@ public class UserService {
 
     private void saveFcmToken(Long userId, String fcmToken) {
         redisTemplate.opsForHash().put(String.valueOf(userId), "fcmToken", fcmToken);
+    }
+
+    public void unregister(Long userId) {
+        UserEntity userEntity = userRepository.findFirstByIdAndStatusOrderByIdDesc(userId,
+            UserStatus.REGISTERED)
+            .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
+        userEntity.setStatus(UserStatus.UNREGISTERED);
+        userEntity.setUnregisteredAt(LocalDateTime.now());
+        UserEntity unRegisterdUSErEntity = userRepository.save(userEntity);
+        if(!unRegisterdUSErEntity.getStatus().equals(UserStatus.UNREGISTERED)) {
+            throw new UserUnregisterException(UserErrorCode.USER_UNREGISTER_FAIL);
+        }
     }
 }

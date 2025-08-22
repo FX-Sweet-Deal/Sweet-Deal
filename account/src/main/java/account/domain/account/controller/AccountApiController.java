@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/account")
 public class AccountApiController {
 
-
     private final TokenBusiness tokenBusiness;
 
     @PostMapping()
