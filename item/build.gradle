@@ -59,7 +59,8 @@ dependencies {
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		// ✅ Boot 3.3.x와 호환되는 Spring Cloud 2023.0.x (Leyton)
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.6"
 	}
 }
 
