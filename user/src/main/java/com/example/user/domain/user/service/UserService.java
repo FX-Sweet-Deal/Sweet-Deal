@@ -2,19 +2,27 @@ package com.example.user.domain.user.service;
 
 
 import com.example.global.errorcode.UserErrorCode;
+import com.example.global.exception.BadRequestException;
+import com.example.global.exception.ConflictException;
+import com.example.global.exception.NotFoundException;
+import com.example.global.exception.UserNotFoundException;
 import com.example.user.domain.common.exception.user.ExistUserEmailException;
 import com.example.user.domain.common.exception.user.ExistUserNameException;
 import com.example.user.domain.common.exception.user.LoginFailException;
-import com.example.user.domain.common.exception.user.UserNotFoundException;
 import com.example.user.domain.common.exception.user.UserUnregisterException;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;
+import com.example.user.domain.user.controller.model.update.UserUpdateEntity;
+import com.example.user.domain.user.controller.model.update.UserUpdateRequest;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.UserRepository;
 import com.example.user.domain.user.repository.enums.UserStatus;
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -99,5 +107,44 @@ public class UserService {
         if(!unRegisterdUSErEntity.getStatus().equals(UserStatus.UNREGISTERED)) {
             throw new UserUnregisterException(UserErrorCode.USER_UNREGISTER_FAIL);
         }
+    }
+
+    public UserEntity updateUser(Long userId, @Valid UserUpdateRequest request) {
+
+        UserEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "사용자를 찾을 수 없습니다."));
+
+        // name
+        if (request.getName() != null) {
+            user.changeName(request.getName().trim());
+        }
+
+        // birth
+        if (request.getBirth() != null) {
+            user.changeBirth(request.getBirth());
+        }
+
+        // address (DTO에 @NotBlank 있어 '보내면' 반드시 값이 있어야 함. null이면 무시)
+        if (request.getAddress() != null) {
+            String addr = request.getAddress().trim();
+            if (addr.isEmpty()) {
+                throw new BadRequestException("qwe", "주소는 공백일 수 없습니다.");
+            }
+            user.changeAddress(addr);
+        }
+
+        // phone (중복/유니크 체크)
+        if (request.getPhone() != null) {
+            String newPhone = request.getPhone().trim();
+            if (userRepository.existsByPhoneAndIdNot(newPhone, user.getId())) {
+                throw new ConflictException("PHONE_DUPLICATED", "이미 사용 중인 전화번호입니다.");
+            }
+            user.changePhone(newPhone);
+        }
+        // JPA 영속 상태라 변경 감지로 업데이트됨
+        userRepository.flush();
+
+        return user;
+
     }
 }

@@ -1,8 +1,7 @@
 package com.example.user.domain.user.repository;
 
-import com.example.user.domain.user.repository.enums.UserRole;
+import com.example.global.resolver.UserRole;
 import com.example.user.domain.user.repository.enums.UserStatus;
-import com.fasterxml.jackson.annotation.JsonTypeId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
@@ -61,5 +59,22 @@ public class UserEntity {
     private LocalDateTime unregisteredAt;
 
     private LocalDateTime lastLoginAt;
+
+    // == 변경 메서드(엔티티 규칙 캡슐화) ==
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeBirth(LocalDate birth) {
+        this.birth = birth;
+    }
+
+    public void changeAddress(String address) {
+        this.address = address;
+    }
+
+    public void changePhone(String phone) {
+        this.phone = phone;
+    }
 
 }
