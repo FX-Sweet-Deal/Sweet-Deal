@@ -19,6 +19,7 @@ import com.example.store.domain.store.repository.Store;
 import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import com.example.store.domain.store.service.StoreService;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -138,5 +139,17 @@ public class StoreBusiness {
     ).collect(Collectors.toList());
 
     return storeConverter.toNearbyStoreResponse(nearbyStores, locationRequest.getRadiusInMeters());
+  }
+
+  public void updateStoreOpenClose() {
+    LocalTime now = LocalTime.now();
+    List<Store> stores = storeService.getStoreByDateTime(now);
+
+    if (stores.isEmpty()) {
+      throw new IllegalArgumentException("STORE_NOT_FOUND");
+    }
+
+
+
   }
 }
