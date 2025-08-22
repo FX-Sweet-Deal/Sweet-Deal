@@ -1,21 +1,25 @@
 package com.example.user.domain.common.config.web;
 
-import com.example.user.domain.common.interceptor.AuthorizationInterceptor;
-import com.example.user.domain.common.resolver.UserSessionResolver;
+import com.example.global.interceptor.AuthorizationInterceptor;
+import com.example.global.resolver.UserSessionResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
-@RequiredArgsConstructor
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final AuthorizationInterceptor authorizationInterceptor;
 
+    @Bean
+    public AuthorizationInterceptor authorizationInterceptor() {
+        return new AuthorizationInterceptor();
+    }
     private List<String> OPEN_API = List.of(
         "/open-api/**"
     );
@@ -34,7 +38,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authorizationInterceptor)
+        registry.addInterceptor(authorizationInterceptor())
             .excludePathPatterns(DEFAULT_EXCLUDE)
             .excludePathPatterns(OPEN_API)
             .excludePathPatterns(SWAGGER);

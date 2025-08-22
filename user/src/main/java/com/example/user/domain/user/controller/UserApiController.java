@@ -3,7 +3,7 @@ package com.example.user.domain.user.controller;
 
 import com.example.global.anntation.UserSession;
 import com.example.global.api.Api;
-import com.example.user.domain.common.resolver.User;
+import com.example.global.resolver.User;
 import com.example.user.domain.common.response.MessageResponse;
 import com.example.user.domain.user.business.UserBusiness;
 import com.example.user.domain.user.controller.model.login.UserResponse;

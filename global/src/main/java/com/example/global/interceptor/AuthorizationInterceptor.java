@@ -1,7 +1,8 @@
-package com.example.user.domain.common.interceptor;
+package com.example.global.interceptor;
 
 import com.example.global.errorcode.UserErrorCode;
-import com.example.user.domain.common.exception.user.UserNotFoundException;
+
+import com.example.global.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
