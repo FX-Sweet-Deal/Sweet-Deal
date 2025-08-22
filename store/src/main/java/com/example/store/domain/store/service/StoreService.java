@@ -5,6 +5,9 @@ import com.example.store.domain.store.repository.StoreRepository;
 import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -52,4 +55,10 @@ public class StoreService {
   public void delete(Store store) {
     storeRepository.save(store);
   }
+
+  public List<Store> getStoreByDateTime(LocalTime now) {
+    return storeRepository.findStoreByDateTimeNow(now);
+  }
+
+
 }

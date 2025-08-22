@@ -3,6 +3,7 @@ package com.example.store.domain.store.repository;
 import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +20,23 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
   List<Store> findListByUserIdAndStoreStatus(Long userId, StoreStatus storeStatus);
   Optional<Store> findByIdAndUserIdAndStoreStatus(Long storeId, Long userId, StoreStatus storeStatus);
   Optional<Store> findByIdOrderByIdDesc(Long id);
-
   Boolean existsByBusinessNumber(String businessNumber);
 
+  @Query(value = """
+    SELECT *
+    FROM store s
+    WHERE s.open_all_day = 1
+       OR (
+            s.opening_time < s.closing_time
+            AND :now >= s.opening_time
+            AND :now <  s.closing_time
+          )
+       OR (
+            s.opening_time > s.closing_time
+            AND ( :now >= s.opening_time OR :now < s.closing_time )
+          )
+""", nativeQuery = true)
+  List<Store> findStoreByDateTimeNow(@Param("now") LocalTime now);
 
   // :name 키워드 들어가는 스토어 모두 검색
   @Query(value = "SELECT * " +
