@@ -9,6 +9,7 @@ import com.example.user.domain.jwt.model.TokenResponse;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;
 import com.example.user.domain.user.controller.model.login.UserResponse;
 import com.example.user.domain.user.controller.model.register.UserRegisterRequest;
+import com.example.user.domain.user.controller.model.update.UserPasswordChangeRequest;
 import com.example.user.domain.user.controller.model.update.UserUpdateRequest;
 import com.example.user.domain.user.converter.UserConverter;
 import com.example.user.domain.user.repository.UserEntity;
@@ -60,5 +61,10 @@ public class UserBusiness {
         UserEntity UserEntity = userService.updateUser(userId, request);
         return userConverter.toResponse(UserEntity);
 
+    }
+
+    public MessageResponse changePassword(Long userId, @Valid UserPasswordChangeRequest request) {
+        userService.changePassword(userId, request);
+        return messageConverter.toResponse("비밀번호가 변경되었습니다.");
     }
 }

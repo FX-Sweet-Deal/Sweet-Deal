@@ -77,4 +77,8 @@ public class UserEntity {
         this.phone = phone;
     }
 
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
 }

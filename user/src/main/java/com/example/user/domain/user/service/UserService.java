@@ -10,12 +10,15 @@ import com.example.user.domain.common.exception.user.ExistUserEmailException;
 import com.example.user.domain.common.exception.user.ExistUserNameException;
 import com.example.user.domain.common.exception.user.LoginFailException;
 import com.example.user.domain.common.exception.user.UserUnregisterException;
+import com.example.user.domain.common.response.MessageResponse;
 import com.example.user.domain.user.controller.model.login.UserLoginRequest;
+import com.example.user.domain.user.controller.model.update.UserPasswordChangeRequest;
 import com.example.user.domain.user.controller.model.update.UserUpdateEntity;
 import com.example.user.domain.user.controller.model.update.UserUpdateRequest;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.UserRepository;
 import com.example.user.domain.user.repository.enums.UserStatus;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -32,6 +36,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
+
+    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -146,5 +152,22 @@ public class UserService {
 
         return user;
 
+    }
+
+
+
+    @Transactional
+    public void changePassword(Long userId, @Valid UserPasswordChangeRequest request) {
+        UserEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new NotFoundException("USER NOT FOUND", "사용자를 찾을 수 없습니다."));
+
+        // 현재 비밀번호 검증
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 새 비밀번호 암호화 후 저장
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+        // userRepository.save(user); // @Transactional이면 생략 가능
     }
 }

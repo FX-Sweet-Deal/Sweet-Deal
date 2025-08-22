@@ -7,7 +7,9 @@ import com.example.global.resolver.User;
 import com.example.user.domain.common.response.MessageResponse;
 import com.example.user.domain.user.business.UserBusiness;
 import com.example.user.domain.user.controller.model.login.UserResponse;
+import com.example.user.domain.user.controller.model.update.UserPasswordChangeRequest;
 import com.example.user.domain.user.controller.model.update.UserUpdateRequest;
+import com.example.user.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -53,5 +55,15 @@ public class UserApiController {
         UserResponse response = userBusiness.updateUser(user.getId(), request);
         return Api.ok(response);
 
+    }
+
+    @PostMapping("/password")
+    @Operation(summary = "[비밀번호 변경]")
+    public Api<MessageResponse> changePassword(
+        @Parameter(hidden = true) @UserSession User userSession,
+        @Valid @RequestBody UserPasswordChangeRequest request
+    ){
+        MessageResponse response = userBusiness.changePassword(userSession.getId(), request);
+        return Api.ok(response);
     }
 }
