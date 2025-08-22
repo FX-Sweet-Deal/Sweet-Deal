@@ -6,7 +6,7 @@ import account.domain.account.model.TokenDto;
 import account.domain.account.service.TokenService;
 import com.example.global.anntation.Business;
 import com.example.global.errorcode.UserErrorCode;
-import com.example.user.domain.common.exception.user.UserNotFoundException;
+import com.example.global.exception.UserNotFoundException;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.enums.UserStatus;
 import lombok.RequiredArgsConstructor;

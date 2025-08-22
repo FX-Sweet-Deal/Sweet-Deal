@@ -22,6 +22,13 @@ dependencies {
 	api 'org.springframework.boot:spring-boot-starter-validation'
 	api "org.springframework:spring-web"
 
+	implementation "org.springframework:spring-webmvc"
+
+	// IDE 빨간줄 방지용(런타임은 소비 모듈의 starter-web이 제공)
+	compileOnly "jakarta.servlet:jakarta.servlet-api"
+	compileOnly "jakarta.validation:jakarta.validation-api"
+
+
 	compileOnly 'org.projectlombok:lombok:1.18.34'
 	annotationProcessor 'org.projectlombok:lombok:1.18.34'
 	testCompileOnly 'org.projectlombok:lombok:1.18.34'
@@ -29,6 +36,7 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 }
 
 tasks.named('test') { useJUnitPlatform() }

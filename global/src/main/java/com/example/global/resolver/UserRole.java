@@ -1,4 +1,4 @@
-package com.example.user.domain.user.repository.enums;
+package com.example.global.resolver;
 
 
 import lombok.AllArgsConstructor;

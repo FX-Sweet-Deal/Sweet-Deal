@@ -2,7 +2,7 @@ package account.domain.security.service;
 
 
 import com.example.global.errorcode.UserErrorCode;
-import com.example.user.domain.common.exception.user.UserNotFoundException;
+import com.example.global.exception.UserNotFoundException;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.UserRepository;
 import com.example.user.domain.user.repository.enums.UserStatus;

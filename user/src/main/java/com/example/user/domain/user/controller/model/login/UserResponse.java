@@ -1,7 +1,7 @@
 package com.example.user.domain.user.controller.model.login;
 
 
-import com.example.user.domain.user.repository.enums.UserRole;
+import com.example.global.resolver.UserRole;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

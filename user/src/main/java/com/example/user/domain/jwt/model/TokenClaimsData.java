@@ -1,6 +1,6 @@
 package com.example.user.domain.jwt.model;
 
-import com.example.user.domain.user.repository.enums.UserRole;
+import com.example.global.resolver.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

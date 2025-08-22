@@ -1,7 +1,7 @@
-package com.example.user.domain.common.resolver;
+package com.example.global.resolver;
 
 import com.example.global.anntation.UserSession;
-import com.example.user.domain.user.repository.enums.UserRole;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

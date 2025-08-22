@@ -7,7 +7,7 @@ import com.example.user.domain.jwt.ifs.TokenHelperIfs;
 import com.example.user.domain.jwt.model.TokenClaimsData;
 import com.example.user.domain.jwt.model.TokenDto;
 import com.example.user.domain.jwt.model.TokenEntity;
-import com.example.user.domain.user.repository.enums.UserRole;
+import com.example.global.resolver.UserRole;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

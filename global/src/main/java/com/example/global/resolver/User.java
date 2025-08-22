@@ -1,7 +1,7 @@
-package com.example.user.domain.common.resolver;
+package com.example.global.resolver;
 
 
-import com.example.user.domain.user.repository.enums.UserRole;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

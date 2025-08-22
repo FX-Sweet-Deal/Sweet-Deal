@@ -5,7 +5,7 @@ import com.example.global.errorcode.UserErrorCode;
 import com.example.user.domain.common.exception.user.ExistUserEmailException;
 import com.example.user.domain.common.exception.user.ExistUserNameException;
 import com.example.user.domain.common.exception.user.LoginFailException;
-import com.example.user.domain.common.exception.user.UserNotFoundException;
+import com.example.global.exception.UserNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
