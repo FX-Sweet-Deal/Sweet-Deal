@@ -48,4 +48,9 @@ public class UserBusiness {
 
     }
 
+    public MessageResponse unregister(Long userId) {
+        userService.unregister(userId);
+        return messageConverter.toResponse("회원탈퇴가 완료되었습니다.");
+
+    }
 }
