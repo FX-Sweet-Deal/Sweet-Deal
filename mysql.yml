@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name:
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      TZ: Asia/Seoul
+    ports:
+      - 3306:3306
+    volumes:
+      -
+    networks:
+      - mysql-network
+
+networks:
+  mysql-network:
+
+
+# docker compose -f mysql.yml up -d
