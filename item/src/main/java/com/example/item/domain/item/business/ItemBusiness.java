@@ -1,6 +1,8 @@
 package com.example.item.domain.item.business;
 
 import com.example.global.anntation.Business;
+import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
+import com.example.item.domain.item.controller.model.response.StoreSimpleResponse;
 import com.example.item.domain.item.converter.MessageConverter;
 import com.example.item.domain.common.response.MessageResponse;
 import com.example.item.domain.item.controller.model.request.ItemInternalRequest;
@@ -14,58 +16,91 @@ import com.example.item.domain.item.converter.ItemConverter;
 import com.example.item.domain.item.repository.Item;
 import com.example.item.domain.item.repository.enums.ItemStatus;
 import com.example.item.domain.item.service.ItemService;
+import com.example.item.domain.item.service.StoreFeignClient;
+import feign.FeignException.FeignClientException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Business
+@Slf4j
 @RequiredArgsConstructor
 public class ItemBusiness {
 
     private final ItemService itemService;
     private final ItemConverter itemConverter;
     private final MessageConverter messageConverter;
+    private final StoreFeignClient storeFeignClient;
 
     // 상품 등록
-    public ItemRegisterResponse register(ItemRegisterRequest req, Long userId) {
+    public ItemRegisterResponse register(ItemRegisterRequest req, Long fakeUserId) {
 
-        // kafka or feign 메시지 받기
-        // storeRepository에서 userId와 storeId 검증(userId가 소유한 store 중에 storeId가 있는지)
+        try {
+            Long userId = 0L;
+            StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
+            List<Long> storesId = storeSimpleResponse.getStoresId();
 
-        // storeService.findAllBy(userId);
-        Long storeId = 0L; // 임시 작성 ( 변경할 것!)
+            Long storeId = req.getStoreId();
+            if (storeId == null) {
+                if (storesId.size() == 1) {
+                    storeId = storesId.get(0);
+                } else {
+                    throw new IllegalArgumentException("STORE_ID_REQUIRED");
+                }
+            }
+            if (!storesId.contains(storeId)) {
+                throw new IllegalArgumentException("STORE_NOT_OWNED");
+            }
 
-        Item registeredItem = itemConverter.toEntity(req, storeId);
+            Item registeredItem = itemConverter.toEntity(req, storeId);
 
-        // 중복 상품 검증
-        itemService.existsByItemWithThrow(storeId, req.getName(), req.getExpiredAt(),
-            List.of(ItemStatus.SALE, ItemStatus.RESERVED));
+            // 중복 상품 검증
+            itemService.existsByItemWithThrow(storeId, req.getName(), req.getExpiredAt(),
+                List.of(ItemStatus.SALE, ItemStatus.RESERVED));
 
-        // 검증
-        itemService.validateRegister(registeredItem);
+            // 검증
+            itemService.validateRegister(registeredItem);
 
-        return itemConverter.toResponse(itemService.register(registeredItem));
+            return itemConverter.toResponse(itemService.register(registeredItem));
+        } catch (FeignClientException e) {
+            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+
+        }
+
 
     }
 
     // 상품 삭제
-    public MessageResponse unregister(Long itemId, Long userId) {
+    public MessageResponse unregister(ItemDeleteRequest itemDeleteRequest, Long fakeUserId) {
 
-        // kafka 메시지 받기
-        // storeId
-        Long storeId = 0L;
+        try {
+            Long userId = 0L; // 삭제할 것
+            StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
+            List<Long> storesId = storeSimpleResponse.getStoresId();
+            log.info("{}", storesId.toString());
 
-        // 상품이 존재하지 않을 시 예외 발생
-        // 판매된 상품과 삭제된 상품은 제외 (SOLD, DELETED)
-        itemService.notExistsByItemWithThrow(itemId, storeId);
+            // 상품이 존재하지 않을 시 예외 발생
+            // 판매된 상품과 삭제된 상품은 제외 (SOLD, DELETED)
+            itemService.notExistsByItemWithThrow(itemDeleteRequest.getItemId(), storesId);
 
-        Item targetItem = itemService.getItemByIdAndStatusList(itemId,
-            List.of(ItemStatus.SALE, ItemStatus.RESERVED));
+            Item targetItem = itemService.getItemByIdAndStatusList(itemDeleteRequest.getItemId(),
+                List.of(ItemStatus.SALE, ItemStatus.RESERVED));
 
-        itemService.unregister(targetItem);
-        return messageConverter.toResponse("상품이 삭제되었습니다.");
+
+            if(targetItem.getQuantity() != itemDeleteRequest.getQuantity()) {
+                Long remainingQty = targetItem.remainingQuantity(itemDeleteRequest.getQuantity());
+                Item item = itemConverter.deleteRemainingStockItem(targetItem, remainingQty);
+                itemService.save(item);
+            }
+
+            itemService.unregister(targetItem, itemDeleteRequest.getQuantity());
+
+            return messageConverter.toResponse("상품이 삭제되었습니다.");
+        } catch (FeignClientException e) {
+            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+        }
 
     }
 
@@ -89,44 +124,62 @@ public class ItemBusiness {
     }
 
     /* 수정 */
-    public MessageResponse update(ItemUpdateRequest request, Long userId) {
-        // kafka
-        Long storeId = 0L;
+    public MessageResponse update(Long itemId, ItemUpdateRequest request, Long fakeUserId) {
 
-        // 상품이 존재하지 않으면 예외 발생
-        itemService.notExistsByItemWithThrow(request.getId(), storeId);
+        try {
+            Long userId = 0L;
+            StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
+            List<Long> storesId = storeSimpleResponse.getStoresId();
 
-        Item targetItem = itemService.getItemByIdAndStatus(request.getId(), ItemStatus.SALE);
+            // 상품이 존재하지 않으면 예외 발생
+            itemService.notExistsByItemWithThrow(itemId, storesId);
 
-        itemService.update(request, targetItem);
+            Item targetItem = itemService.getItemByIdAndStatus(itemId, ItemStatus.SALE);
 
-        return messageConverter.toResponse("상품 정보가 수정되었습니다.");
+            itemService.update(request, targetItem);
 
-    }
-
-    public ItemDetailResponse getItemBy(Long itemId, Long userId) {
-        // storeService.findAllByUserId(userId);
-        // = storeid;
-        Long storeId = 0L;
-
-        // 해당 스토어에 특정 상품이 없을 시 예외 발생
-        itemService.notExistsByItemWithThrow(itemId, storeId);
-        Item item = itemService.getItemById(itemId);
-
-        return itemConverter.toDetailResponse(item);
+            return messageConverter.toResponse("상품 정보가 수정되었습니다.");
+        } catch (FeignClientException e) {
+            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+            }
 
     }
 
-    public List<ItemListResponse> getItemListBy(Long userId) {
-        // storeService.findAllByUserId(userId);
-        // = storeid;
-        Long storeId = 0L;
+    public ItemDetailResponse getItemBy(Long itemId, Long fakeUserId) {
 
-        // storeId에 해당하는 SALE중인 상품 목록 조회
-        List<Item> saleItemList = itemService.getItemListByStoreIdAndStatus(storeId,
-            ItemStatus.SALE);
+        try {
+            Long userId = 0L; // 삭제할 것
+            StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
+            List<Long> storesId = storeSimpleResponse.getStoresId();
 
-       return itemConverter.toListResponse(saleItemList);
+            // 해당 스토어에 특정 상품이 없을 시 예외 발생
+            itemService.notExistsByItemWithThrow(itemId, storesId);
+            Item item = itemService.getItemById(itemId);
+
+            return itemConverter.toDetailResponse(item);
+        } catch (FeignClientException e) {
+            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+
+        }
+
+    }
+
+    public List<ItemListResponse> getItemListBy(Long fakeUserId) {
+        try {
+            Long userId = 0L; // 삭제할 것
+            StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
+            List<Long> storesId = storeSimpleResponse.getStoresId();
+            log.info("========{}========", storesId.toString());
+
+            // storeId에 해당하는 SALE중인 상품 목록 조회
+            List<Item> saleItemList = itemService.getItemListByStoresIdAndStatus(storesId,
+                ItemStatus.SALE);
+
+            return itemConverter.toListResponse(saleItemList);
+
+        } catch (FeignClientException e) {
+            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+        }
     }
 
     public ItemInternalResponse getItemInternal(ItemInternalRequest itemInternalRequest) {
