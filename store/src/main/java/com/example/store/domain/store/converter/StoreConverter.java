@@ -65,10 +65,13 @@ public class StoreConverter {
 
   }
 
-  public StoreSimpleResponse toStoreSimpleResponse(Store store) {
-    return StoreSimpleResponse.builder()
-        .storeId(store.getId())
-        .build();
+  public StoreSimpleResponse toStoreSimpleResponse(List<Store> stores) {
+    List<Long> storeId = stores.stream().map(store -> store.getId()).toList();
+
+    StoreSimpleResponse storeSimpleResponse = new StoreSimpleResponse();
+    storeSimpleResponse.setStoresId(storeId);
+
+    return storeSimpleResponse;
   }
 
   public List<StoreNameKeywordResponse> toStoreNameKeywordResponse(List<Store> stores) {
