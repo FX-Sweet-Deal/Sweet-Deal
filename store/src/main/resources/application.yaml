@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: store # ?? ? ??? service?? ??? ??
+    name: store
   datasource:
     url: jdbc:mysql://localhost:3306/store
       ?serverTimezone=Asia/Seoul
@@ -51,6 +51,12 @@ logging:
   level:
     root: INFO
     com.example: INFO
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
 
 openapi:
   service:
