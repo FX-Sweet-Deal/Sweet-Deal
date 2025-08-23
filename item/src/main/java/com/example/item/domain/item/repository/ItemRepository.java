@@ -24,9 +24,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     // 특정 id와 상태로 조회
     Optional<Item> findByIdAndStatus(Long itemId, ItemStatus status);
 
-    List<Item> findByStoreIdAndStatusOrderByIdDesc(Long storeId, ItemStatus status);
+    List<Item> findByStoreIdInAndStatusOrderByIdDesc(List<Long> storeId, ItemStatus status);
 
-    Boolean existsByIdAndStoreIdAndStatusIn(Long itemId, Long storeId, List<ItemStatus> statuses);
+    Boolean existsByIdAndStoreIdInAndStatusIn(Long itemId, List<Long> storesId, List<ItemStatus> statuses);
 
     Optional<Item> findByIdAndStatusIn(Long itemId, List<ItemStatus> statuses);
 

@@ -82,10 +82,13 @@ public class StoreBusiness {
 
   // 점주의 스토어 단건 조회
   public StoreSimpleResponse getSimpleStore(Long userId) {
-    Store store = storeService.getStoreByUserId(userId)
-        .orElseThrow(() -> new IllegalArgumentException("STORE NOT FOUND"));
+    List<Store> stores = storeService.getStoresByUserId(userId);
 
-    return storeConverter.toStoreSimpleResponse(store);
+    if (stores.isEmpty()) {
+      throw new IllegalArgumentException("STORE NOT FOUND");
+    }
+
+    return storeConverter.toStoreSimpleResponse(stores);
   }
 
   // 점주의 스토어 리스트 조회

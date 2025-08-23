@@ -58,6 +58,12 @@ logging:
     root: INFO
     com.example: INFO
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
 openapi:
   service:
     # 예: user 모듈

@@ -49,9 +49,11 @@ public class Item {
         this.registeredAt = LocalDateTime.now();
     }
 
-    public void unregister() {
+    public void unregister(Long quantity) {
         this.status = ItemStatus.DELETED;
+        this.quantity = quantity;
         this.unregisteredAt = LocalDateTime.now();
+
     }
 
     public void changeStatus(ItemStatus status) {
@@ -96,6 +98,13 @@ public class Item {
         }
 
         this.status = status;
+    }
+
+    public Long remainingQuantity(Long quantity) {
+        if(this.quantity < quantity) {
+            throw new IllegalArgumentException("현재 상품 재고보다 더 삭제할 수 없습니다.");
+        }
+        return this.quantity - quantity;
     }
 
 }

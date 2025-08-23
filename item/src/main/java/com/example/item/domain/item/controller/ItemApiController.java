@@ -1,8 +1,10 @@
 package com.example.item.domain.item.controller;
 
 
+import com.example.global.anntation.UserSession;
 import com.example.global.api.Api;
 import com.example.item.domain.common.response.MessageResponse;
+import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
 import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
 import com.example.item.domain.item.controller.model.response.ItemListResponse;
 import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
@@ -26,10 +28,10 @@ public class ItemApiController {
 
     private final ItemBusiness itemBusiness;
 
-    @PostMapping()
+    @PostMapping("/register") // 200
     public Api<ItemRegisterResponse> register(
         @RequestBody @Valid ItemRegisterRequest request,
-        Long userId) { // userId 임시 객체
+        @UserSession Long userId) { // userId 임시 객체
 
         ItemRegisterResponse response = itemBusiness.register(request, userId);
 
@@ -37,40 +39,39 @@ public class ItemApiController {
 
     }
 
-    @PostMapping("/unregister/{itemId}") // 수정
-    public Api<MessageResponse> unregister(@PathVariable Long itemId, Long userId) {
+    @PostMapping("/unregister") // 200
+    public Api<MessageResponse> unregister(
+        @RequestBody ItemDeleteRequest itemDeleteRequest,
+        @UserSession Long userId) {
 
-        MessageResponse messageResponse = itemBusiness.unregister(itemId, userId);
+        MessageResponse messageResponse = itemBusiness.unregister(itemDeleteRequest, userId);
         return Api.ok(messageResponse);
     }
 
-    @PostMapping("/update") // 수정
-    public Api<MessageResponse> update(@RequestBody ItemUpdateRequest itemUpdateRequest,
-        Long userId) {
+    @PostMapping("/{itemId}/update") // 200
+    public Api<MessageResponse> update(
+        @PathVariable Long itemId,
+        @RequestBody ItemUpdateRequest itemUpdateRequest,
+        @UserSession Long userId) {
 
-        MessageResponse messageResponse = itemBusiness.update(itemUpdateRequest, userId);
+        MessageResponse messageResponse = itemBusiness.update(itemId, itemUpdateRequest, userId);
         return Api.ok(messageResponse);
     }
 
 
-    @GetMapping("/{itemId}")
-    public Api<ItemDetailResponse> getItem(@PathVariable Long itemId, Long userId) {
+    @GetMapping("/{itemId}") // 200
+    public Api<ItemDetailResponse> getItem(
+        @PathVariable Long itemId,
+        @UserSession Long userId) {
 
         ItemDetailResponse itemDetailResponse = itemBusiness.getItemBy(itemId, userId);
         return Api.ok(itemDetailResponse);
     }
 
-    @GetMapping("/list")
-    public Api<List<ItemListResponse>> getItemList(Long userId) {
+    @GetMapping("/list") // 200
+    public Api<List<ItemListResponse>> getItemList(@UserSession Long userId) {
 
         List<ItemListResponse> itemList = itemBusiness.getItemListBy(userId);
         return Api.ok(itemList);
     }
-
-    /*
-    스토어 매니저 조회용과
-    고객 조회용 추가할 것..
-     */
-
-
 }

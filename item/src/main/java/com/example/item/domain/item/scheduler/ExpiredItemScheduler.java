@@ -11,13 +11,13 @@ public class ExpiredItemScheduler {
 
   private final ItemBusiness itemBusiness;
 
-  @Scheduled(cron = "0 0 0 * * ?") // 매일 00시에 실행
+  @Scheduled(cron = "0 0 0 * * *")
   public void deleteItem30Day() {
     itemBusiness.deleteExpiredSoldItems();
 
   }
 
-  @Scheduled(cron = "0 0 0 * * ?") // 매일 00시에 실행
+  @Scheduled(cron = "0 0 * * * *") // 200
   public void deleteItemExpiredAtOver() {
     itemBusiness.deleteExpiredAtOver();
   }

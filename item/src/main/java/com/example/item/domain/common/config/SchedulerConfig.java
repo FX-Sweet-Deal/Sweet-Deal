@@ -1,4 +1,4 @@
-package com.example.item.domain.item.config;
+package com.example.item.domain.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
