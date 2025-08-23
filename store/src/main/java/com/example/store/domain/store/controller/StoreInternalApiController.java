@@ -22,8 +22,4 @@ public class StoreInternalApiController {
     return Api.ok(storeSimpleResponse);
   }
 
-
-
-
-
 }
