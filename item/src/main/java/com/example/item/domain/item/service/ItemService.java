@@ -21,6 +21,10 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    public void save(Item item) {
+        itemRepository.save(item);
+    }
+
     /*
     상품을 등록
      */
@@ -41,8 +45,9 @@ public class ItemService {
     /*
     상품을 삭제
      */
-    public void unregister(Item item) {
-        item.unregister();
+    public void unregister(Item item, Long quantity) {
+        long remainingQty = item.getQuantity() - quantity;
+        item.unregister(quantity);
         itemRepository.save(item);
     }
 
@@ -59,19 +64,6 @@ public class ItemService {
 
     }
 
-    /*
-    상품 판매
-     */
-//    public void saleItem(Item item, Long quantity) {
-//
-//        item.quantityDecrease(quantity);
-//
-//        item.changeStatus(ItemStatus.SOLD);
-//    }
-
-    /*
-    상품이 판매 가능한지 검증
-     */
     public void validateSaleable(Item item) {
         if(item.getStatus() != ItemStatus.SALE) { // 상품이 판매중인 상태가 아닐 때
             throw new IllegalArgumentException("판매중인 상품이 아닙니다.");
@@ -126,9 +118,9 @@ public class ItemService {
     }
 
     // storeId에 itemId가 존재하지 않을 때
-    public void notExistsByItemWithThrow(Long itemId, Long storeId) {
+    public void notExistsByItemWithThrow(Long itemId, List<Long> storesId) {
 
-        Boolean existByItem = itemRepository.existsByIdAndStoreIdAndStatusIn(itemId, storeId,
+        Boolean existByItem = itemRepository.existsByIdAndStoreIdInAndStatusIn(itemId, storesId,
             List.of(ItemStatus.SALE, ItemStatus.RESERVED));
 
         if(!existByItem) {
@@ -159,10 +151,10 @@ public class ItemService {
 
     // 해당 스토어에 상품 상태에 따라 상품 조회
     @Transactional(readOnly = true)
-    public List<Item> getItemListByStoreIdAndStatus(Long storeId, ItemStatus status) {
+    public List<Item> getItemListByStoresIdAndStatus(List<Long> storesId, ItemStatus status) {
 
         // 상품 리스트가 완전히 비어있을 때, 예외 발생
-        List<Item> itemList = itemRepository.findByStoreIdAndStatusOrderByIdDesc(storeId, status);
+        List<Item> itemList = itemRepository.findByStoreIdInAndStatusOrderByIdDesc(storesId, status);
         if(itemList.isEmpty()) {
             throw new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND);
         }
@@ -171,7 +163,6 @@ public class ItemService {
 
     public void update(ItemUpdateRequest request, Item targetItem) {
         targetItem.rename(request.getName());
-        targetItem.updateStatus(request.getStatus());
         targetItem.updateExpiredAt(request.getExpiredAt());
         targetItem.updatePrice(request.getPrice());
         targetItem.updateQuantity(request.getQuantity());
