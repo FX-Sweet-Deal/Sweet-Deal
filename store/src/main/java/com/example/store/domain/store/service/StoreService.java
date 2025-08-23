@@ -20,10 +20,6 @@ public class StoreService {
     storeRepository.save(store);
   }
 
-  public Optional<Store> getStoreByUserId(Long userId) {
-    return storeRepository.findFirstByUserIdAndStoreStatus(userId, StoreStatus.REGISTERED);
-  }
-
   public List<Store> getStoresByUserId(Long userId) {
     return storeRepository.findListByUserIdAndStoreStatus(userId, StoreStatus.REGISTERED);
   }
