@@ -1,9 +1,22 @@
 server:
   port: 0
 
+
 spring:
   application:
-    name: image  # ?? ? ??? service?? ??? ??
+    name: image # 이 서비스의 고유한 이름을 명시합니다.
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/image?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul  # `user`는 DB 이름입니다.
+    username: root
+    password: 1234
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 eureka:
   instance:
