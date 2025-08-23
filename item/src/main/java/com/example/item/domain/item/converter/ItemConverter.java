@@ -80,4 +80,17 @@ public class ItemConverter {
                 }
             ).toList()).build();
   }
+
+  public Item deleteRemainingStockItem(Item item, Long quantity) {
+    return Item.builder()
+        .name(item.getName())
+        .quantity(quantity)
+        .expiredAt(item.getExpiredAt())
+        .registeredAt(item.getRegisteredAt())
+        .status(item.getStatus())
+        .price(item.getPrice())
+        .storeId(item.getStoreId())
+        .orderId(item.getOrderId())
+        .build();
+  }
 }
