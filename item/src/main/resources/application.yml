@@ -7,8 +7,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/item
-    username: root
-    password: 1234
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -53,6 +53,12 @@ logging:
   level:
     root: INFO
     com.example: INFO
+
+springdoc:
+  api-docs:
+    path: /item/v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
 
 openapi:
   service:
