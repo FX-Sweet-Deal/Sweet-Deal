@@ -20,17 +20,14 @@ import lombok.NoArgsConstructor;
 public class ItemUpdateRequest {
 
   @NotNull
-  private Long id;
-
-  @NotNull
   @Pattern(
       regexp = "^[가-힣A-Za-z0-9]{1,100}$",
       message = "한글, 영문, 숫자 및 공백만 입력 가능합니다."
   )
   private String name;
 
-  @Enumerated(EnumType.STRING)
-  private ItemStatus status;
+//  @Enumerated(EnumType.STRING)
+//  private ItemStatus status;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
   @FutureOrPresent(message = "지정된 일시는 현재 또는 미래여야 합니다.")
