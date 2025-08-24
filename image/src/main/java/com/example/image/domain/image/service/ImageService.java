@@ -65,6 +65,7 @@ public class ImageService {
         return toResponse(e);
     }
 
+    /** 파일 교체 (물리 파일 바꾸고 URL/메타 갱신) */
     @Transactional
     public ImageResponse replaceFile(Long userId, Long imageId, MultipartFile newFile) {
         ImageEntity e = getAlive(imageId);
@@ -90,6 +91,26 @@ public class ImageService {
         requireManager(userId, e.getStoreId());
         e.softDelete();
         storage.deleteIfExists(e.getServerName()); // 물리 파일도 제거(원치 않으면 주석)
+    }
+
+    /** 단건 조회 */
+    @Transactional
+    public ImageResponse getById(Long id) {
+        return toResponse(getAlive(id));
+    }
+
+    /** 상품별 조회 */
+    @Transactional
+    public List<ImageResponse> getByItem(Long itemId) {
+        return imageRepository.findByItemIdAndDeletedFalse(itemId)
+            .stream().map(this::toResponse).toList();
+    }
+
+    /** 스토어별 조회 */
+    @Transactional
+    public List<ImageResponse> getByStore(Long storeId) {
+        return imageRepository.findByStoreIdAndDeletedFalse(storeId)
+            .stream().map(this::toResponse).toList();
     }
 
     // ===== Helpers =====
