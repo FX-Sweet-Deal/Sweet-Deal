@@ -82,6 +82,16 @@ public class ImageService {
 
         return toResponse(e);
     }
+
+    /** 삭제(소프트 삭제 + 물리파일 정리) */
+    @Transactional
+    public void delete(Long userId, Long imageId) {
+        ImageEntity e = getAlive(imageId);
+        requireManager(userId, e.getStoreId());
+        e.softDelete();
+        storage.deleteIfExists(e.getServerName()); // 물리 파일도 제거(원치 않으면 주석)
+    }
+
     // ===== Helpers =====
 
     private void requireManager(Long userId, Long storeId) {

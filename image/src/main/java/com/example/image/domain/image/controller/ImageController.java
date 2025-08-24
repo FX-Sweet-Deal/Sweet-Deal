@@ -66,5 +66,13 @@ public class ImageController {
         @RequestParam(required=false) Long itemId){
         return imageService.updateMeta(user.getId(), imageId, status, itemId);
     }
+
+    /** 삭제(소프트) */
+    @DeleteMapping("/{imageId}")
+    @Operation(summary = "[삭제]")
+    public void delete(@UserSession User user, @PathVariable Long imageId){
+        imageService.delete(user.getId(), imageId);
+    }
+
 }
 
