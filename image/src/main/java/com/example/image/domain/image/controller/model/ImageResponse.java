@@ -37,5 +37,6 @@ public class ImageResponse {
     private LocalDateTime registeredAt;
 
     private LocalDateTime updatedAt;
-
 }
+
+

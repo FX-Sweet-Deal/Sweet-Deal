@@ -46,3 +46,14 @@ openapi:
     # 예: user 모듈
     url: http://localhost:8080/image
     # 운영: https://api.example.com/user-service
+
+file:
+  upload-dir: /tmp/sweetdeal/uploads
+
+  public-base-url: http://localhost:8080/image
+  # 실제 기동 포트로 수정
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
