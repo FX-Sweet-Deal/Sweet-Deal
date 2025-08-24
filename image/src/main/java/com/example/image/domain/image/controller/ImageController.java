@@ -74,5 +74,23 @@ public class ImageController {
         imageService.delete(user.getId(), imageId);
     }
 
+    /** 조회 */
+    @GetMapping("/{imageId}")
+    @Operation(summary = "[imageId 조희]")
+    public ImageResponse getById(@PathVariable Long imageId){
+        return imageService.getById(imageId);
+    }
+
+    @GetMapping("/by-item/{itemId}")
+    @Operation(summary = "itemId 조회")
+    public List<ImageResponse> byItem(@PathVariable Long itemId){
+        return imageService.getByItem(itemId);
+    }
+
+    @GetMapping("/by-store/{storeId}")
+    @Operation(summary = "storeId 조희")
+    public List<ImageResponse> byStore(@PathVariable Long storeId){
+        return imageService.getByStore(storeId);
+    }
 }
 
