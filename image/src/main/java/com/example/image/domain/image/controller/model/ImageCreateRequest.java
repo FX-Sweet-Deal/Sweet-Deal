@@ -1,6 +1,8 @@
 package com.example.image.domain.image.controller.model;
 
 
+import com.example.image.domain.image.repository.enums.ImageStatus;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,24 +18,27 @@ import lombok.Setter;
 @Builder
 public class ImageCreateRequest {
 
-    @NotNull
-    private Long storeId;
+
+    @NotBlank
+    @Size(max = 200)
+    private String url;
+
+    @Size(max = 100)
+    private String originalName;
+
+    @Size(max = 100)
+    private String serverName;
+
+    @Size(max = 20)
+    private String extension;
 
     @NotNull
     private Long itemId;
 
     @NotNull
-    @Size(min = 1, max = 1024)
-    private String imageUrl;
+    private Long storeId;
 
-    @Size(max = 255)
-    private String originalName;
-
-    @Size(max = 255)
-    private String serverName;
-
-    @Size(max = 20)
-    private String extension;
+    private ImageStatus status;
 
 
 }

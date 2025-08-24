@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ImageStatus {
 
-    ACTIVE("노출"),     // 노출 중
-    INACTIVE("비노출(숨김)"),   // 비노출 (숨김)
+    REGISTERED("노출"),     // 노출 중
+    UNREGISTERED("비노출(숨김)"),   // 비노출 (숨김)
     DELETED("삭제") ,   // 삭제 처리됨 (소프트 삭제 시 함께 사용)
     ;
 

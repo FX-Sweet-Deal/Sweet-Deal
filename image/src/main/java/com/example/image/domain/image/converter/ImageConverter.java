@@ -7,62 +7,53 @@ import com.example.image.domain.image.controller.model.ImageUpdateRequest;
 import com.example.image.domain.image.repository.ImageEntity;
 import com.example.image.domain.image.repository.enums.ImageStatus;
 import jakarta.persistence.Converter;
+import org.springframework.stereotype.Component;
 
-@Converter
+@Component
 public class ImageConverter {
 
 
-    public ImageEntity toEntity(ImageCreateRequest req, Long currentUserId){
+    public static ImageEntity toEntity(ImageCreateRequest req, Long userId) {
         return ImageEntity.builder()
-            .imageUrl(req.getImageUrl())
+            .url(req.getUrl())
             .originalName(req.getOriginalName())
             .serverName(req.getServerName())
             .extension(req.getExtension())
-            .status(ImageStatus.ACTIVE)
+            .status(req.getStatus())
             .itemId(req.getItemId())
             .storeId(req.getStoreId())
-            .userId(currentUserId)
+            .userId(userId)
             .deleted(false)
             .build();
     }
 
-    public void applyUpdate(ImageEntity e, ImageUpdateRequest req) {
-        if (req.getImageUrl() != null){
-            e.setImageUrl(req.getImageUrl());
-        }
-
-        if (req.getOriginalName() != null) {
+    public static void applyUpdate(ImageEntity e, ImageUpdateRequest req) {
+        if (req.getUrl() != null)
+            e.setUrl(req.getUrl());
+        if (req.getOriginalName() != null)
             e.setOriginalName(req.getOriginalName());
-        }
-
-        if (req.getServerName() != null) {
+        if (req.getServerName() != null)
             e.setServerName(req.getServerName());
-        }
-
-        if (req.getExtension() != null){
+        if (req.getExtension() != null)
             e.setExtension(req.getExtension());
-        }
-
-        if (req.getStoreId() != null) {
+        if (req.getStatus() != null)
             e.setStatus(req.getStatus());
-        }
     }
 
-    public ImageResponse toResponse(ImageEntity e) {
+    public static ImageResponse toResponse(ImageEntity e) {
         return ImageResponse.builder()
             .id(e.getId())
-            .imageUrl(e.getImageUrl())
+            .url(e.getUrl())
             .originalName(e.getOriginalName())
             .serverName(e.getServerName())
             .extension(e.getExtension())
+            .status(e.getStatus())
             .itemId(e.getItemId())
-            .storeId(e.getItemId())
+            .storeId(e.getStoreId())
             .userId(e.getUserId())
             .deleted(e.isDeleted())
-            .status(e.getStatus())
             .registeredAt(e.getRegisteredAt())
             .updatedAt(e.getUpdatedAt())
             .build();
     }
-    
 }
