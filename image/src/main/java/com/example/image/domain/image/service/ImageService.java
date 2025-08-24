@@ -51,6 +51,20 @@ public class ImageService {
 
         return toResponse(imageRepository.save(entity));
     }
+
+    /** 메타데이터만 수정 (status, itemId 등) */
+    @Transactional
+    public ImageResponse updateMeta(Long userId, Long imageId,
+        @Nullable String status, @Nullable Long itemId) {
+        ImageEntity e = getAlive(imageId);
+        requireManager(userId, e.getStoreId());
+
+        if (status != null) e.setStatus(ImageStatus.valueOf(status));
+        if (itemId != null)  e.setItemId(itemId);
+
+        return toResponse(e);
+    }
+
     // ===== Helpers =====
 
     private void requireManager(Long userId, Long storeId) {

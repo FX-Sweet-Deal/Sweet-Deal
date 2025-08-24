@@ -47,5 +47,14 @@ public class ImageController {
     ) {
         return imageService.upload(user.getId(), itemId, storeId, file);
     }
+    /** 메타데이터 수정(status, itemId 등 일부만) */
+    @PatchMapping("/{imageId}")
+    @Operation(summary = "[데이터 수정]")
+    public ImageResponse updateMeta(@UserSession User user,
+        @PathVariable Long imageId,
+        @RequestParam(required=false) String status,
+        @RequestParam(required=false) Long itemId){
+        return imageService.updateMeta(user.getId(), imageId, status, itemId);
+    }
 }
 
