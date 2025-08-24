@@ -47,6 +47,16 @@ public class ImageController {
     ) {
         return imageService.upload(user.getId(), itemId, storeId, file);
     }
+
+    /** 파일 교체 */
+    @PutMapping(value="/{imageId}/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "[파일 교체]")
+    public ImageResponse replace(@UserSession User user,
+        @PathVariable Long imageId,
+        @RequestPart("file") MultipartFile file){
+        return imageService.replaceFile(user.getId(), imageId, file);
+    }
+
     /** 메타데이터 수정(status, itemId 등 일부만) */
     @PatchMapping("/{imageId}")
     @Operation(summary = "[데이터 수정]")
