@@ -17,14 +17,17 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+@Getter
+@Setter
 @Builder
-@Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "image")
 public class ImageEntity {
 
@@ -32,13 +35,16 @@ public class ImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 1024)
-    private String imageUrl;
-
-    private String originalName;
-
+    @Column(length = 100)
     private String serverName;
 
+    @Column(length = 100)
+    private String originalName;
+
+    @Column(nullable = false, length = 200)
+    private String url;
+
+    @Column(length = 20)
     private String extension;
 
     @Enumerated(EnumType.STRING)
@@ -46,36 +52,40 @@ public class ImageEntity {
     private ImageStatus status;
 
     @Column(nullable = false)
-    private Long itemId;   // 상품 FK
+    private Long itemId;
 
     @Column(nullable = false)
-    private Long storeId;  // 권한 체크용
+    private Long storeId;
 
     @Column(nullable = false)
-    private Long userId;   // 등록자 (스토어 매니저)
+    private Long userId;
 
     @Column(nullable = false)
     private boolean deleted;
 
+    @Column
     private LocalDateTime registeredAt;
 
+    @Column
     private LocalDateTime updatedAt;
 
     @PrePersist
     void onCreate() {
         LocalDateTime now = LocalDateTime.now();
-        this.registeredAt = now;
-        this.updatedAt = now;
-        if (this.status == null) this.status = ImageStatus.ACTIVE;
+        registeredAt = now;
+        updatedAt = now;
+        if(status == null) status =ImageStatus.REGISTERED;
+        if(!deleted) deleted = false;
     }
 
     @PreUpdate
     void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     public void softDelete() {
         this.deleted = true;
         this.status = ImageStatus.DELETED;
+
     }
 }
