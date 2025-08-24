@@ -6,9 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
 
+    boolean existsByIdAndUserId(Long storeId, Long userId);
+
     Optional<ImageEntity> findByIdAndDeletedFalse(Long id);
 
     List<ImageEntity> findByItemIdAndDeletedFalse(Long itemId);
 
     List<ImageEntity> findByStoreIdAndDeletedFalse(Long storeId);
+
 }
+
+
