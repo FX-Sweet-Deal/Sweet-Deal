@@ -65,6 +65,23 @@ public class ImageService {
         return toResponse(e);
     }
 
+    @Transactional
+    public ImageResponse replaceFile(Long userId, Long imageId, MultipartFile newFile) {
+        ImageEntity e = getAlive(imageId);
+        requireManager(userId, e.getStoreId());
+        validateImage(newFile);
+
+        // 기존 파일 삭제 → 새 파일 저장
+        storage.deleteIfExists(e.getServerName());
+        var saved = saveFile(newFile);
+
+        e.setServerName(saved.serverName());
+        e.setOriginalName(saved.originalName());
+        e.setExtension(saved.extension());
+        e.setUrl(publicUrl(saved.serverName()));
+
+        return toResponse(e);
+    }
     // ===== Helpers =====
 
     private void requireManager(Long userId, Long storeId) {
