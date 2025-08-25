@@ -1,15 +1,15 @@
 server:
   port: 0
 
-
 spring:
   application:
-    name: image # 이 서비스의 고유한 이름을 명시합니다.
+    name: image
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/image?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul  # `user`는 DB 이름입니다.
-    username: root
-    password: 1234
+    url: jdbc:mysql://localhost:3306/image
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
   data:
     redis:
       host: localhost
@@ -39,8 +39,6 @@ management:
   server:
     port: 0
 
-
-
 openapi:
   service:
     # 예: user 모듈
@@ -52,7 +50,6 @@ file:
 
   public-base-url: http://localhost:8080/image
   # 실제 기동 포트로 수정
-
   servlet:
     multipart:
       max-file-size: 10MB
