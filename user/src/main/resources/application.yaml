@@ -3,12 +3,13 @@ server:
 
 spring:
   application:
-    name: user # 이 서비스의 고유한 이름을 명시합니다.
+    name: user
   datasource:
+    url: jdbc:mysql://localhost:3306/user
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/user?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul  # `user`는 DB 이름입니다.
-    username: root
-    password: 1234
+
   data:
     redis:
       host: localhost
@@ -16,8 +17,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
-
 
 eureka:
   instance:
@@ -45,22 +44,11 @@ token:
   secret:
     key: SpringBootJWTHeplerTokenSecretKeyValue123!@#
 
-
   access-token:
     plus-hour: 1
   refresh-token:
     plus-hour: 12
 
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-
-# 이 서비스가 Gateway로 보일 public 경로 (모듈별로 다르게!)
 openapi:
   service:
-    # 예: user 모듈
     url: http://localhost:8080/user
-    # 운영: https://api.example.com/user-service
