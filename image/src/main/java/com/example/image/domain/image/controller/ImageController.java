@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,8 @@ public class ImageController {
 
     private final ImageService imageService;
 
+    private final ImageBusiness imageBusiness;
+
     @PostMapping(
         value = "/upload",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE
@@ -45,52 +48,56 @@ public class ImageController {
         @RequestParam("itemId") Long itemId,                // 텍스트 필드는 RequestParam 권장
         @RequestParam("storeId") Long storeId
     ) {
-        return imageService.upload(user.getId(), itemId, storeId, file);
+        return imageBusiness.upload(user.getId(), itemId, storeId, file);
     }
 
     /** 파일 교체 */
     @PutMapping(value="/{imageId}/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "[파일 교체]")
-    public ImageResponse replace(@UserSession User user,
+    public ImageResponse replace(
+        @Parameter(hidden = true) @UserSession User user,
         @PathVariable Long imageId,
         @RequestPart("file") MultipartFile file){
-        return imageService.replaceFile(user.getId(), imageId, file);
+        return imageBusiness.replaceFile(user.getId(), imageId, file);
     }
 
     /** 메타데이터 수정(status, itemId 등 일부만) */
     @PatchMapping("/{imageId}")
     @Operation(summary = "[데이터 수정]")
-    public ImageResponse updateMeta(@UserSession User user,
+    public ImageResponse updateMeta(
+        @Parameter(hidden = true) @UserSession User user,
         @PathVariable Long imageId,
         @RequestParam(required=false) String status,
         @RequestParam(required=false) Long itemId){
-        return imageService.updateMeta(user.getId(), imageId, status, itemId);
+        return imageBusiness.updateMeta(user.getId(), imageId, status, itemId);
     }
 
     /** 삭제(소프트) */
     @DeleteMapping("/{imageId}")
     @Operation(summary = "[삭제]")
-    public void delete(@UserSession User user, @PathVariable Long imageId){
-        imageService.delete(user.getId(), imageId);
+    public void delete(
+        @Parameter(hidden = true) @UserSession User user,
+        @PathVariable Long imageId){
+        imageBusiness.delete(user.getId(), imageId);
     }
 
     /** 조회 */
     @GetMapping("/{imageId}")
     @Operation(summary = "[imageId 조희]")
     public ImageResponse getById(@PathVariable Long imageId){
-        return imageService.getById(imageId);
+        return imageBusiness.getById(imageId);
     }
 
     @GetMapping("/by-item/{itemId}")
     @Operation(summary = "itemId 조회")
     public List<ImageResponse> byItem(@PathVariable Long itemId){
-        return imageService.getByItem(itemId);
+        return imageBusiness.getByItem(itemId);
     }
 
     @GetMapping("/by-store/{storeId}")
     @Operation(summary = "storeId 조희")
     public List<ImageResponse> byStore(@PathVariable Long storeId){
-        return imageService.getByStore(storeId);
+        return imageBusiness.getByStore(storeId);
     }
 }
 
