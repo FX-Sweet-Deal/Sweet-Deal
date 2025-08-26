@@ -121,6 +121,11 @@ spring:
             - StripPrefix=1
             - ServiceApiPrivateFilter
 
+        - id: image-static
+          order: -10
+          uri: lb://image
+          predicates:
+            - Path=/image/upload/**
 
         # ============ account (토큰 검증 호출 대상) ============
         - id: account

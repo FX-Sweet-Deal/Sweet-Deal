@@ -33,8 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/images")
 public class ImageController {
 
-    private final ImageService imageService;
-
     private final ImageBusiness imageBusiness;
 
     @PostMapping(
