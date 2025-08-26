@@ -3,6 +3,7 @@ package com.example.image.common.config.web;
 import com.example.global.interceptor.AuthorizationInterceptor;
 import com.example.global.resolver.UserSessionResolver;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,19 +15,25 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
+@Slf4j
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-
-
     @Value("${file.upload-dir}")
-    String uploadDir;
+    private String uploadDir;
+
+    @Value("${file.public-path}")
+    private String publicPath;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String loc = "file:" + (uploadDir.endsWith("/")? uploadDir : uploadDir + "/");
-        registry.addResourceHandler("/uploads/**").addResourceLocations(loc).setCachePeriod(3600);
+        // 예: /image/upload/**
+        String location = "file:///Users/macbookair/Desktop/대학/f(x) 동아리/temp-sweet-deal/aa/무제/Sweet-Deal/image/src/resources/static/uploads/";
+
+        registry.addResourceHandler("/image/upload/**")
+            .addResourceLocations(location);
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,7 +45,8 @@ public class WebConfig implements WebMvcConfigurer {
         return new AuthorizationInterceptor();
     }
     private List<String> OPEN_API = List.of(
-        "/open-api/**"
+        "/open-api/**",
+        "/upload/**"
     );
 
     private List<String> DEFAULT_EXCLUDE = List.of(

@@ -7,6 +7,7 @@ import com.example.image.domain.image.repository.ImageEntity;
 import com.example.image.domain.image.repository.ImageRepository;
 import com.example.image.domain.image.repository.enums.ImageStatus;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +33,9 @@ public class ImageService {
     @Value("${file.public-base-url}")
     private String publicBaseUrl;
 
+    @Value("${file.public-path}")
+    private String publicPath;
+
     /** 업로드 (form-data: file, itemId, storeId) */
     @Transactional
     public ImageEntity upload(Long userId, Long itemId, Long storeId, MultipartFile file) {
@@ -44,6 +48,8 @@ public class ImageService {
         // 저장 (서버 파일명/확장자/원본명)
         var saved = saveFile(file);
         String url = publicUrl(saved.serverName());
+
+
 
         // 엔티티 저장
         ImageEntity entity = ImageEntity.builder()
@@ -118,6 +124,8 @@ public class ImageService {
         return imageRepository.findByItemIdAndDeletedFalse(itemId);
     }
 
+
+
     /** 스토어별 조회 */
     @Transactional
     public List<ImageEntity> getByStore(Long storeId) {
@@ -141,18 +149,25 @@ public class ImageService {
 
     private LocalFileStorage.SavedFile saveFile(MultipartFile file) {
         try {
-            // 저장소 구현체에서 파일명/확장자 처리 (UUID 등)
-            return storage.save(file);
+            var saved = storage.save(file);
+            log.info("📂 File saved - serverName={}, originalName={}, extension={}",
+                saved.serverName(), saved.originalName(), saved.extension());
+            return saved;
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패", e);
         }
     }
 
     private String publicUrl(String serverName) {
-        String base = publicBaseUrl.endsWith("/") ? publicBaseUrl.substring(0, publicBaseUrl.length() - 1) : publicBaseUrl;
-        return base + "/uploads/" + serverName;
-    }
+        String base = publicBaseUrl.endsWith("/") ?
+            publicBaseUrl.substring(0, publicBaseUrl.length() - 1) : publicBaseUrl;
+        String path = publicPath.startsWith("/") ? publicPath : "/" + publicPath;
 
+        String fullUrl = base + path + serverName;
+        log.info("🌐 Generated public URL = {}", fullUrl);
+
+        return fullUrl;
+    }
     private ImageEntity getAlive(Long id) {
         return imageRepository.findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new IllegalArgumentException("이미지를 찾을 수 없습니다."));

@@ -14,9 +14,15 @@ spring:
     redis:
       host: localhost
       port: 6379
+
   jpa:
     hibernate:
       ddl-auto: update
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 eureka:
   instance:
@@ -46,11 +52,7 @@ openapi:
     # 운영: https://api.example.com/user-service
 
 file:
-  upload-dir: /tmp/sweetdeal/uploads
-
-  public-base-url: http://localhost:8080/image
-  # 실제 기동 포트로 수정
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+  upload-dir: /Users/macbookair/Desktop/대학/f(x) 동아리/temp-sweet-deal/aa/무제/Sweet-Deal/image/src/resources/static/uploads/
+  # 실제 저장 폴더
+  public-path: /image/upload/
+  public-base-url: http://localhost:8080
