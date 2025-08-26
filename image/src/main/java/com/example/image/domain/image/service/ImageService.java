@@ -2,6 +2,7 @@ package com.example.image.domain.image.service;
 
 import com.example.image.domain.image.LocalFileStorage;
 import com.example.image.domain.image.controller.model.ImageResponse;
+import com.example.image.domain.image.converter.ImageConverter;
 import com.example.image.domain.image.repository.ImageEntity;
 import com.example.image.domain.image.repository.ImageRepository;
 import com.example.image.domain.image.repository.enums.ImageStatus;
@@ -9,12 +10,14 @@ import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImageService {
@@ -23,12 +26,18 @@ public class ImageService {
     private final StoreOwnershipPort ownershipPort;
     private final LocalFileStorage storage;
 
+    private final ImageConverter imageConverter;
+
+
     @Value("${file.public-base-url}")
     private String publicBaseUrl;
 
     /** 업로드 (form-data: file, itemId, storeId) */
     @Transactional
-    public ImageResponse upload(Long userId, Long itemId, Long storeId, MultipartFile file) {
+    public ImageEntity upload(Long userId, Long itemId, Long storeId, MultipartFile file) {
+
+
+        log.info("itemId {}, storeId {}", itemId, storeId);
         requireManager(userId, storeId);
         validateImage(file);
 
@@ -49,68 +58,70 @@ public class ImageService {
             .deleted(false)
             .build();
 
-        return toResponse(imageRepository.save(entity));
+        return imageRepository.save(entity);
     }
 
     /** 메타데이터만 수정 (status, itemId 등) */
     @Transactional
-    public ImageResponse updateMeta(Long userId, Long imageId,
-        @Nullable String status, @Nullable Long itemId) {
-        ImageEntity e = getAlive(imageId);
-        requireManager(userId, e.getStoreId());
+    public ImageEntity updateMeta(
+        Long userId,
+        Long imageId,
+        @Nullable String status,
+        @Nullable Long itemId) {
+        ImageEntity imageEntity = getAlive(imageId);
+        requireManager(userId, imageEntity.getStoreId());
 
-        if (status != null) e.setStatus(ImageStatus.valueOf(status));
-        if (itemId != null)  e.setItemId(itemId);
+        if (status != null) imageEntity.setStatus(ImageStatus.valueOf(status));
+        if (itemId != null)  imageEntity.setItemId(itemId);
 
-        return toResponse(e);
+        return imageEntity;
     }
 
     /** 파일 교체 (물리 파일 바꾸고 URL/메타 갱신) */
     @Transactional
-    public ImageResponse replaceFile(Long userId, Long imageId, MultipartFile newFile) {
-        ImageEntity e = getAlive(imageId);
-        requireManager(userId, e.getStoreId());
+    public ImageEntity replaceFile(Long userId, Long imageId, MultipartFile newFile) {
+        ImageEntity imageEntity = getAlive(imageId);
+        requireManager(userId, imageEntity.getStoreId());
         validateImage(newFile);
 
         // 기존 파일 삭제 → 새 파일 저장
-        storage.deleteIfExists(e.getServerName());
+        storage.deleteIfExists(imageEntity.getServerName());
         var saved = saveFile(newFile);
 
-        e.setServerName(saved.serverName());
-        e.setOriginalName(saved.originalName());
-        e.setExtension(saved.extension());
-        e.setUrl(publicUrl(saved.serverName()));
+        imageEntity.setServerName(saved.serverName());
+        imageEntity.setOriginalName(saved.originalName());
+        imageEntity.setExtension(saved.extension());
+        imageEntity.setUrl(publicUrl(saved.serverName()));
 
-        return toResponse(e);
+        return imageEntity;
     }
+
 
     /** 삭제(소프트 삭제 + 물리파일 정리) */
     @Transactional
     public void delete(Long userId, Long imageId) {
-        ImageEntity e = getAlive(imageId);
-        requireManager(userId, e.getStoreId());
-        e.softDelete();
-        storage.deleteIfExists(e.getServerName()); // 물리 파일도 제거(원치 않으면 주석)
+        ImageEntity imageEntity = getAlive(imageId);
+        requireManager(userId, imageEntity.getStoreId());
+        imageEntity.softDelete();
+        storage.deleteIfExists(imageEntity.getServerName()); // 물리 파일도 제거(원치 않으면 주석)
     }
 
     /** 단건 조회 */
     @Transactional
-    public ImageResponse getById(Long id) {
-        return toResponse(getAlive(id));
+    public ImageEntity getById(Long id) {
+        return getAlive(id);
     }
 
     /** 상품별 조회 */
     @Transactional
-    public List<ImageResponse> getByItem(Long itemId) {
-        return imageRepository.findByItemIdAndDeletedFalse(itemId)
-            .stream().map(this::toResponse).toList();
+    public List<ImageEntity> getByItem(Long itemId) {
+        return imageRepository.findByItemIdAndDeletedFalse(itemId);
     }
 
     /** 스토어별 조회 */
     @Transactional
-    public List<ImageResponse> getByStore(Long storeId) {
-        return imageRepository.findByStoreIdAndDeletedFalse(storeId)
-            .stream().map(this::toResponse).toList();
+    public List<ImageEntity> getByStore(Long storeId) {
+        return imageRepository.findByStoreIdAndDeletedFalse(storeId);
     }
 
     // ===== Helpers =====
@@ -147,11 +158,4 @@ public class ImageService {
             .orElseThrow(() -> new IllegalArgumentException("이미지를 찾을 수 없습니다."));
     }
 
-    private ImageResponse toResponse(ImageEntity e) {
-        return new ImageResponse(
-            e.getId(), e.getUrl(), e.getOriginalName(), e.getServerName(), e.getExtension(),
-            e.getStatus(), e.getItemId(), e.getStoreId(), e.getUserId(),
-            e.isDeleted(), e.getRegisteredAt(), e.getUpdatedAt()
-        );
-    }
 }

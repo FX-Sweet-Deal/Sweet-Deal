@@ -15,17 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ImageUpdateRequest {
 
-    @Size(max = 200)
-    private String url;
+    private Long itemId;
 
-    @Size(max = 100)
-    private String originalName;
+    private Long storeId;
 
-    @Size(max = 100)
-    private String serverName;
-
-    @Size(max = 20)
-    private String extension;
-
-    private ImageStatus status;
 }
