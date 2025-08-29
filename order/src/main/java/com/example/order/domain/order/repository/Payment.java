@@ -4,6 +4,7 @@ import com.example.order.domain.order.repository.enums.PaymentMethod;
 import com.example.order.domain.order.repository.enums.PaymentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,10 +28,10 @@ public class Payment {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long paymentId;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   private PaymentStatus paymentStatus;
 
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   private PaymentMethod paymentMethod; // 결제 방식
 
   @Column(name = "payment_at")
