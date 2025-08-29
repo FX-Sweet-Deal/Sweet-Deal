@@ -1,7 +1,10 @@
 package com.example.item.domain.item.repository;
 
 import com.example.item.domain.item.repository.enums.ItemStatus;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -31,5 +34,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Optional<Item> findByIdAndStatusIn(Long itemId, List<ItemStatus> statuses);
 
     Optional<Item> findFirstByIdAndStatusNotOrderByIdDesc(Long id, ItemStatus status);
+
+    Optional<Item> findByNameAndQuantityAndStatus(String name, Long quantity, ItemStatus status);
+
+    // 비관적 락 모드 (해당 레코드를 다른 트랜잭션에서 읽거나 수정할 때까지 차단)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT i FROM Item i WHERE i.id = :itemId")
+    Optional<Item> findByIdPessimisticLock(Long itemId);
 }
 
