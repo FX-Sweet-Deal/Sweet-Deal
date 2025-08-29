@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: item  # ?? ? ??? service?? ??? ??
+    name: item
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/item
@@ -52,12 +52,6 @@ logging:
   level:
     root: INFO
     com.example: INFO
-
-springdoc:
-  api-docs:
-    path: /item/v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
 
 openapi:
   service:
