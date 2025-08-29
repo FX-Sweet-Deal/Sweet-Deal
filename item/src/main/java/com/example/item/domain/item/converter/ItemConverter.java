@@ -8,6 +8,7 @@ import com.example.item.domain.item.controller.model.response.ItemListResponse;
 import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
 import com.example.item.domain.item.controller.model.response.ItemRegisterResponse;
 import com.example.item.domain.item.repository.Item;
+import com.example.item.domain.item.repository.enums.ItemStatus;
 import java.util.List;
 
 @Converter
@@ -93,4 +94,18 @@ public class ItemConverter {
         .orderId(item.getOrderId())
         .build();
   }
+
+  public Item orderRemainingStockItem(Item item, Long quantity) {
+    return Item.builder()
+        .name(item.getName())
+        .quantity(quantity)
+        .expiredAt(item.getExpiredAt())
+        .registeredAt(item.getRegisteredAt())
+        .status(ItemStatus.SOLD)
+        .price(item.getPrice())
+        .storeId(item.getStoreId())
+        .orderId(item.getOrderId())
+        .build();
+  }
+
 }

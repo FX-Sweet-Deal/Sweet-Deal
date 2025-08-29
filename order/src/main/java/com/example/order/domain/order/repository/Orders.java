@@ -69,10 +69,8 @@ public class Orders {
     this.status = OrderStatus.COMPLETED;
   }
 
-  public Long calculateTotalPrice() {
-    return orderItems.stream().mapToLong(orderItem -> {
-      return orderItem.getPrice() * orderItem.getQuantity();
-    }).sum();
+  public void calculateTotalPrice() {
+    this.totalPrice = orderItems.stream().mapToLong(OrderItem::getTotalPrice).sum();
   }
 
   public boolean isPaymentSuccess() {
@@ -99,7 +97,7 @@ public class Orders {
   }
 
   public void initPaymentMethod(PaymentMethod paymentMethod) {
-    this.payment = Payment.createPayment(paymentMethod, calculateTotalPrice(), this);
+    this.payment = Payment.createPayment(paymentMethod, this.totalPrice, this);
 
   }
 

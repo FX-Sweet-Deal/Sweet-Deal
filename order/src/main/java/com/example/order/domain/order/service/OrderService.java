@@ -41,8 +41,8 @@ public class OrderService {
     orders.addOrderItems(orderItem);
   }
 
-  public void calculateTotalPrice(Orders orders) {
-    orders.calculateTotalPrice();
+  public void calculateTotalPrice(Orders order) {
+    order.calculateTotalPrice();
   }
 
   // 주문 취소
@@ -51,9 +51,9 @@ public class OrderService {
       throw new IllegalArgumentException("이미 취소가 된 상품입니다.");
     }
 
-    if(orders.getStatus() == OrderStatus.COMPLETED) {
-      throw new IllegalArgumentException("이미 완료된 주문은 취소할 수 없습니다.");
-    }
+//    if(orders.getStatus() == OrderStatus.COMPLETED) {
+//      throw new IllegalArgumentException("이미 완료된 주문은 취소할 수 없습니다.");
+//    }
 
     orders.cancel();
     orderRepository.save(orders);
@@ -116,12 +116,16 @@ public class OrderService {
 
   // 해당 스토어의 주문 목록 조회
   @Transactional(readOnly = true)
-  public List<Orders> getOrderListByStoreId(Long storeId) {
-    List<Orders> ordersList = orderRepository.findByStoreId(storeId);
-    if(ordersList.isEmpty()) {
+  public List<Orders> getOrderListByStoresId(List<Long> storesId) {
+    List<Orders> orders = orderRepository.findByStoreIdIn(storesId);
+    if(orders.isEmpty()) {
         throw new InvalidOrderException(OrderErrorCode.ORDER_NOT_FOUND);
     }
-    return ordersList;
+    return orders;
   }
 
+  public Orders getOrderByIdPessimisticLock(Long orderId) {
+    return orderRepository.findByIdPessimisticLock(orderId)
+        .orElseThrow(() -> new IllegalArgumentException("ORDER_NOT_FOUND"));
+  }
 }

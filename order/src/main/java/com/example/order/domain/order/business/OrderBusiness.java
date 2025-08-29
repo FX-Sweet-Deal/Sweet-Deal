@@ -37,10 +37,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.transaction.annotation.Transactional;
 
 @Business
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = false)
 public class OrderBusiness {
 
   private final OrderService orderService;
@@ -52,9 +58,10 @@ public class OrderBusiness {
 
   public OrderRegisterResponse order(OrderRegisterRequest orderRegisterRequest,
        Long userId) { // 임시 userId
+    Long fakeUserId = 2L;
     Orders order = Orders.builder()
         .storeId(orderRegisterRequest.getStoreId())
-        .userId(userId) // 임시
+        .userId(fakeUserId) // 임시
         .totalPrice(0L)
         .build();
     orderService.order(order);
@@ -66,6 +73,8 @@ public class OrderBusiness {
     if (!isValid) {
       throw new InvalidOrderException(OrderErrorCode.INVALID_ORDER_REQUEST);
     }
+
+    log.info("{}", order.getTotalPrice());
 
     orderService.initPaymentMethod(order, orderRegisterRequest.getPaymentMethod());
     OrderRegisterResponse registerResponse = orderConverter.toRegisterResponse(order);
@@ -113,13 +122,13 @@ public class OrderBusiness {
           .get();
 
       OrderItem orderItem = OrderItem.builder()
-          .quantity(info.getQuantity())
+          .quantity(orderItemRequest.getQuantity())
           .price(info.getPrice())
-          .totalPrice(info.getPrice() * info.getQuantity())
+          .totalPrice(info.getPrice() * orderItemRequest.getQuantity())
           .itemId(info.getId())
           .build();
 
-      log.info("{}", orderItem.toString()); // 통신 성공!
+      log.info("{}", orderItem.toString()); // 모듈 간 통신 성공!
 
       orderService.addOrderItem(order, orderItem);
       orderService.calculateTotalPrice(order);
@@ -129,15 +138,18 @@ public class OrderBusiness {
     return true;
   }
 
-  public MessageResponse completePayment(Long orderId, PaymentRequest paymentRequest, Long userId) { // 임시 userId
+  public MessageResponse completePayment(Long orderId, PaymentRequest paymentRequest, Long fakeUserId) { // 임시 userId
     Orders order = orderService.getOrderByOrderIdAndStatus(orderId,
         OrderStatus.PENDING_PAYMENT); // 결제 대기중인 주문 조회
 
+    Long userId = 2L;
+
     // 결제 성공(가정)
     orderService.completePayment(order, paymentRequest.isSuccess());
+    log.info("{}", order.getUserId());
 
     // 유저 유효성 검사
-    if (order.getId() != userId) {
+    if (order.getUserId() != userId) {
       throw new IllegalArgumentException("USER_NOT_EQUAL");
     }
 
@@ -184,11 +196,14 @@ public class OrderBusiness {
   }
 
   // 유저가 주문을 취소
-  public MessageResponse cancelOrder(Long orderId, Long userId) {
+  public MessageResponse cancelOrder(Long orderId, Long fakeUserId) {
     Orders order = orderService.getOrderByOrderId(orderId);
+    log.info("orderId: {}, userId: {}", order.getId(), order.getUserId());
+
+    Long userId = 2L;
 
     // 유저 유효성 검사
-    if(order.getId() != userId) {
+    if(order.getUserId() != userId) {
       throw new IllegalArgumentException("USER_NOT_EQUAL");
     }
 
@@ -212,7 +227,7 @@ public class OrderBusiness {
       Orders order = orderService.getOrderByOrderId(orderId);
 
       // 유저 유효성 검사
-      if (order.getId() != userId) {
+      if (order.getUserId() != userId) {
         throw new IllegalArgumentException("USER_NOT_EQUAL");
       }
       orderService.cancel(order);
@@ -226,6 +241,7 @@ public class OrderBusiness {
   }
 
   // 유저의 주문 리스트
+  @Transactional(readOnly = true)
   public List<OrderResponse> getOrder(Long userId){
     List<Orders> ordersList = orderService.getOrderListByUserId(userId);
     return getOrderResponses(ordersList);
@@ -235,9 +251,8 @@ public class OrderBusiness {
   // 스토어 점주가 조회하는 주문 리스트
   public List<OrderResponse> getStoreOrder(Long userId) {
     try {
-      Api<StoreSimpleResponse> storeSimpleResponseApi = storeFeignClient.getStore(userId);
-      StoreSimpleResponse response = storeSimpleResponseApi.result();
-      List<Orders> orders = orderService.getOrderListByStoreId(response.getStoreId());
+      StoreSimpleResponse response = storeFeignClient.getStore(userId).result();
+      List<Orders> orders = orderService.getOrderListByStoresId(response.getStoresId());
       return getOrderResponses(orders);
     }
     catch (FeignException e) {
@@ -247,6 +262,7 @@ public class OrderBusiness {
   }
 
   // 유저의 주문 리스트
+
   private List<OrderResponse> getOrderResponses(List<Orders> ordersList) {
 
     return ordersList.stream().map(orders ->
@@ -266,7 +282,30 @@ public class OrderBusiness {
           .build();
     })
         .toList();
+  }
 
+
+  @KafkaListener(topics = "orders.cancel", groupId = "orders-service-group")
+  public void handlerCancelOrder(@Payload MessageUpdateRequest messageUpdateRequest,
+      @Header(KafkaHeaders.RECEIVED_PARTITION) int partiton,
+      @Header(KafkaHeaders.OFFSET) long offset) {
+
+    try {
+
+      log.info("Received item: {}, partition: {}, offset: {}",
+          messageUpdateRequest.getOrderId(),
+          partiton, offset);
+
+      Long orderId = messageUpdateRequest.getOrderId();
+
+      Orders cancelOrder = orderService.getOrderByIdPessimisticLock(orderId);
+      orderService.cancel(cancelOrder);
+
+    } catch (Exception e) {
+        log.error("Error processing item: {}", messageUpdateRequest.getOrderId(), e);
+        throw e;
+
+    }
   }
 
 }

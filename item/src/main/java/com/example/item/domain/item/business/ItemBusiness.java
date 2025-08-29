@@ -2,9 +2,10 @@ package com.example.item.domain.item.business;
 
 import com.example.global.anntation.Business;
 import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
+import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
 import com.example.item.domain.item.controller.model.response.StoreSimpleResponse;
 import com.example.item.domain.item.converter.MessageConverter;
-import com.example.item.domain.common.response.MessageResponse;
+import com.example.item.domain.item.controller.model.response.MessageResponse;
 import com.example.item.domain.item.controller.model.request.ItemInternalRequest;
 import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
 import com.example.item.domain.item.controller.model.response.ItemInternalResponse;
@@ -23,9 +24,15 @@ import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.transaction.annotation.Transactional;
 
 @Business
 @Slf4j
+@Transactional(readOnly = false)
 @RequiredArgsConstructor
 public class ItemBusiness {
 
@@ -38,7 +45,12 @@ public class ItemBusiness {
     public ItemRegisterResponse register(ItemRegisterRequest req, Long fakeUserId) {
 
         try {
-            Long userId = 0L;
+
+//            if (user.getRole() != UserRole.STORE) {
+//                throw new IllegalArgumentException("NOT_STORE_MANAGER"); // 모든 예외 수정 예정
+//            }
+            Long userId = 1L;
+
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
             List<Long> storesId = storeSimpleResponse.getStoresId();
 
@@ -145,6 +157,7 @@ public class ItemBusiness {
 
     }
 
+    @Transactional(readOnly = true)
     public ItemDetailResponse getItemBy(Long itemId, Long fakeUserId) {
 
         try {
@@ -164,6 +177,7 @@ public class ItemBusiness {
 
     }
 
+    @Transactional(readOnly = true)
     public List<ItemListResponse> getItemListBy(Long fakeUserId) {
         try {
             Long userId = 0L; // 삭제할 것
@@ -182,6 +196,7 @@ public class ItemBusiness {
         }
     }
 
+    @Transactional(readOnly = true)
     public ItemInternalResponse getItemInternal(ItemInternalRequest itemInternalRequest) {
         List<Long> itemIds = itemInternalRequest.getItemIds().stream().toList();
 
@@ -194,4 +209,87 @@ public class ItemBusiness {
 
         return itemConverter.toInternalResponse(items);
     }
+
+    @Transactional
+    @KafkaListener(topics = "item.update", groupId = "item-service-group") // 200
+    public void handlerUpdateItem(@Payload MessageUpdateRequest messageUpdateRequest,
+        @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+        @Header(KafkaHeaders.OFFSET) long offset) {
+
+        try {
+
+            log.info("Received order: {}, partition: {}, offset: {}",
+                messageUpdateRequest.getOrderId(),
+                partition, offset);
+
+            messageUpdateRequest.getOrderItemRequests().stream()
+                .map(orderItemRequest -> {
+                    Item item = itemService.getItemByIdPessimisticLock(
+                        orderItemRequest.getItemId());
+
+                    // 상품의 재고가 요청한 재고보다 없을 때
+                    if (item.getQuantity() < orderItemRequest.getQuantity()) {
+
+                        // 예외 발생 시 메시지 큐로 취소 로직 전송
+                        itemService.publishCancelOrder(messageUpdateRequest);
+                        throw new IllegalArgumentException("WRONG_ITEM_REQUEST");
+                    }
+
+                    Item orderedItem = itemConverter.orderRemainingStockItem(item,
+                        orderItemRequest.getQuantity());
+
+                    item.decreaseStock(orderItemRequest.getQuantity());
+                    log.info("item: {}, name: {}, quantity: {}", item.getId(), item.getName(),
+                        item.getQuantity());
+
+                    orderedItem.setOrder(messageUpdateRequest.getOrderId());
+
+                    if (item.getQuantity() == 0) {
+                        item.changeStatus(ItemStatus.SOLD);
+                    }
+
+                    itemService.save(item);
+                    itemService.save(orderedItem);
+                    return item;
+                })
+                .forEach(updatedItem -> log.info("Updated item id: {}", updatedItem.getId()));
+
+        } catch (Exception e) {
+            log.error("Error processing order: {}", messageUpdateRequest.getOrderId(), e);
+            throw e;
+        }
+
+    }
+
+    @Transactional
+    @KafkaListener(topics = "item.cancel", groupId = "item-service-group") // 200
+    public void handlerCancelItem(@Payload MessageUpdateRequest messageUpdateRequest,
+        @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+        @Header(KafkaHeaders.OFFSET) long offset) {
+
+        log.info("Received order: {}, partition: {}, offset: {}",
+            messageUpdateRequest.getOrderId(),
+            partition, offset);
+
+        messageUpdateRequest.getOrderItemRequests().stream()
+            .map(orderItemRequest -> {
+                Item item = itemService.getItemByIdPessimisticLock(orderItemRequest.getItemId());
+                item.cancelStock(orderItemRequest.getQuantity());
+
+                Item cancelledItem = itemService.getItemByNameAndQuantityAndStatus(
+                    item.getName(),
+                    orderItemRequest.getQuantity());
+
+                itemService.delete(cancelledItem);
+
+                if (item.getStatus() == ItemStatus.SOLD) {
+                    item.changeStatus(ItemStatus.SALE);
+                }
+
+                itemService.save(item);
+                return item;
+            }).forEach(item -> log.info("Cancelled item id: {}", item.getId()));
+
+    }
+
 }

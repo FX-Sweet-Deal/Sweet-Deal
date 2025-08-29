@@ -1,4 +1,4 @@
-package com.example.order.common.config;
+package com.example.order.domain.common.config;
 
 
 import io.swagger.v3.oas.models.OpenAPI;
