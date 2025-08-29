@@ -40,7 +40,7 @@ public class StoreBusiness {
 //    }
 
     // 임시 userId 삭제 할것 !!!
-    Long userId = 0L;
+    Long userId = 1L;
 
     Store store = storeConverter.toEntity(storeRegisterRequest);
 
