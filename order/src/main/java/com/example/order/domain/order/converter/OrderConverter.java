@@ -18,7 +18,7 @@ public class OrderConverter {
         .id(order.getId())
         .orderAt(order.getOrderedAt())
         .orderStatus(order.getStatus())
-        .totalPrice(order.calculateTotalPrice())
+        .totalPrice(order.getTotalPrice())
         .orderItems(order.getOrderItems())
         .itemCount(order.countItem())
         .totalItemQuantity(order.countTotalItemQuantity())
@@ -26,7 +26,7 @@ public class OrderConverter {
         .paymentStatus(order.getPayment().getPaymentStatus())
         .paymentMethod(order.getPaymentMethod())
         .paymentAt(null)
-        .totalPayPrice(order.calculateTotalPrice())
+        .totalPayPrice(order.getTotalPrice())
         .paymentSuccess(order.isPaymentSuccess())
         .build();
   }
