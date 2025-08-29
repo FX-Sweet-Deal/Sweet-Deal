@@ -14,5 +14,4 @@ public class OrderItemRequest {
   private Long itemId;
   private Long quantity;
 
-
 }
