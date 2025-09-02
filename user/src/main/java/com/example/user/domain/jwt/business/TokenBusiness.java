@@ -5,11 +5,14 @@ import com.example.global.anntation.Business;
 import com.example.global.errorcode.TokenErrorCode;
 import com.example.global.resolver.UserRole;
 import com.example.user.domain.common.exception.jwt.TokenException;
+import com.example.user.domain.common.exception.jwt.TokenSignatureException;
 import com.example.user.domain.jwt.converter.TokenConverter;
 import com.example.user.domain.jwt.model.TokenClaimsData;
 import com.example.user.domain.jwt.model.TokenDto;
 import com.example.user.domain.jwt.model.TokenEntity;
 import com.example.user.domain.jwt.model.TokenResponse;
+import com.example.user.domain.jwt.model.TokenValidationRequest;
+import com.example.user.domain.jwt.model.TokenValidationResponse;
 import com.example.user.domain.jwt.service.TokenService;
 import com.example.user.domain.user.repository.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -53,4 +56,21 @@ public class TokenBusiness {
 
         return userId;
     }
+
+    public TokenDto reIssueAccessToken(String refreshToken) {
+        if (refreshToken == null) {
+            throw new TokenSignatureException(TokenErrorCode.INVALID_TOKEN);
+        }
+
+        // "Bearer "가 있을 경우 제거
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
+        return tokenService.reIssueAccessToken(refreshToken);
+    }
+
+
+
+
 }
