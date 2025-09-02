@@ -1,7 +1,7 @@
 package com.example.item.domain.item.converter;
 
 import com.example.global.anntation.Converter;
-import com.example.item.domain.common.response.MessageResponse;
+import com.example.item.domain.item.controller.model.response.MessageResponse;
 
 @Converter
 public class MessageConverter {

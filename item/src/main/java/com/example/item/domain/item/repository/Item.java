@@ -107,4 +107,16 @@ public class Item {
         return this.quantity - quantity;
     }
 
+    public void decreaseStock(Long quantity) {
+       this.quantity -= quantity;
+    }
+
+    public void cancelStock(Long quantity) {
+        this.quantity += quantity;
+    }
+
+    public void setOrder(Long orderId) {
+        this.orderId = orderId;
+    }
+
 }

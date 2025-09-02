@@ -1,17 +1,18 @@
-package com.example.order.domain.order.controller.model.request;
+package com.example.item.domain.item.controller.model.request;
 
-import com.example.order.domain.order.repository.Orders;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Builder
+@Getter
 public class OrderItemRequest {
   private Long itemId;
   private Long quantity;
+
 
 }

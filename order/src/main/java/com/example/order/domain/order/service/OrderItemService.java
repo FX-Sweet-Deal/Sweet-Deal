@@ -37,10 +37,10 @@ public class OrderItemService {
           if (ex != null) {
             log.error("Kafka 발행 실패 (update): {}", ex.getMessage(), ex);
           } else {
-            log.info("Kafka 발행 성공 (update): topic={}, partition={}, offset={}",
+            log.info("Message sent successfully: {} topic: {}, partition: {}",
+                req.getOrderId(),
                 result.getRecordMetadata().topic(),
-                result.getRecordMetadata().partition(),
-                result.getRecordMetadata().offset());
+                result.getRecordMetadata().partition());
           }
         });
   }
@@ -55,10 +55,10 @@ public class OrderItemService {
           if (ex != null) {
             log.error("Kafka 발행 실패 (cancel): {}", ex.getMessage(), ex);
           } else {
-            log.info("Kafka 발행 성공 (cancel): topic={}, partition={}, offset={}",
+            log.info("Message sent successfully: {} topic: {}, partition: {}",
+                req.getOrderId(),
                 result.getRecordMetadata().topic(),
-                result.getRecordMetadata().partition(),
-                result.getRecordMetadata().offset());
+                result.getRecordMetadata().partition());
           }
         });
   }

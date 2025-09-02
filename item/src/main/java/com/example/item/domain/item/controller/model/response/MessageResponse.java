@@ -1,4 +1,4 @@
-package com.example.item.domain.common.response;
+package com.example.item.domain.item.controller.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

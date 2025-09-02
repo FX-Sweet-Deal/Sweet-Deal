@@ -5,21 +5,27 @@ import com.example.item.domain.common.exception.item.ItemAlreadyExistsException;
 import com.example.item.domain.common.exception.item.ItemCannotDeleteException;
 import com.example.item.domain.common.exception.item.ItemNotFoundException;
 import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
+import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
 import com.example.item.domain.item.repository.Item;
 import com.example.item.domain.item.repository.ItemRepository;
 import com.example.item.domain.item.repository.enums.ItemStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = false)
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final KafkaTemplate<String, MessageUpdateRequest> kafkaTemplate;
+    private static final String CANCEL_TOPIC = "order.cancel";
 
     public void save(Item item) {
         itemRepository.save(item);
@@ -173,6 +179,36 @@ public class ItemService {
         return itemRepository.findFirstByIdAndStatusNotOrderByIdDesc(itemId, ItemStatus.DELETED)
             .orElseThrow(() -> new ItemNotFoundException(ItemErrorCode.ITEM_NOT_FOUND));
     }
+
+    public Item getItemByIdPessimisticLock(Long itemId) {
+        return itemRepository.findByIdPessimisticLock(itemId)
+            .orElseThrow(() -> new IllegalArgumentException("ITEM_NOT_FOUND"));
+    }
+
+    public Item getItemByNameAndQuantityAndStatus(String name, Long quantity) {
+        return itemRepository.findByNameAndQuantityAndStatus(name, quantity, ItemStatus.SOLD)
+            .orElseThrow(() -> new IllegalArgumentException("ITEM_NOT_FOUND"));
+    }
+
+    public void delete(Item item) {
+        itemRepository.delete(item);
+    }
+
+    public void publishCancelOrder(MessageUpdateRequest req) {
+        kafkaTemplate
+            .send(CANCEL_TOPIC, req.getOrderId().toString(), req)
+            .whenComplete(((result, ex) -> {
+                if (ex != null) {
+                    log.error("Kafka 발행 실패 (cancel): {}", ex.getMessage(), ex);
+                } else {
+                    log.info("Message sent successfully: {} topic: {}, partition: {}",
+                        req.getOrderId(),
+                        result.getRecordMetadata().topic(),
+                        result.getRecordMetadata().partition());
+                }
+            }));
+    }
+
 }
 
 
