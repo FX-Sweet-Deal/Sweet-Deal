@@ -9,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
+
+// 게이트웨이가 붙여준 x-user-* 헤더를 검사하고, 컨트롤러에서 쓰기 쉽도록 Request Attribute로 넣습니다
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,7 +44,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 "x-user-id header가 존재하지 않습니다.");
         }
 
-
+        // request.setAttribute("userId"| "email" | "role", …)로 요청 속성에 저장
         request.setAttribute("userId", userId);
         request.setAttribute("email", email);
         request.setAttribute("role", role);

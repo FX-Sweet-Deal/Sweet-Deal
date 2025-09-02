@@ -27,6 +27,5 @@ public class TokenService {
 
         return Long.parseLong(userId.toString());
 
-
     }
 }
