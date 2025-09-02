@@ -29,14 +29,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenHelper implements TokenHelperIfs {
 
+    // JWT 서명에 사용할 비밀키
     @Value("${token.secret.key}")
     private String secretKey;
 
+    // AccessToken 만료 시간
     @Value("${token.access-token.plus-hour}")
     private Long accessTokenPlusHour;
 
+    // Refresh Token 만료 시간
     @Value("${token.refresh-token.plus-hour}")
     private Long refreshTokenPlusHour;
+
 
     @Override
     public TokenDto issueAccessToken(Map<String, Object> data) {
@@ -94,15 +98,16 @@ public class JwtTokenHelper implements TokenHelperIfs {
 
         SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
 
+
         String jwtToken = Jwts.builder()
-            .signWith(key, SignatureAlgorithm.HS256)
-            .setClaims(data)
-            .setExpiration(expiredAt)
-            .compact();
+            .signWith(key, SignatureAlgorithm.HS256)  // HS256 알고리즘으로 서명
+            .setClaims(data)  // payload(데이터) 저장
+            .setExpiration(expiredAt)  // 만료일 설정
+            .compact();  // 최종 JWT 문자열 생성
 
         return TokenDto.builder()
-            .token(jwtToken)
-            .expiredAt(expiredLocalDateTime)
+            .token(jwtToken)  // JWT 문자열
+            .expiredAt(expiredLocalDateTime)  // 만료 시각
             .build();
     }
 }

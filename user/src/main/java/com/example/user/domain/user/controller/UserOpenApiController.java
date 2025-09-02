@@ -36,8 +36,9 @@ public class UserOpenApiController {
     @PostMapping("/login")
     @Operation(summary = "[로그인]")
     public Api<TokenResponse> login(
-        @RequestBody @Valid Api<UserLoginRequest> userLoginRequest) {
-
+        @RequestBody
+        @Valid Api<UserLoginRequest> userLoginRequest
+    ) {
         TokenResponse response = userBusiness.login(userLoginRequest.result());
         return Api.ok(response);
     }

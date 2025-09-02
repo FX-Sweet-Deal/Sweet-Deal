@@ -100,7 +100,6 @@ spring:
             - StripPrefix=1
             - ServiceApiPrivateFilter
 
-
         # ============ image ============
         # 공개(스웨거/로그인 등) - 필터 없음
         - id: image-open

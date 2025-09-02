@@ -52,7 +52,7 @@ openapi:
     # 운영: https://api.example.com/user-service
 
 file:
-  upload-dir: /Users/macbookair/Desktop/대학/f(x) 동아리/temp-sweet-deal/aa/무제/Sweet-Deal/image/src/resources/static/uploads/
+  upload-dir: /Users/macbookair/Desktop/대학/f(x) 동아리/temp-sweet-deal/aa/무제/Sweet-Deal/image/src/main/resources/static/uploads/
   # 실제 저장 폴더
   public-path: /image/upload/
   public-base-url: http://localhost:8080

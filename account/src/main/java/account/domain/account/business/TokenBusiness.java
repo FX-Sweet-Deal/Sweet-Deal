@@ -31,6 +31,8 @@ public class TokenBusiness {
         UserEntity userEntity = userRepository.findFirstByIdAndStatusOrderByIdDesc(userId, UserStatus.REGISTERED)
             .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
 
+        log.info("token userEntity = {}", userEntity);
+
         return TokenValidationResponse.builder()
             .userId(userEntity.getId())
             .email(userEntity.getEmail())

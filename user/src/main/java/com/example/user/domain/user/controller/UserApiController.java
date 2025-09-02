@@ -32,7 +32,9 @@ public class UserApiController {
 
     @GetMapping()
     @Operation(summary = "[회원 정보 조회]")
-    public Api<UserResponse> getUserInformation(@Parameter(hidden = true) @UserSession User user) {
+    public Api<UserResponse> getUserInformation(
+        @Parameter(hidden = true) @UserSession User user
+    ) {
         log.info("user= {}", user);
         UserResponse response = userBusiness.getUserInformation(user.getId());
         return Api.ok(response);
@@ -40,7 +42,9 @@ public class UserApiController {
 
     @PostMapping()
     @Operation(summary = "[회원 탈퇴]")
-    public Api<MessageResponse> unregister(@Parameter(hidden = true) @UserSession User user) {
+    public Api<MessageResponse> unregister(
+        @Parameter(hidden = true) @UserSession User user
+    ) {
         MessageResponse response = userBusiness.unregister(user.getId());
         return Api.ok(response);
     }

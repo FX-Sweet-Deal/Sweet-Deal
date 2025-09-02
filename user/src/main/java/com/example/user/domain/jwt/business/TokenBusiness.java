@@ -3,6 +3,7 @@ package com.example.user.domain.jwt.business;
 
 import com.example.global.anntation.Business;
 import com.example.global.errorcode.TokenErrorCode;
+import com.example.global.resolver.UserRole;
 import com.example.user.domain.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.converter.TokenConverter;
 import com.example.user.domain.jwt.model.TokenClaimsData;
@@ -29,18 +30,21 @@ public class TokenBusiness {
         }
 
         Long userId = userEntity.getId();
+        UserRole userRole = userEntity.getRole();
 
-        TokenDto accessToken = tokenService.issueAccessToken(userId, userEntity.getRole());
+        // Access/Refresh 토큰 발급
+        TokenDto accessToken = tokenService.issueAccessToken(userId, userRole);
+        TokenDto refreshToken = tokenService.issueRefreshToken(userId, userRole);
 
-        TokenDto refreshToken = tokenService.issueRefreshToken(userId, userEntity.getRole());
-
+        // Refresh 토큰을 엔티티로 변환
         TokenEntity tokenEntity = tokenConverter.toRefreshTokenEntity(
             userEntity.getId(), refreshToken.getToken());
 
+        // Redis에 기존 Refresh 삭제 후 새 Refresh 저장
         tokenService.deleteRefreshToken(userId);
-
         tokenService.saveRefreshToken(tokenEntity);
 
+        // 응답용 DTO로 변환 (Access + Refresh 둘 다 포함)
         return tokenConverter.toResponse(accessToken, refreshToken);
     }
 

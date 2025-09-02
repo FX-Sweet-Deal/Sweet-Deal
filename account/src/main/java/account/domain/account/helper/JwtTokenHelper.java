@@ -36,14 +36,20 @@ public class JwtTokenHelper implements TokenHelperIfs {
     @Override
     public Map<String, Object> validationTokenWithThrow(String token) {
         try {
-            // 1) 전처리
-            if (token == null) throw new IllegalArgumentException("token is null");
+            // 토근 null 체크 -> null이면 즉시 예외
+            if (token == null){
+                throw new IllegalArgumentException("token is null");
+            }
+
+            // Bearer 접두사 제거: Authorization 헤더에서 보통 "Bearer <token>" 형태로 들어오기 때문에 정규식으로 제거
             token = token.trim().replaceFirst("(?i)^Bearer\\s+","");
 
+            // 따옴표 제거: JSON 직렬화 과정에서 토큰이 "eyJ..." 같은 문자열로 싸여 올 수 있음 -> 앞뒤 따옴표 제거
             if ((token.startsWith("\"") && token.endsWith("\"")) || (token.startsWith("'") && token.endsWith("'"))) {
                 token = token.substring(1, token.length()-1);
             }
 
+            // JWT는 header.payload.signature -> 반드시. 두 개 포함
             int len = token.length();
             long dots = token.chars().filter(c -> c=='.').count();
             log.info("JWT precheck: len={}, dots={}", len, dots);

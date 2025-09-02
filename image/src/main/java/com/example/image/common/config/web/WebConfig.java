@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 예: /image/upload/**
-        String location = "file:///Users/macbookair/Desktop/대학/f(x) 동아리/temp-sweet-deal/aa/무제/Sweet-Deal/image/src/resources/static/uploads/";
+        String location = "file:" + uploadDir;
 
         registry.addResourceHandler("/image/upload/**")
             .addResourceLocations(location);
