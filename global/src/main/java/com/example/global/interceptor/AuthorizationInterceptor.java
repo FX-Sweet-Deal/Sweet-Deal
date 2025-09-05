@@ -1,6 +1,6 @@
 package com.example.global.interceptor;
 
-import com.example.global.errorcode.UserErrorCode;
+import com.example.global.errorCode.UserErrorCode;
 
 import com.example.global.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
