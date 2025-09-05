@@ -1,4 +1,4 @@
-package com.example.global.annotation;
+package com.example.global.anntation;
 
 
 import java.lang.annotation.ElementType;

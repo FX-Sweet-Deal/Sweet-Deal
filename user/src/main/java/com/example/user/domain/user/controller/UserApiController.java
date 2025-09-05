@@ -1,7 +1,7 @@
 package com.example.user.domain.user.controller;
 
 
-import com.example.global.annotation.UserSession;
+import com.example.global.anntation.UserSession;
 import com.example.global.api.Api;
 import com.example.global.resolver.User;
 import com.example.user.domain.common.response.MessageResponse;

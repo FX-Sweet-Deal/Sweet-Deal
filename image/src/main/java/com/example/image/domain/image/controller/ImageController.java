@@ -1,7 +1,7 @@
 package com.example.image.domain.image.controller;
 
 
-import com.example.global.annotation.UserSession;
+import com.example.global.anntation.UserSession;
 import com.example.global.resolver.User;
 import com.example.image.domain.image.business.ImageBusiness;
 import com.example.image.domain.image.controller.model.ImageResponse;

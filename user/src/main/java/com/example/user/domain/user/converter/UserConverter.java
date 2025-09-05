@@ -1,7 +1,7 @@
 package com.example.user.domain.user.converter;
 
 
-import com.example.global.annotation.Converter;
+import com.example.global.anntation.Converter;
 import com.example.global.resolver.UserRole;
 import com.example.user.domain.user.controller.model.login.UserResponse;
 import com.example.user.domain.user.controller.model.register.UserRegisterRequest;

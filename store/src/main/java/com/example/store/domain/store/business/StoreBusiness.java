@@ -1,6 +1,6 @@
 package com.example.store.domain.store.business;
 
-import com.example.global.annotation.Business;
+import com.example.global.anntation.Business;
 import com.example.global.errorcode.StoreErrorCode;
 import com.example.store.domain.common.exception.IsBlankException;
 import com.example.store.domain.store.controller.model.request.RegisterImageRequest;
