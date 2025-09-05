@@ -1,8 +1,10 @@
 package com.example.item.domain.item.business;
 
-import com.example.global.anntation.Business;
+import com.example.global.annotation.Business;
 import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
 import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
+import com.example.item.domain.item.controller.model.request.RegisterImageRequest;
+import com.example.item.domain.item.controller.model.request.UpdateImageRequest;
 import com.example.item.domain.item.controller.model.response.StoreSimpleResponse;
 import com.example.item.domain.item.converter.MessageConverter;
 import com.example.item.domain.item.controller.model.response.MessageResponse;
@@ -11,10 +13,10 @@ import com.example.item.domain.item.controller.model.response.ItemDetailResponse
 import com.example.item.domain.item.controller.model.response.ItemInternalResponse;
 import com.example.item.domain.item.controller.model.response.ItemListResponse;
 import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
-import com.example.item.domain.item.controller.model.response.ItemRegisterResponse;
 import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
 import com.example.item.domain.item.converter.ItemConverter;
 import com.example.item.domain.item.repository.Item;
+import com.example.item.domain.item.repository.enums.ImageKind;
 import com.example.item.domain.item.repository.enums.ItemStatus;
 import com.example.item.domain.item.service.ItemService;
 import com.example.item.domain.item.service.StoreFeignClient;
@@ -42,45 +44,50 @@ public class ItemBusiness {
     private final StoreFeignClient storeFeignClient;
 
     // 상품 등록
-    public ItemRegisterResponse register(ItemRegisterRequest req, Long fakeUserId) {
+    public MessageResponse register(ItemRegisterRequest req, Long fakeUserId) {
+        Long userId = 1L;
+        Long storeId;
+        List<Long> storesId;
 
         try {
-
-//            if (user.getRole() != UserRole.STORE) {
-//                throw new IllegalArgumentException("NOT_STORE_MANAGER"); // 모든 예외 수정 예정
-//            }
-            Long userId = 1L;
-
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
-            List<Long> storesId = storeSimpleResponse.getStoresId();
+            storesId = storeSimpleResponse.getStoresId();
 
-            Long storeId = req.getStoreId();
-            if (storeId == null) {
-                if (storesId.size() == 1) {
-                    storeId = storesId.get(0);
-                } else {
-                    throw new IllegalArgumentException("STORE_ID_REQUIRED");
-                }
-            }
-            if (!storesId.contains(storeId)) {
-                throw new IllegalArgumentException("STORE_NOT_OWNED");
-            }
-
-            Item registeredItem = itemConverter.toEntity(req, storeId);
-
-            // 중복 상품 검증
-            itemService.existsByItemWithThrow(storeId, req.getName(), req.getExpiredAt(),
-                List.of(ItemStatus.SALE, ItemStatus.RESERVED));
-
-            // 검증
-            itemService.validateRegister(registeredItem);
-
-            return itemConverter.toResponse(itemService.register(registeredItem));
+            storeId = req.getStoreId();
         } catch (FeignClientException e) {
             throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
 
         }
 
+        if (storeId == null) {
+            if (storesId.size() == 1) {
+                storeId = storesId.get(0);
+            } else {
+                throw new IllegalArgumentException("STORE_ID_REQUIRED");
+            }
+        }
+        if (!storesId.contains(storeId)) {
+            throw new IllegalArgumentException("STORE_NOT_OWNED");
+        }
+
+        Item registeredItem = itemConverter.toEntity(req, storeId);
+
+        // 중복 상품 검증
+        itemService.existsByItemWithThrow(storeId, req.getName(), req.getExpiredAt(),
+            List.of(ItemStatus.SALE, ItemStatus.RESERVED));
+
+        // 검증
+        itemService.validateRegister(registeredItem);
+        Item item = itemService.register(registeredItem);
+
+        RegisterImageRequest registerImageRequest = RegisterImageRequest.builder()
+            .itemId(item.getId())
+            .imageKind(ImageKind.ITEM)
+            .serverName(req.getServerNames())
+            .build();
+        itemService.publishRegisterImage(registerImageRequest);
+
+        return messageConverter.toResponse("상품이 등록되었습니다.");
 
     }
 
@@ -113,7 +120,6 @@ public class ItemBusiness {
         } catch (FeignClientException e) {
             throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
         }
-
     }
 
     /*
@@ -150,11 +156,18 @@ public class ItemBusiness {
 
             itemService.update(request, targetItem);
 
+            UpdateImageRequest req = UpdateImageRequest.builder()
+                .itemId(itemId)
+                .imageKind(ImageKind.ITEM)
+                .serverNames(request.getServerName())
+                .build();
+            itemService.publishUpdateImage(req);
+
             return messageConverter.toResponse("상품 정보가 수정되었습니다.");
         } catch (FeignClientException e) {
             throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
-            }
 
+            }
     }
 
     @Transactional(readOnly = true)
@@ -211,7 +224,7 @@ public class ItemBusiness {
     }
 
     @Transactional
-    @KafkaListener(topics = "item.update", groupId = "item-service-group") // 200
+    @KafkaListener(topics = "item.update", groupId = "item-group") // 200
     public void handlerUpdateItem(@Payload MessageUpdateRequest messageUpdateRequest,
         @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
         @Header(KafkaHeaders.OFFSET) long offset) {
@@ -262,7 +275,7 @@ public class ItemBusiness {
     }
 
     @Transactional
-    @KafkaListener(topics = "item.cancel", groupId = "item-service-group") // 200
+    @KafkaListener(topics = "item.cancel", groupId = "item-group") // 200
     public void handlerCancelItem(@Payload MessageUpdateRequest messageUpdateRequest,
         @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
         @Header(KafkaHeaders.OFFSET) long offset) {
@@ -289,7 +302,6 @@ public class ItemBusiness {
                 itemService.save(item);
                 return item;
             }).forEach(item -> log.info("Cancelled item id: {}", item.getId()));
-
     }
 
 }

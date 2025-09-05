@@ -1,6 +1,6 @@
 package com.example.order.domain.order.converter;
 
-import com.example.global.anntation.Converter;
+import com.example.global.annotation.Converter;
 import com.example.order.domain.order.controller.model.request.OrderItemRequest;
 import com.example.order.domain.order.controller.model.response.OrderItemResponse;
 import com.example.order.domain.order.controller.model.response.OrderRegisterResponse;

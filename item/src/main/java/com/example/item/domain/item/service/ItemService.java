@@ -1,11 +1,13 @@
 package com.example.item.domain.item.service;
 
-import com.example.global.errorcode.ItemErrorCode;
+import com.example.global.errorCode.ItemErrorCode;
 import com.example.item.domain.common.exception.item.ItemAlreadyExistsException;
 import com.example.item.domain.common.exception.item.ItemCannotDeleteException;
 import com.example.item.domain.common.exception.item.ItemNotFoundException;
 import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
 import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
+import com.example.item.domain.item.controller.model.request.RegisterImageRequest;
+import com.example.item.domain.item.controller.model.request.UpdateImageRequest;
 import com.example.item.domain.item.repository.Item;
 import com.example.item.domain.item.repository.ItemRepository;
 import com.example.item.domain.item.repository.enums.ItemStatus;
@@ -24,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final KafkaTemplate<String, MessageUpdateRequest> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     private static final String CANCEL_TOPIC = "order.cancel";
+    private static final String REGISTER_TOPIC = "image.register";
+    private static final String UPDATE_TOPIC = "image.update";
 
     public void save(Item item) {
         itemRepository.save(item);
@@ -201,7 +205,7 @@ public class ItemService {
                 if (ex != null) {
                     log.error("Kafka 발행 실패 (cancel): {}", ex.getMessage(), ex);
                 } else {
-                    log.info("Message sent successfully: {} topic: {}, partition: {}",
+                    log.info("Message sent successfully: {}, topic: {}, partition: {}",
                         req.getOrderId(),
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition());
@@ -209,6 +213,53 @@ public class ItemService {
             }));
     }
 
+    public void publishRegisterImage(RegisterImageRequest req) {
+
+        String kafkaKey;
+
+        if (req.getItemId() == null) {
+            kafkaKey = req.getStoreId().toString();
+        } else {
+            kafkaKey = req.getItemId().toString();
+        }
+
+        kafkaTemplate
+            .send(REGISTER_TOPIC, kafkaKey, req)
+            .whenComplete(((result, ex) -> {
+                if(ex != null) {
+                    log.error("Kafka 발행 실패 (register): {}", ex.getMessage(), ex);
+                } else {
+                    log.info("Message sent successfully: {} topic: {}, partition: {}",
+                        kafkaKey,
+                        result.getRecordMetadata().topic(),
+                        result.getRecordMetadata().partition());
+                }
+            }));
+    }
+
+    public void publishUpdateImage(UpdateImageRequest req) {
+
+        String kafkaKey;
+
+        if (req.getItemId() == null) {
+            kafkaKey = req.getStoreId().toString();
+        } else {
+            kafkaKey = req.getItemId().toString();
+        }
+
+        kafkaTemplate
+            .send(UPDATE_TOPIC, kafkaKey, req)
+            .whenComplete((result, ex) -> {
+                if (ex != null) {
+                    log.error("Kafka 발행 실패 (update): {}", ex.getMessage(), ex);
+                } else {
+                    log.info("Message sent successfully: {} topic: {}, partition: {}",
+                        kafkaKey,
+                        result.getRecordMetadata().topic(),
+                        result.getRecordMetadata().partition());
+                }
+            });
+    }
 }
 
 

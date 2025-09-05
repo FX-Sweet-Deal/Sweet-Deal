@@ -1,7 +1,7 @@
 package com.example.user.domain.user.business;
 
 
-import com.example.global.anntation.Business;
+import com.example.global.annotation.Business;
 import com.example.user.domain.common.response.MessageConverter;
 import com.example.user.domain.common.response.MessageResponse;
 import com.example.user.domain.jwt.business.TokenBusiness;
