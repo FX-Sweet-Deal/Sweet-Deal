@@ -1,12 +1,8 @@
 package com.example.image.domain.image.converter;
 
 
-import com.example.image.domain.image.controller.model.ImageCreateRequest;
 import com.example.image.domain.image.controller.model.ImageResponse;
-import com.example.image.domain.image.controller.model.ImageUpdateRequest;
 import com.example.image.domain.image.repository.ImageEntity;
-import com.example.image.domain.image.repository.enums.ImageStatus;
-import jakarta.persistence.Converter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +20,7 @@ public class ImageConverter {
             .serverName(imageEntity.getServerName())
             .extension(imageEntity.getExtension())
             .status(imageEntity.getStatus())
+            .imageKind(imageEntity.getImageKind())
             .itemId(imageEntity.getItemId())
             .storeId(imageEntity.getStoreId())
             .userId(imageEntity.getUserId())
