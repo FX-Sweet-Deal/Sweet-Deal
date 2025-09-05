@@ -1,6 +1,6 @@
 package com.example.order.domain.common.exception.order;
 
-import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorCode.ErrorCode;
 
 public class ItemCountNotEnoughException extends RuntimeException{
 

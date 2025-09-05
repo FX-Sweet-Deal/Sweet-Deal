@@ -1,6 +1,6 @@
 package com.example.item.domain.common.exception.item;
 
-import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorCode.ErrorCode;
 
 public class ItemNotFoundException extends RuntimeException{
 

@@ -4,7 +4,7 @@ import com.example.gateway.common.exception.token.TokenException;
 import com.example.gateway.user.model.TokenDto;
 import com.example.gateway.user.model.TokenValidationRequest;
 import com.example.gateway.user.model.TokenValidationResponse;
-import com.example.global.errorcode.TokenErrorCode;
+import com.example.global.errorCode.TokenErrorCode;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;

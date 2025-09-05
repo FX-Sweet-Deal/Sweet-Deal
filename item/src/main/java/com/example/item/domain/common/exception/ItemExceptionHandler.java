@@ -1,7 +1,7 @@
 package com.example.item.domain.common.exception;
 
 import com.example.global.api.Api;
-import com.example.global.errorcode.ItemErrorCode;
+import com.example.global.errorCode.ItemErrorCode;
 import com.example.item.domain.common.exception.item.ItemAlreadyExistsException;
 import com.example.item.domain.common.exception.item.ItemCannotDeleteException;
 import com.example.item.domain.common.exception.item.ItemNotFoundException;

@@ -1,6 +1,6 @@
 package com.example.order.domain.order.service;
 
-import com.example.global.errorcode.OrderErrorCode;
+import com.example.global.errorCode.OrderErrorCode;
 import com.example.order.domain.common.exception.order.InvalidOrderException;
 import com.example.order.domain.order.repository.OrderItem;
 import com.example.order.domain.order.repository.OrderRepository;
