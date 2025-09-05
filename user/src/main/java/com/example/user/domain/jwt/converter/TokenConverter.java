@@ -2,7 +2,7 @@ package com.example.user.domain.jwt.converter;
 
 
 import com.example.global.annotation.Converter;
-import com.example.global.errorCode.TokenErrorCode;
+import com.example.global.errorcode.TokenErrorCode;
 import com.example.user.domain.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.model.TokenDto;
 import com.example.user.domain.jwt.model.TokenEntity;

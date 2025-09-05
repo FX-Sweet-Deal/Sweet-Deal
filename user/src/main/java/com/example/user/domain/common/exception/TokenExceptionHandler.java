@@ -1,7 +1,7 @@
 package com.example.user.domain.common.exception;
 
 import com.example.global.api.Api;
-import com.example.global.errorCode.TokenErrorCode;
+import com.example.global.errorcode.TokenErrorCode;
 import com.example.user.domain.common.exception.jwt.TokenException;
 import com.example.user.domain.common.exception.jwt.TokenExpiredException;
 import com.example.user.domain.common.exception.jwt.TokenSignatureException;

@@ -1,6 +1,6 @@
 package com.example.global.api;
 
-import com.example.global.errorCode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 import jakarta.validation.Valid;
 
 public record Api<T>(Integer errorCode, String description, @Valid T result) {

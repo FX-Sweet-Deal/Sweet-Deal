@@ -1,6 +1,6 @@
 package com.example.store.domain.common.exception.ntsBusiness;
 
-import com.example.global.errorCode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 
 public class MissingApiKeyException extends OpenApiException {
 

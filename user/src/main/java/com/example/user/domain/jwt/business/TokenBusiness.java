@@ -48,7 +48,6 @@ public class TokenBusiness {
 
         tokenService.saveRefreshToken(tokenEntity);
 
-        // 응답용 DTO로 변환 (Access + Refresh 둘 다 포함)
         return tokenConverter.toResponse(accessToken, refreshToken);
     }
 

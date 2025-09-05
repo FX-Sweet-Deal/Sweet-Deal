@@ -1,7 +1,7 @@
 package com.example.user.domain.common.exception;
 
 import com.example.global.api.Api;
-import com.example.global.errorCode.UserErrorCode;
+import com.example.global.errorcode.UserErrorCode;
 import com.example.user.domain.common.exception.user.ExistUserEmailException;
 import com.example.user.domain.common.exception.user.ExistUserNameException;
 import com.example.user.domain.common.exception.user.LoginFailException;

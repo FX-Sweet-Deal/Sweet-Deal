@@ -1,7 +1,7 @@
 package com.example.user.domain.user.service;
 
 
-import com.example.global.errorCode.UserErrorCode;
+import com.example.global.errorcode.UserErrorCode;
 import com.example.global.exception.BadRequestException;
 import com.example.global.exception.ConflictException;
 import com.example.global.exception.NotFoundException;

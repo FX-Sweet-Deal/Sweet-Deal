@@ -5,7 +5,7 @@ import account.domain.account.controller.model.TokenValidationResponse;
 import account.domain.account.model.TokenDto;
 import account.domain.account.service.TokenService;
 import com.example.global.annotation.Business;
-import com.example.global.errorCode.UserErrorCode;
+import com.example.global.errorcode.UserErrorCode;
 import com.example.global.exception.UserNotFoundException;
 import com.example.user.domain.user.repository.UserEntity;
 import com.example.user.domain.user.repository.enums.UserStatus;

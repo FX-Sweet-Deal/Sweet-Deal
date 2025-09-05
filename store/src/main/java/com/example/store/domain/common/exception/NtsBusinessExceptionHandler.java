@@ -1,6 +1,6 @@
 package com.example.store.domain.common.exception;
 
-import com.example.global.errorCode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 import com.example.store.domain.common.exception.ntsBusiness.OpenApiException;
 import java.util.Map;
 import java.util.stream.Collectors;

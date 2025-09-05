@@ -2,7 +2,7 @@ package com.example.order.domain.order.business;
 
 import com.example.global.annotation.Business;
 import com.example.global.api.Api;
-import com.example.global.errorCode.OrderErrorCode;
+import com.example.global.errorcode.OrderErrorCode;
 import com.example.order.domain.common.exception.order.ExpiredException;
 import com.example.order.domain.common.exception.order.ItemCountNotEnoughException;
 import com.example.order.domain.common.exception.order.ItemNotExistFoundException;
