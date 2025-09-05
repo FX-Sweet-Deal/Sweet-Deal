@@ -45,6 +45,7 @@ public class TokenBusiness {
 
         // Redis에 기존 Refresh 삭제 후 새 Refresh 저장
         tokenService.deleteRefreshToken(userId);
+
         tokenService.saveRefreshToken(tokenEntity);
 
         // 응답용 DTO로 변환 (Access + Refresh 둘 다 포함)

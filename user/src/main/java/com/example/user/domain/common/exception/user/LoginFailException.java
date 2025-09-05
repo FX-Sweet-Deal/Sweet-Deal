@@ -1,6 +1,6 @@
 package com.example.user.domain.common.exception.user;
 
-import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorCode.ErrorCode;
 
 public class LoginFailException extends RuntimeException {
 

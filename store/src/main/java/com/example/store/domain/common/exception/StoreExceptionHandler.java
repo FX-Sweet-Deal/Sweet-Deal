@@ -1,7 +1,7 @@
 package com.example.store.domain.common.exception;
 
 import com.example.global.api.Api;
-import com.example.global.errorcode.StoreErrorCode;
+import com.example.global.errorCode.StoreErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

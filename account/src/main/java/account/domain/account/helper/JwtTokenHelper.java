@@ -1,7 +1,7 @@
 package account.domain.account.helper;
 
 import account.domain.account.ifs.TokenHelperIfs;
-import com.example.global.errorcode.TokenErrorCode;
+import com.example.global.errorCode.TokenErrorCode;
 import com.example.user.domain.common.exception.jwt.TokenException;
 import com.example.user.domain.common.exception.jwt.TokenExpiredException;
 import com.example.user.domain.common.exception.jwt.TokenSignatureException;

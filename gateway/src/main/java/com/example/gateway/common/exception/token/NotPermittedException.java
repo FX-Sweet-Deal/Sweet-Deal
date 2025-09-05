@@ -1,7 +1,7 @@
 package com.example.gateway.common.exception.token;
 
 
-import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorCode.ErrorCode;
 
 
 public class NotPermittedException extends RuntimeException {

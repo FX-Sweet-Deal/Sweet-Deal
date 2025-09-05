@@ -1,6 +1,6 @@
 package com.example.store.domain.store.service;
 
-import com.example.global.errorcode.OpenApiErrorCode;
+import com.example.global.errorCode.OpenApiErrorCode;
 import com.example.store.domain.common.config.PublicDataProps;
 import com.example.store.domain.common.exception.ntsBusiness.HttpException;
 import com.example.store.domain.common.exception.ntsBusiness.OpenApiException;

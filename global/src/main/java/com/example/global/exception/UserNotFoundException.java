@@ -1,6 +1,6 @@
 package com.example.global.exception;
 
-import com.example.global.errorcode.ErrorCode;
+import com.example.global.errorCode.ErrorCode;
 
 
 public class UserNotFoundException extends RuntimeException {
