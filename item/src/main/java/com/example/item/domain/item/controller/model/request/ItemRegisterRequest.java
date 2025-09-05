@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,8 @@ public class ItemRegisterRequest {
     @NotNull
     private Long storeId;
 
+    @NotNull
+    private List<String> serverNames;
 
 
 }
