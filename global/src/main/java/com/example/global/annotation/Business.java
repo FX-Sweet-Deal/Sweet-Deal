@@ -1,4 +1,4 @@
-package com.example.global.anntation;
+package com.example.global.annotation;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Service;
