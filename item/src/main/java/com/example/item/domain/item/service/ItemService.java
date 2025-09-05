@@ -214,23 +214,14 @@ public class ItemService {
     }
 
     public void publishRegisterImage(RegisterImageRequest req) {
-
-        String kafkaKey;
-
-        if (req.getItemId() == null) {
-            kafkaKey = req.getStoreId().toString();
-        } else {
-            kafkaKey = req.getItemId().toString();
-        }
-
         kafkaTemplate
-            .send(REGISTER_TOPIC, kafkaKey, req)
+            .send(REGISTER_TOPIC, req.getItemId().toString(), req)
             .whenComplete(((result, ex) -> {
                 if(ex != null) {
                     log.error("Kafka 발행 실패 (register): {}", ex.getMessage(), ex);
                 } else {
                     log.info("Message sent successfully: {} topic: {}, partition: {}",
-                        kafkaKey,
+                        req.getItemId(),
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition());
                 }
@@ -238,23 +229,14 @@ public class ItemService {
     }
 
     public void publishUpdateImage(UpdateImageRequest req) {
-
-        String kafkaKey;
-
-        if (req.getItemId() == null) {
-            kafkaKey = req.getStoreId().toString();
-        } else {
-            kafkaKey = req.getItemId().toString();
-        }
-
         kafkaTemplate
-            .send(UPDATE_TOPIC, kafkaKey, req)
+            .send(UPDATE_TOPIC, req.getItemId().toString(), req)
             .whenComplete((result, ex) -> {
                 if (ex != null) {
                     log.error("Kafka 발행 실패 (update): {}", ex.getMessage(), ex);
                 } else {
                     log.info("Message sent successfully: {} topic: {}, partition: {}",
-                        kafkaKey,
+                        req.getItemId(),
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition());
                 }
