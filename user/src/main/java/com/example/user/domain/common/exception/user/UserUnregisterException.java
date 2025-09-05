@@ -1,8 +1,6 @@
 package com.example.user.domain.common.exception.user;
 
-import ch.qos.logback.core.spi.ErrorCodes;
 import com.example.global.errorcode.ErrorCode;
-import com.example.global.errorcode.ErrorCodeIfs;
 
 public class UserUnregisterException extends RuntimeException {
 

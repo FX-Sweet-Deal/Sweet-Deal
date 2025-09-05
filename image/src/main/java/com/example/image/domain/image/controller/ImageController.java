@@ -4,16 +4,12 @@ package com.example.image.domain.image.controller;
 import com.example.global.anntation.UserSession;
 import com.example.global.resolver.User;
 import com.example.image.domain.image.business.ImageBusiness;
-import com.example.image.domain.image.controller.model.ImageCreateRequest;
 import com.example.image.domain.image.controller.model.ImageResponse;
-import com.example.image.domain.image.controller.model.ImageUpdateRequest;
-import com.example.image.domain.image.service.ImageService;
+import com.example.image.domain.image.repository.enums.ImageKind;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +17,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -44,9 +39,10 @@ public class ImageController {
         @Parameter(hidden = true) @UserSession User user,   // Swagger에 노출 안 되게
         @RequestPart("file") MultipartFile file,            // 파일
         @RequestParam("itemId") Long itemId,                // 텍스트 필드는 RequestParam 권장
-        @RequestParam("storeId") Long storeId
+        @RequestParam("storeId") Long storeId,
+        @RequestParam("imageKind") ImageKind imageKind
     ) {
-        return imageBusiness.upload(user.getId(), itemId, storeId, file);
+        return imageBusiness.upload(user.getId(), itemId, storeId, file, imageKind);
     }
 
     /** 파일 교체 */
@@ -55,8 +51,10 @@ public class ImageController {
     public ImageResponse replace(
         @Parameter(hidden = true) @UserSession User user,
         @PathVariable Long imageId,
-        @RequestPart("file") MultipartFile file){
-        return imageBusiness.replaceFile(user.getId(), imageId, file);
+        @RequestPart("file") MultipartFile file,
+        @RequestParam("imageKind") ImageKind imageKind
+    ){
+        return imageBusiness.replaceFile(user.getId(), imageId, file, imageKind);
     }
 
     /** 메타데이터 수정(status, itemId 등 일부만) */
@@ -65,9 +63,10 @@ public class ImageController {
     public ImageResponse updateMeta(
         @Parameter(hidden = true) @UserSession User user,
         @PathVariable Long imageId,
+        @RequestParam("imageKind") ImageKind imageKind,
         @RequestParam(required=false) String status,
         @RequestParam(required=false) Long itemId){
-        return imageBusiness.updateMeta(user.getId(), imageId, status, itemId);
+        return imageBusiness.updateMeta(user.getId(), imageId, imageKind, status, itemId);
     }
 
     /** 삭제(소프트) */

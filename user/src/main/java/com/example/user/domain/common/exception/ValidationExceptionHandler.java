@@ -1,7 +1,6 @@
 package com.example.user.domain.common.exception;
 
 import com.example.global.api.Api;
-import com.example.global.errorcode.ErrorCode;
 import com.example.global.errorcode.TokenErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

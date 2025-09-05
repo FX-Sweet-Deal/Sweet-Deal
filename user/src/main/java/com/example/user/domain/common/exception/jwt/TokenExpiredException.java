@@ -1,7 +1,6 @@
 package com.example.user.domain.common.exception.jwt;
 
 import com.example.global.errorcode.ErrorCode;
-import com.example.global.errorcode.ErrorCode;
 
 
 public class TokenExpiredException extends RuntimeException{

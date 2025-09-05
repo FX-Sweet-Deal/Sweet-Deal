@@ -3,6 +3,8 @@ package com.example.store.domain.store.business;
 import com.example.global.anntation.Business;
 import com.example.global.errorcode.StoreErrorCode;
 import com.example.store.domain.common.exception.IsBlankException;
+import com.example.store.domain.store.controller.model.request.RegisterImageRequest;
+import com.example.store.domain.store.controller.model.request.UpdateImageRequest;
 import com.example.store.domain.store.controller.model.response.NearbyStoreResponse;
 import com.example.store.domain.store.controller.model.request.LocationRequest;
 import com.example.store.domain.store.controller.model.request.StoreRegisterRequest;
@@ -16,6 +18,7 @@ import com.example.store.domain.store.controller.model.response.UserStoreRespons
 import com.example.store.domain.store.converter.MessageConverter;
 import com.example.store.domain.store.converter.StoreConverter;
 import com.example.store.domain.store.repository.Store;
+import com.example.store.domain.store.repository.enums.ImageKind;
 import com.example.store.domain.store.repository.enums.OperatingStatus;
 import com.example.store.domain.store.repository.enums.StoreStatus;
 import com.example.store.domain.store.service.StoreService;
@@ -34,11 +37,6 @@ public class StoreBusiness {
 
   public StoreRegisterResponse register(StoreRegisterRequest storeRegisterRequest) {
 
-    // 이게 등록에 있으면 안되지 않을까? 저 공공데이터 API를 사용해서 들어오는 사업자 번호가 유효한지 확인해야 함.
-//    if(!storeService.isExistsByBusinessNumber(storeRegisterRequest.getBusinessNumber())) {
-//      throw new IllegalArgumentException("사업자 번호가 유효하지 않습니다.");
-//    }
-
     // 임시 userId 삭제 할것 !!!
     Long userId = 1L;
 
@@ -49,6 +47,14 @@ public class StoreBusiness {
 
     store.register();
     storeService.save(store);
+
+    RegisterImageRequest registerImageRequest = RegisterImageRequest.builder()
+        .storeId(store.getId())
+        .imageKind(ImageKind.STORE)
+        .serverName(storeRegisterRequest.getServerName())
+        .build();
+    storeService.publishRegisterImage(registerImageRequest);
+
     return storeConverter.toResponse(store);
   }
 
@@ -70,12 +76,18 @@ public class StoreBusiness {
     targetStore.updateName(storeUpdateRequest.getName());
     targetStore.updateAddress(storeUpdateRequest.getAddress());
     targetStore.updatePhone(storeUpdateRequest.getPhone());
-    targetStore.updateBusinessNumber(storeUpdateRequest.getBusinessNumber()); // 유효성 검사를 해야 함...
     targetStore.updateCategory(storeUpdateRequest.getCategory());
     targetStore.updateOperatingTime(storeUpdateRequest.getOperatingTime().getOpeningTime(),
         storeUpdateRequest.getOperatingTime().getClosingTime());
 
     storeService.save(targetStore);
+
+    UpdateImageRequest req = UpdateImageRequest.builder()
+        .storeId(targetStore.getId())
+        .imageKind(ImageKind.STORE)
+        .serverName(storeUpdateRequest.getServerName())
+        .build();
+    storeService.publishUpdateImage(req);
 
     return messageConverter.toResponse("스토어 정보가 수정되었습니다.");
   }
@@ -151,7 +163,6 @@ public class StoreBusiness {
     if (stores.isEmpty()) {
       throw new IllegalArgumentException("STORE_NOT_FOUND");
     }
-
 
 
   }

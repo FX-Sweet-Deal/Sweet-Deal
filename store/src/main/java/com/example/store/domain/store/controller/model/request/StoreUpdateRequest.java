@@ -5,6 +5,7 @@ import com.example.store.domain.store.repository.OperatingTime;
 import com.example.store.domain.store.repository.enums.StoreCategory;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,11 +28,13 @@ public class StoreUpdateRequest {
   @Size(min = 11, max = 11, message = "전화번호는 숫자 11자리여야 합니다.")
   private String phone;
 
-  @Size(min = 10, max = 10, message = "사업자등록번호는 숫자 10자리여야 합니다.")
-  private String businessNumber;
+//  @Size(min = 10, max = 10, message = "사업자등록번호는 숫자 10자리여야 합니다.")
+//  private String businessNumber;
 
   private StoreCategory category;
 
   private OperatingTime operatingTime;
+
+  private List<String> serverName;
 
 }

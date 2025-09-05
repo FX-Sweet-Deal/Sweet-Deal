@@ -1,13 +1,11 @@
 package com.example.item.domain.item.controller.model.request;
 
-import com.example.item.domain.item.repository.enums.ItemStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,5 +36,8 @@ public class ItemUpdateRequest {
 
   @Pattern(regexp = "^[0-9]$", message = "숫자만 입력할 수 있습니다.")
   private Long quantity;
+
+  @NotNull
+  private List<String> serverName;
 
 }

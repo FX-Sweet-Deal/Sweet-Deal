@@ -1,6 +1,7 @@
 package com.example.image.domain.image.controller.model;
 
 
+import com.example.image.domain.image.repository.enums.ImageKind;
 import com.example.image.domain.image.repository.enums.ImageStatus;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,8 @@ public class ImageResponse {
     private String extension;
 
     private ImageStatus status;
+
+    private ImageKind imageKind;
 
     private Long itemId;
 

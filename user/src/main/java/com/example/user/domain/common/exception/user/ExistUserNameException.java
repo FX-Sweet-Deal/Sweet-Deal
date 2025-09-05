@@ -1,7 +1,6 @@
 package com.example.user.domain.common.exception.user;
 
 import com.example.global.errorcode.ErrorCode;
-import com.example.global.errorcode.ErrorCodeIfs;
 
 public class ExistUserNameException extends RuntimeException {
 

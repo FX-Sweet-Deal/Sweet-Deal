@@ -14,6 +14,7 @@ public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
 
     List<ImageEntity> findByStoreIdAndDeletedFalse(Long storeId);
 
+    Optional<ImageEntity> findByServerName(String serverName);
 }
 
 

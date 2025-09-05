@@ -1,12 +1,9 @@
-package com.example.item.domain.common.config;
+package com.example.image.domain.common.config;
 
-import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,18 +11,15 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
 
-@Configuration
 @EnableKafka
+@Configuration
 public class KafkaConfig {
 
   @Value("${spring.kafka.bootstrap-servers}")
@@ -50,28 +44,9 @@ public class KafkaConfig {
 
     // 들어오는 타입 상관없이 무조건 내 DTO로 역직렬화
     props.put(JsonDeserializer.VALUE_DEFAULT_TYPE,
-        "com.example.item.domain.item.controller.model.request.MessageUpdateRequest");
+        "com.example.image.domain.image.controller.model.request.RegisterImageRequest");
 
     return new DefaultKafkaConsumerFactory<>(props);
-  }
-
-  @Bean
-  public ProducerFactory<String, Object> producerFactory() {
-    Map<String, Object> props = new HashMap<>();
-    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-    props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
-    return new DefaultKafkaProducerFactory<>(props);
-  }
-
-
-  @Bean
-  public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-    ConcurrentKafkaListenerContainerFactory<String, Object> factory =
-        new ConcurrentKafkaListenerContainerFactory<>();
-    factory.setConsumerFactory(consumerFactory());
-    return factory;
   }
 
   @Bean(name = "kafkaRetryListenerContainerFactory")
@@ -80,7 +55,7 @@ public class KafkaConfig {
       KafkaTemplate<String, Object> kafkaTemplate) {
 
     ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
-    factory.setConsumerFactory(consumerFactory);
+    factory.setConsumerFactory(consumerFactory); // 소비자 팩토리 설정
 
     // DefaultErrorHandler: Spring Kafka 2.8 이상에서 기본 에러 핸들러
     factory.setCommonErrorHandler(new DefaultErrorHandler(
@@ -91,8 +66,4 @@ public class KafkaConfig {
     return factory;
   }
 
-  @Bean
-  public KafkaTemplate<String, Object> kafkaTemplate() {
-    return new KafkaTemplate<>(producerFactory());
-  }
 }

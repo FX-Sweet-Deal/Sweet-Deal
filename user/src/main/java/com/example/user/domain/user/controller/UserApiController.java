@@ -9,7 +9,6 @@ import com.example.user.domain.user.business.UserBusiness;
 import com.example.user.domain.user.controller.model.login.UserResponse;
 import com.example.user.domain.user.controller.model.update.UserPasswordChangeRequest;
 import com.example.user.domain.user.controller.model.update.UserUpdateRequest;
-import com.example.user.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;

@@ -2,7 +2,6 @@ package com.example.gateway.common.exception.token;
 
 
 import com.example.global.errorcode.ErrorCode;
-import com.example.global.errorcode.ErrorCodeIfs;
 
 public class TokenException extends RuntimeException {
 

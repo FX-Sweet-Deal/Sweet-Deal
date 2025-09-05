@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class DeadLetterConsumer {
 
   @KafkaListener(topics = "item.update.DLT",
-  groupId = "item-service-group-dlt")
+  groupId = "item-group-dlt")
   public void listenDLT(@Payload MessageUpdateRequest messageUpdateRequest, Exception exception) {
     log.error("Received failed order in DLT: {}, Error: {}",
         messageUpdateRequest.getOrderId(), exception.getMessage());

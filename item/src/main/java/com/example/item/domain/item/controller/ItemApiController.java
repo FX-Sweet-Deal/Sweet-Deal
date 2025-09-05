@@ -8,7 +8,6 @@ import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
 import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
 import com.example.item.domain.item.controller.model.response.ItemListResponse;
 import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
-import com.example.item.domain.item.controller.model.response.ItemRegisterResponse;
 import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
 import com.example.item.domain.item.business.ItemBusiness;
 import jakarta.validation.Valid;
@@ -29,11 +28,11 @@ public class ItemApiController {
     private final ItemBusiness itemBusiness;
 
     @PostMapping("/register") // 200
-    public Api<ItemRegisterResponse> register(
+    public Api<MessageResponse> register(
         @RequestBody @Valid ItemRegisterRequest request,
         @UserSession Long userId) { // userId 임시 객체
 
-        ItemRegisterResponse response = itemBusiness.register(request, userId);
+        MessageResponse response = itemBusiness.register(request, userId);
 
         return Api.ok(response);
 
