@@ -2,6 +2,7 @@ package com.example.image.domain.image.repository;
 
 
 
+import com.example.image.domain.image.repository.enums.ImageKind;
 import com.example.image.domain.image.repository.enums.ImageStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,6 +52,9 @@ public class ImageEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable=false, length=50)
     private ImageStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private ImageKind imageKind;
 
     @Column(nullable=false)
     private Long itemId;
