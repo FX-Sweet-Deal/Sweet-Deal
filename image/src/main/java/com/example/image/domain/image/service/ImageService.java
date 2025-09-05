@@ -1,13 +1,12 @@
 package com.example.image.domain.image.service;
 
 import com.example.image.domain.image.LocalFileStorage;
-import com.example.image.domain.image.controller.model.ImageResponse;
 import com.example.image.domain.image.converter.ImageConverter;
 import com.example.image.domain.image.repository.ImageEntity;
 import com.example.image.domain.image.repository.ImageRepository;
+import com.example.image.domain.image.repository.enums.ImageKind;
 import com.example.image.domain.image.repository.enums.ImageStatus;
 import jakarta.annotation.Nullable;
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 
 @Slf4j
 @Service
@@ -38,10 +36,9 @@ public class ImageService {
 
     /** 업로드 (form-data: file, itemId, storeId) */
     @Transactional
-    public ImageEntity upload(Long userId, Long itemId, Long storeId, MultipartFile file) {
+    public ImageEntity upload(Long userId, Long itemId, Long storeId, MultipartFile file, ImageKind imageKind) {
 
-
-        log.info("itemId {}, storeId {}", itemId, storeId);
+        log.info("itemId {}, storeId {}, imageKind {}", itemId, storeId, imageKind);
         requireManager(userId, storeId);
         validateImage(file);
 
@@ -58,6 +55,7 @@ public class ImageService {
             .serverName(saved.serverName())
             .extension(saved.extension())
             .status(ImageStatus.REGISTERED)
+            .imageKind(imageKind)
             .itemId(itemId)
             .storeId(storeId)
             .userId(userId)
@@ -72,10 +70,13 @@ public class ImageService {
     public ImageEntity updateMeta(
         Long userId,
         Long imageId,
+        ImageKind imageKind,
         @Nullable String status,
-        @Nullable Long itemId) {
+        @Nullable Long itemId
+    ) {
         ImageEntity imageEntity = getAlive(imageId);
         requireManager(userId, imageEntity.getStoreId());
+        imageEntity.setImageKind(imageKind);
 
         if (status != null) imageEntity.setStatus(ImageStatus.valueOf(status));
         if (itemId != null)  imageEntity.setItemId(itemId);
@@ -85,7 +86,7 @@ public class ImageService {
 
     /** 파일 교체 (물리 파일 바꾸고 URL/메타 갱신) */
     @Transactional
-    public ImageEntity replaceFile(Long userId, Long imageId, MultipartFile newFile) {
+    public ImageEntity replaceFile(Long userId, Long imageId, MultipartFile newFile, ImageKind imageKind) {
         ImageEntity imageEntity = getAlive(imageId);
         requireManager(userId, imageEntity.getStoreId());
         validateImage(newFile);
@@ -98,6 +99,7 @@ public class ImageService {
         imageEntity.setOriginalName(saved.originalName());
         imageEntity.setExtension(saved.extension());
         imageEntity.setUrl(publicUrl(saved.serverName()));
+        imageEntity.setImageKind(imageKind);
 
         return imageEntity;
     }
@@ -173,4 +175,12 @@ public class ImageService {
             .orElseThrow(() -> new IllegalArgumentException("이미지를 찾을 수 없습니다."));
     }
 
+    public ImageEntity getByServerName(String serverName) {
+        return imageRepository.findByServerName(serverName)
+            .orElseThrow(() -> new IllegalArgumentException("이미지를 찾을 수 없습니다."));
+    }
+
+    public ImageEntity save(ImageEntity imageEntity) {
+        return imageRepository.save(imageEntity);
+    }
 }
