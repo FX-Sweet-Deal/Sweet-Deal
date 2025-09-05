@@ -1,4 +1,4 @@
-package com.example.image.common.config.web;
+package com.example.image.domain.common.config.web;
 
 import com.example.global.interceptor.AuthorizationInterceptor;
 import com.example.global.resolver.UserSessionResolver;
