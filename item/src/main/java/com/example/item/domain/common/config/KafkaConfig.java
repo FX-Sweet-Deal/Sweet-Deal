@@ -31,11 +31,11 @@ public class KafkaConfig {
   @Value("${spring.kafka.bootstrap-servers}")
   private String bootstrapServers;
 
-  @Value("${spring.kafka.consumer.group-id}")
+  @Value("${spring.application.name}-group")
   private String groupId;
 
   @Bean
-  public ConsumerFactory<String, MessageUpdateRequest> consumerFactory() {
+  public ConsumerFactory<String, Object> consumerFactory() {
     Map<String, Object> props = new HashMap<>();
     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -56,7 +56,7 @@ public class KafkaConfig {
   }
 
   @Bean
-  public ProducerFactory<String, MessageUpdateRequest> producerFactory() {
+  public ProducerFactory<String, Object> producerFactory() {
     Map<String, Object> props = new HashMap<>();
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -67,19 +67,19 @@ public class KafkaConfig {
 
 
   @Bean
-  public ConcurrentKafkaListenerContainerFactory<String, MessageUpdateRequest> kafkaListenerContainerFactory() {
-    ConcurrentKafkaListenerContainerFactory<String, MessageUpdateRequest> factory =
+  public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
+    ConcurrentKafkaListenerContainerFactory<String, Object> factory =
         new ConcurrentKafkaListenerContainerFactory<>();
     factory.setConsumerFactory(consumerFactory());
     return factory;
   }
 
   @Bean(name = "kafkaRetryListenerContainerFactory")
-  public ConcurrentKafkaListenerContainerFactory<String, MessageUpdateRequest>
-  kafkaRetryListenerContainerFactory(ConsumerFactory<String, MessageUpdateRequest> consumerFactory,
-      KafkaTemplate<String, MessageUpdateRequest> kafkaTemplate) {
+  public ConcurrentKafkaListenerContainerFactory<String, Object>
+  kafkaRetryListenerContainerFactory(ConsumerFactory<String, Object> consumerFactory,
+      KafkaTemplate<String, Object> kafkaTemplate) {
 
-    ConcurrentKafkaListenerContainerFactory<String, MessageUpdateRequest> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
     factory.setConsumerFactory(consumerFactory);
 
     // DefaultErrorHandler: Spring Kafka 2.8 이상에서 기본 에러 핸들러
@@ -92,7 +92,7 @@ public class KafkaConfig {
   }
 
   @Bean
-  public KafkaTemplate<String, MessageUpdateRequest> kafkaTemplate() {
+  public KafkaTemplate<String, Object> kafkaTemplate() {
     return new KafkaTemplate<>(producerFactory());
   }
 }
