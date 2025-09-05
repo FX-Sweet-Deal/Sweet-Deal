@@ -2,7 +2,7 @@ package account.common.entrypoint;
 
 
 import com.example.global.api.Api;
-import com.example.global.errorCode.UserErrorCode;
+import com.example.global.errorcode.UserErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

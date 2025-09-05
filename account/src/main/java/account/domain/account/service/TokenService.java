@@ -2,7 +2,7 @@ package account.domain.account.service;
 
 
 import account.domain.account.ifs.TokenHelperIfs;
-import com.example.global.errorCode.TokenErrorCode;
+import com.example.global.errorcode.TokenErrorCode;
 import com.example.user.domain.common.exception.jwt.TokenException;
 import java.util.Map;
 import java.util.Objects;

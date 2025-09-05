@@ -1,7 +1,7 @@
 package com.example.order.domain.common.exception.order;
 
 
-import com.example.global.errorCode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 
 public class InvalidOrderException extends RuntimeException{
 

@@ -1,6 +1,6 @@
-package com.example.global.errorCode;
+package com.example.global.errorcode;
 
-public interface ErrorCodeIfs {
+public interface ErrorCode{
     public Integer getHttpCode();
     public Integer getErrorCode();
     public String getDescription();

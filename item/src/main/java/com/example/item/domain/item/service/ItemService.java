@@ -1,6 +1,6 @@
 package com.example.item.domain.item.service;
 
-import com.example.global.errorCode.ItemErrorCode;
+import com.example.global.errorcode.ItemErrorCode;
 import com.example.item.domain.common.exception.item.ItemAlreadyExistsException;
 import com.example.item.domain.common.exception.item.ItemCannotDeleteException;
 import com.example.item.domain.common.exception.item.ItemNotFoundException;

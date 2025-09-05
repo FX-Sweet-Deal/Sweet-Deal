@@ -1,6 +1,6 @@
 package com.example.gateway.common.exception.token;
 
-import com.example.global.errorCode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 
 
 public class TokenExpiredException extends RuntimeException{

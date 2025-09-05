@@ -1,7 +1,7 @@
 package com.example.order.domain.common.exception;
 
 import com.example.global.api.Api;
-import com.example.global.errorCode.OrderErrorCode;
+import com.example.global.errorcode.OrderErrorCode;
 import com.example.order.domain.common.exception.order.ExpiredException;
 import com.example.order.domain.common.exception.order.InvalidOrderException;
 import com.example.order.domain.common.exception.order.ItemCountNotEnoughException;

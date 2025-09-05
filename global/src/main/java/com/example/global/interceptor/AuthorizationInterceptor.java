@@ -1,6 +1,6 @@
 package com.example.global.interceptor;
 
-import com.example.global.errorCode.UserErrorCode;
+import com.example.global.errorcode.UserErrorCode;
 
 import com.example.global.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;

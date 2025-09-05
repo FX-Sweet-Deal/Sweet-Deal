@@ -1,6 +1,6 @@
 package com.example.user.domain.common.exception.jwt;
 
-import com.example.global.errorCode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 
 
 public class TokenSignatureException extends RuntimeException{

@@ -1,6 +1,6 @@
 package com.example.item.domain.common.exception.item;
 
-import com.example.global.errorCode.ErrorCode;
+import com.example.global.errorcode.ErrorCode;
 
 public class ItemCannotDeleteException extends RuntimeException {
     private ErrorCode errorCode;
