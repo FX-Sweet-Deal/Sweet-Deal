@@ -1,7 +1,7 @@
 package com.example.user.domain.jwt.business;
 
 
-import com.example.global.annotation.Business;
+import com.example.global.anntation.Business;
 import com.example.global.errorcode.TokenErrorCode;
 import com.example.user.domain.common.exception.jwt.TokenException;
 import com.example.user.domain.jwt.converter.TokenConverter;

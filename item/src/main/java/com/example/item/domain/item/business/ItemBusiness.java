@@ -1,6 +1,6 @@
 package com.example.item.domain.item.business;
 
-import com.example.global.annotation.Business;
+import com.example.global.anntation.Business;
 import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
 import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
 import com.example.item.domain.item.controller.model.request.RegisterImageRequest;

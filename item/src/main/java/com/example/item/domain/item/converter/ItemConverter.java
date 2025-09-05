@@ -1,6 +1,6 @@
 package com.example.item.domain.item.converter;
 
-import com.example.global.annotation.Converter;
+import com.example.global.anntation.Converter;
 import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
 import com.example.item.domain.item.controller.model.response.ItemInform;
 import com.example.item.domain.item.controller.model.response.ItemInternalResponse;
