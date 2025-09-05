@@ -1,4 +1,4 @@
-package com.example.global.errorcode;
+package com.example.global.errorCode;
 
 public interface ErrorCodeIfs {
     public Integer getHttpCode();
