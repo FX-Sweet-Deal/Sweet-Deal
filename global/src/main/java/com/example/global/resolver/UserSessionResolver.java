@@ -1,6 +1,6 @@
 package com.example.global.resolver;
 
-import com.example.global.anntation.UserSession;
+import com.example.global.annotation.UserSession;
 
 
 import lombok.RequiredArgsConstructor;

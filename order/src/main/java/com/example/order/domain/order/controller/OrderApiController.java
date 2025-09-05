@@ -1,6 +1,6 @@
 package com.example.order.domain.order.controller;
 
-import com.example.global.anntation.UserSession;
+import com.example.global.annotation.UserSession;
 import com.example.global.api.Api;
 import com.example.order.domain.common.response.MessageResponse;
 import com.example.order.domain.order.business.OrderBusiness;

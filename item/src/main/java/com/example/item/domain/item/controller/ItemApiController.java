@@ -1,7 +1,7 @@
 package com.example.item.domain.item.controller;
 
 
-import com.example.global.anntation.UserSession;
+import com.example.global.annotation.UserSession;
 import com.example.global.api.Api;
 import com.example.item.domain.item.controller.model.response.MessageResponse;
 import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
@@ -29,11 +29,11 @@ public class ItemApiController {
     private final ItemBusiness itemBusiness;
 
     @PostMapping("/register") // 200
-    public Api<ItemRegisterResponse> register(
+    public Api<MessageResponse> register(
         @RequestBody @Valid ItemRegisterRequest request,
         @UserSession Long userId) { // userId 임시 객체
 
-        ItemRegisterResponse response = itemBusiness.register(request, userId);
+        MessageResponse response = itemBusiness.register(request, userId);
 
         return Api.ok(response);
 

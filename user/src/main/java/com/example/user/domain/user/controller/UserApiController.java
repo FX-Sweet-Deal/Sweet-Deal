@@ -1,7 +1,7 @@
 package com.example.user.domain.user.controller;
 
 
-import com.example.global.anntation.UserSession;
+import com.example.global.annotation.UserSession;
 import com.example.global.api.Api;
 import com.example.global.resolver.User;
 import com.example.user.domain.common.response.MessageResponse;
@@ -9,7 +9,6 @@ import com.example.user.domain.user.business.UserBusiness;
 import com.example.user.domain.user.controller.model.login.UserResponse;
 import com.example.user.domain.user.controller.model.update.UserPasswordChangeRequest;
 import com.example.user.domain.user.controller.model.update.UserUpdateRequest;
-import com.example.user.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;

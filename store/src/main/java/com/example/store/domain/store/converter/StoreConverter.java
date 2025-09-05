@@ -1,6 +1,6 @@
 package com.example.store.domain.store.converter;
 
-import com.example.global.anntation.Converter;
+import com.example.global.annotation.Converter;
 import com.example.store.domain.store.controller.model.response.NearbyStoreResponse;
 import com.example.store.domain.store.controller.model.request.StoreRegisterRequest;
 import com.example.store.domain.store.controller.model.response.OwnerStoresResponse;
