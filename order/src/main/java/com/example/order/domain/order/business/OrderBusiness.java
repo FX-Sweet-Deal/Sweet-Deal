@@ -57,11 +57,10 @@ public class OrderBusiness {
   private final MessageConverter messageConverter;
 
   public OrderRegisterResponse order(OrderRegisterRequest orderRegisterRequest,
-       Long userId) { // 임시 userId
-    Long fakeUserId = 2L;
+       Long userId) {
     Orders order = Orders.builder()
         .storeId(orderRegisterRequest.getStoreId())
-        .userId(fakeUserId) // 임시
+        .userId(userId)
         .totalPrice(0L)
         .build();
     orderService.order(order);
@@ -138,11 +137,9 @@ public class OrderBusiness {
     return true;
   }
 
-  public MessageResponse completePayment(Long orderId, PaymentRequest paymentRequest, Long fakeUserId) { // 임시 userId
+  public MessageResponse completePayment(Long orderId, PaymentRequest paymentRequest, Long userId) {
     Orders order = orderService.getOrderByOrderIdAndStatus(orderId,
         OrderStatus.PENDING_PAYMENT); // 결제 대기중인 주문 조회
-
-    Long userId = 2L;
 
     // 결제 성공(가정)
     orderService.completePayment(order, paymentRequest.isSuccess());
@@ -196,11 +193,9 @@ public class OrderBusiness {
   }
 
   // 유저가 주문을 취소
-  public MessageResponse cancelOrder(Long orderId, Long fakeUserId) {
+  public MessageResponse cancelOrder(Long orderId, Long userId) {
     Orders order = orderService.getOrderByOrderId(orderId);
     log.info("orderId: {}, userId: {}", order.getId(), order.getUserId());
-
-    Long userId = 2L;
 
     // 유저 유효성 검사
     if(order.getUserId() != userId) {

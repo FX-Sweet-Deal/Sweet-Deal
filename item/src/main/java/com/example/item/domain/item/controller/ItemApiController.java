@@ -3,6 +3,7 @@ package com.example.item.domain.item.controller;
 
 import com.example.global.anntation.UserSession;
 import com.example.global.api.Api;
+import com.example.global.resolver.User;
 import com.example.item.domain.item.controller.model.response.MessageResponse;
 import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
 import com.example.item.domain.item.controller.model.response.ItemDetailResponse;
@@ -10,6 +11,7 @@ import com.example.item.domain.item.controller.model.response.ItemListResponse;
 import com.example.item.domain.item.controller.model.request.ItemRegisterRequest;
 import com.example.item.domain.item.controller.model.request.ItemUpdateRequest;
 import com.example.item.domain.item.business.ItemBusiness;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,50 +29,50 @@ public class ItemApiController {
 
     private final ItemBusiness itemBusiness;
 
-    @PostMapping("/register") // 200
+    @PostMapping("/register")
     public Api<MessageResponse> register(
         @RequestBody @Valid ItemRegisterRequest request,
-        @UserSession Long userId) { // userId 임시 객체
+        @Parameter(hidden = true) @UserSession User user) {
 
-        MessageResponse response = itemBusiness.register(request, userId);
-
+        MessageResponse response = itemBusiness.register(request, user.getId());
         return Api.ok(response);
 
     }
 
-    @PostMapping("/unregister") // 200
+    @PostMapping("/unregister")
     public Api<MessageResponse> unregister(
         @RequestBody ItemDeleteRequest itemDeleteRequest,
-        @UserSession Long userId) {
+        @Parameter(hidden = true) @UserSession User user) {
 
-        MessageResponse messageResponse = itemBusiness.unregister(itemDeleteRequest, userId);
+        MessageResponse messageResponse = itemBusiness.unregister(itemDeleteRequest, user.getId());
         return Api.ok(messageResponse);
     }
 
-    @PostMapping("/{itemId}/update") // 200
+    @PostMapping("/{itemId}/update")
     public Api<MessageResponse> update(
         @PathVariable Long itemId,
         @RequestBody ItemUpdateRequest itemUpdateRequest,
-        @UserSession Long userId) {
+        @Parameter(hidden = true) @UserSession User user) {
 
-        MessageResponse messageResponse = itemBusiness.update(itemId, itemUpdateRequest, userId);
+        MessageResponse messageResponse = itemBusiness.update(itemId, itemUpdateRequest,
+            user.getId());
         return Api.ok(messageResponse);
     }
 
 
-    @GetMapping("/{itemId}") // 200
+    @GetMapping("/{itemId}")
     public Api<ItemDetailResponse> getItem(
         @PathVariable Long itemId,
-        @UserSession Long userId) {
+        @Parameter(hidden = true) @UserSession User user) {
 
-        ItemDetailResponse itemDetailResponse = itemBusiness.getItemBy(itemId, userId);
+        ItemDetailResponse itemDetailResponse = itemBusiness.getItemBy(itemId, user.getId());
         return Api.ok(itemDetailResponse);
     }
 
-    @GetMapping("/list") // 200
-    public Api<List<ItemListResponse>> getItemList(@UserSession Long userId) {
+    @GetMapping("/list")
+    public Api<List<ItemListResponse>> getItemList(@Parameter(hidden = true) @UserSession User user) {
 
-        List<ItemListResponse> itemList = itemBusiness.getItemListBy(userId);
+        List<ItemListResponse> itemList = itemBusiness.getItemListBy(user.getId());
         return Api.ok(itemList);
     }
 }
