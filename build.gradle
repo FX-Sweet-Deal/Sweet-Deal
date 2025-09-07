@@ -16,6 +16,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
     // ★ Spring Cloud BOM (Boot 3.3.x 매칭: 2023.0.x)
