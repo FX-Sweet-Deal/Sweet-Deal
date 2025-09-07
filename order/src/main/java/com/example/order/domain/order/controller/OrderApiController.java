@@ -2,12 +2,14 @@ package com.example.order.domain.order.controller;
 
 import com.example.global.anntation.UserSession;
 import com.example.global.api.Api;
+import com.example.global.resolver.User;
 import com.example.order.domain.common.response.MessageResponse;
 import com.example.order.domain.order.business.OrderBusiness;
 import com.example.order.domain.order.controller.model.request.OrderRegisterRequest;
 import com.example.order.domain.order.controller.model.request.PaymentRequest;
 import com.example.order.domain.order.controller.model.response.OrderRegisterResponse;
 import com.example.order.domain.order.controller.model.response.OrderResponse;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,24 +26,24 @@ public class OrderApiController {
 
   private final OrderBusiness orderBusiness;
 
-  @PostMapping // 200
+  @PostMapping
   public Api<OrderRegisterResponse> create(
       @RequestBody OrderRegisterRequest orderRegisterRequest,
-      @UserSession Long userId) { // 임시 userId
+      @Parameter(hidden = true) @UserSession User user) {
     OrderRegisterResponse response = orderBusiness.order(orderRegisterRequest,
-        userId);
+        user.getId());
 
     return Api.ok(response);
   }
 
-  @PostMapping("/{orderId}/payment") // 200
+  @PostMapping("/{orderId}/payment")
   public Api<MessageResponse> payment(
       @PathVariable("orderId") Long orderId,
       @RequestBody PaymentRequest paymentRequest,
-      @UserSession Long userId) { // 임시 userId
+      @Parameter(hidden = true) @UserSession User user) {
 
     MessageResponse messageResponse = orderBusiness.completePayment(orderId,
-        paymentRequest, userId);
+        paymentRequest, user.getId());
     return Api.ok(messageResponse);
   }
 
@@ -49,8 +51,8 @@ public class OrderApiController {
   @PostMapping("{orderId}/cancel")
   public Api<MessageResponse> cancel(
       @PathVariable Long orderId,
-      @UserSession Long userId) {
-    MessageResponse messageResponse = orderBusiness.cancelOrder(orderId, userId);
+      @Parameter(hidden = true) @UserSession User user) {
+    MessageResponse messageResponse = orderBusiness.cancelOrder(orderId, user.getId());
     return Api.ok(messageResponse);
   }
 
@@ -58,20 +60,20 @@ public class OrderApiController {
   @PostMapping("{orderId}/store/cancel")
   public Api<MessageResponse> cancelStore(
       @PathVariable Long orderId,
-      @UserSession Long userId) {
-    MessageResponse messageResponse = orderBusiness.cancelStoreOrder(orderId, userId);
+      @Parameter(hidden = true) @UserSession User user) {
+    MessageResponse messageResponse = orderBusiness.cancelStoreOrder(orderId, user.getId());
     return Api.ok(messageResponse);
   }
 
-  @GetMapping("/user/{userId}") // 임시 userId 삭제
-  public Api<List<OrderResponse>> getOrder(@PathVariable Long userId) {
-    List<OrderResponse> orderResponses = orderBusiness.getOrder(userId);
+  @GetMapping("/user") // 임시 userId 삭제
+  public Api<List<OrderResponse>> getOrder(@Parameter(hidden = true) @UserSession User user) {
+    List<OrderResponse> orderResponses = orderBusiness.getOrder(user.getId());
     return Api.ok(orderResponses);
   }
 
-  @GetMapping("/store/{userId}") // 임시 userId 삭제
-  public Api<List<OrderResponse>> getStoreOrder(@PathVariable Long userId) {
-    List<OrderResponse> orderResponse = orderBusiness.getStoreOrder(userId);
+  @GetMapping("/store") // 임시 userId 삭제
+  public Api<List<OrderResponse>> getStoreOrder(@Parameter(hidden = true) @UserSession User user) {
+    List<OrderResponse> orderResponse = orderBusiness.getStoreOrder(user.getId());
     return Api.ok(orderResponse);
   }
 }
