@@ -35,15 +35,9 @@ public class StoreBusiness {
   private final StoreConverter storeConverter;
   private final MessageConverter messageConverter;
 
-  public StoreRegisterResponse register(StoreRegisterRequest storeRegisterRequest) {
+  public StoreRegisterResponse register(StoreRegisterRequest storeRegisterRequest, Long userId) {
 
-    // 임시 userId 삭제 할것 !!!
-    Long userId = 1L;
-
-    Store store = storeConverter.toEntity(storeRegisterRequest);
-
-    // 삭제 할 것!!
-    store.setUserId(userId);
+    Store store = storeConverter.toEntity(storeRegisterRequest, userId);
 
     store.register();
     storeService.save(store);

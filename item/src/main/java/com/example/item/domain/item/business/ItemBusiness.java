@@ -44,19 +44,20 @@ public class ItemBusiness {
     private final StoreFeignClient storeFeignClient;
 
     // 상품 등록
-    public MessageResponse register(ItemRegisterRequest req, Long fakeUserId) {
-        Long userId = 1L;
+    public MessageResponse register(ItemRegisterRequest req, Long userId) {
         Long storeId;
         List<Long> storesId;
+
+        log.info("======================= {}", userId);
 
         try {
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
             storesId = storeSimpleResponse.getStoresId();
 
             storeId = req.getStoreId();
+            log.info("{}",storeId);
         } catch (FeignClientException e) {
             throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
-
         }
 
         if (storeId == null) {
@@ -92,10 +93,9 @@ public class ItemBusiness {
     }
 
     // 상품 삭제
-    public MessageResponse unregister(ItemDeleteRequest itemDeleteRequest, Long fakeUserId) {
+    public MessageResponse unregister(ItemDeleteRequest itemDeleteRequest, Long userId) {
 
         try {
-            Long userId = 0L; // 삭제할 것
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
             List<Long> storesId = storeSimpleResponse.getStoresId();
             log.info("{}", storesId.toString());
@@ -142,10 +142,9 @@ public class ItemBusiness {
     }
 
     /* 수정 */
-    public MessageResponse update(Long itemId, ItemUpdateRequest request, Long fakeUserId) {
+    public MessageResponse update(Long itemId, ItemUpdateRequest request, Long userId) {
 
         try {
-            Long userId = 0L;
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
             List<Long> storesId = storeSimpleResponse.getStoresId();
 
@@ -171,10 +170,9 @@ public class ItemBusiness {
     }
 
     @Transactional(readOnly = true)
-    public ItemDetailResponse getItemBy(Long itemId, Long fakeUserId) {
+    public ItemDetailResponse getItemBy(Long itemId, Long userId) {
 
         try {
-            Long userId = 0L; // 삭제할 것
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
             List<Long> storesId = storeSimpleResponse.getStoresId();
 
@@ -191,9 +189,8 @@ public class ItemBusiness {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemListResponse> getItemListBy(Long fakeUserId) {
+    public List<ItemListResponse> getItemListBy(Long userId) {
         try {
-            Long userId = 0L; // 삭제할 것
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
             List<Long> storesId = storeSimpleResponse.getStoresId();
             log.info("========{}========", storesId.toString());

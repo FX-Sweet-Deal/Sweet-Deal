@@ -17,8 +17,9 @@ import java.util.stream.Collectors;
 @Converter
 public class StoreConverter {
 
-  public Store toEntity(StoreRegisterRequest storeRegisterRequest) {
+  public Store toEntity(StoreRegisterRequest storeRegisterRequest, Long userId) {
     Store store = Store.builder()
+        .userId(userId)
         .name(storeRegisterRequest.getName())
         .address(storeRegisterRequest.getAddress())
         .phone(storeRegisterRequest.getPhone())
