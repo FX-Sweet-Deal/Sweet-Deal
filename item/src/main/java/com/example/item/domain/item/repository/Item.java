@@ -1,5 +1,12 @@
 package com.example.item.domain.item.repository;
 
+import com.example.global.errorcode.ItemErrorCode;
+import com.example.item.domain.common.exception.item.InsufficientItemQuantityException;
+import com.example.item.domain.common.exception.item.InvalidExpiredAtException;
+import com.example.item.domain.common.exception.item.InvalidItemNameException;
+import com.example.item.domain.common.exception.item.InvalidItemPriceException;
+import com.example.item.domain.common.exception.item.InvalidItemStatusChangeException;
+import com.example.item.domain.common.exception.item.InvalidQuantityException;
 import com.example.item.domain.item.repository.enums.ItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -61,14 +68,14 @@ public class Item {
     }
     public void updateQuantity(Long quantity) {
         if(quantity <= 0) {
-            throw new IllegalArgumentException("상품 갯수는 1개 이상이어야 합니다."); // 예외 수정 할것
+            throw new InvalidQuantityException(ItemErrorCode.INVALID_ITEM_QUANTITY);
         }
         this.quantity = quantity;
     }
 
     public void rename(String name) {
         if(name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("이름은 비어 있을 수 없습니다."); // 예외 수정 할것
+            throw new InvalidItemNameException(ItemErrorCode.INVALID_ITEM_NAME);
         }
 
         this.name = name;
@@ -78,7 +85,7 @@ public class Item {
         LocalDateTime present = LocalDateTime.now();
 
         if(expiredAt.isBefore(present)) {
-            throw new IllegalArgumentException("유통기한은 현재 날짜 이후여야 합니다."); // 예외 수정 할것
+            throw new InvalidExpiredAtException(ItemErrorCode.INVALID_ITEM_EXPIRED_DATE);
         }
 
         this.expiredAt = expiredAt;
@@ -86,7 +93,7 @@ public class Item {
 
     public void updatePrice(Long price) {
         if(price < 0) {
-            throw new IllegalArgumentException("가격은 0원 이상이어야 합니다."); // 예외 수정 할것
+            throw new InvalidItemPriceException(ItemErrorCode.INVALID_ITEM_PRICE);
         }
 
         this.price = price;
@@ -94,7 +101,7 @@ public class Item {
 
     public void updateStatus(ItemStatus status) {
         if(status == ItemStatus.DELETED || status == ItemStatus.SOLD) {
-            throw new IllegalArgumentException("삭제되거나 판매된 상품은 상태를 변경할 수 없습니다.");
+            throw new InvalidItemStatusChangeException(ItemErrorCode.INVALID_ITEM_STATUS_CHANGE);
         }
 
         this.status = status;
@@ -102,7 +109,7 @@ public class Item {
 
     public Long remainingQuantity(Long quantity) {
         if(this.quantity < quantity) {
-            throw new IllegalArgumentException("현재 상품 재고보다 더 삭제할 수 없습니다.");
+            throw new InsufficientItemQuantityException(ItemErrorCode.INSUFFICIENT_ITEM_QUANTITY);
         }
         return this.quantity - quantity;
     }
