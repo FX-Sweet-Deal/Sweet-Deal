@@ -1,6 +1,10 @@
 package com.example.item.domain.item.business;
 
 import com.example.global.anntation.Business;
+import com.example.global.errorcode.ItemErrorCode;
+import com.example.item.domain.common.exception.item.StoreIdRequiredException;
+import com.example.item.domain.common.exception.item.StoreNotOwnedException;
+import com.example.item.domain.common.exception.item.StoreServiceErrorException;
 import com.example.item.domain.item.controller.model.request.ItemDeleteRequest;
 import com.example.item.domain.item.controller.model.request.MessageUpdateRequest;
 import com.example.item.domain.item.controller.model.request.RegisterImageRequest;
@@ -48,8 +52,6 @@ public class ItemBusiness {
         Long storeId;
         List<Long> storesId;
 
-        log.info("======================= {}", userId);
-
         try {
             StoreSimpleResponse storeSimpleResponse = storeFeignClient.getStores(userId).result();
             storesId = storeSimpleResponse.getStoresId();
@@ -57,18 +59,18 @@ public class ItemBusiness {
             storeId = req.getStoreId();
             log.info("{}",storeId);
         } catch (FeignClientException e) {
-            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+            throw new StoreServiceErrorException(ItemErrorCode.STORE_SERVICE_ERROR);
         }
 
         if (storeId == null) {
             if (storesId.size() == 1) {
                 storeId = storesId.get(0);
             } else {
-                throw new IllegalArgumentException("STORE_ID_REQUIRED");
+                throw new StoreIdRequiredException(ItemErrorCode.STORE_ID_REQUIRED);
             }
         }
         if (!storesId.contains(storeId)) {
-            throw new IllegalArgumentException("STORE_NOT_OWNED");
+            throw new StoreNotOwnedException(ItemErrorCode.STORE_NOT_OWNED);
         }
 
         Item registeredItem = itemConverter.toEntity(req, storeId);
@@ -118,7 +120,7 @@ public class ItemBusiness {
 
             return messageConverter.toResponse("상품이 삭제되었습니다.");
         } catch (FeignClientException e) {
-            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+            throw new StoreServiceErrorException(ItemErrorCode.STORE_SERVICE_ERROR);
         }
     }
 
@@ -164,7 +166,7 @@ public class ItemBusiness {
 
             return messageConverter.toResponse("상품 정보가 수정되었습니다.");
         } catch (FeignClientException e) {
-            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+            throw new StoreServiceErrorException(ItemErrorCode.STORE_SERVICE_ERROR);
 
             }
     }
@@ -182,7 +184,7 @@ public class ItemBusiness {
 
             return itemConverter.toDetailResponse(item);
         } catch (FeignClientException e) {
-            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+            throw new StoreServiceErrorException(ItemErrorCode.STORE_SERVICE_ERROR);
 
         }
 
@@ -202,7 +204,7 @@ public class ItemBusiness {
             return itemConverter.toListResponse(saleItemList);
 
         } catch (FeignClientException e) {
-            throw new IllegalArgumentException("STORE_SERVICE_ERROR", e);
+            throw new StoreServiceErrorException(ItemErrorCode.STORE_SERVICE_ERROR);
         }
     }
 

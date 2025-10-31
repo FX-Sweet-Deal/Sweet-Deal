@@ -11,6 +11,9 @@ import com.example.item.domain.common.exception.item.InvalidQuantityException;
 import com.example.item.domain.common.exception.item.ItemAlreadyExistsException;
 import com.example.item.domain.common.exception.item.ItemCannotDeleteException;
 import com.example.item.domain.common.exception.item.ItemNotFoundException;
+import com.example.item.domain.common.exception.item.StoreIdRequiredException;
+import com.example.item.domain.common.exception.item.StoreNotOwnedException;
+import com.example.item.domain.common.exception.item.StoreServiceErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,7 +87,26 @@ public class ItemExceptionHandler {
         .body(Api.error(ItemErrorCode.INSUFFICIENT_ITEM_QUANTITY));
   }
 
+  @ExceptionHandler(value = StoreServiceErrorException.class)
+  public ResponseEntity<Api<Object>> storeServiceErrorException(StoreServiceErrorException e) {
+    log.error("", e);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(Api.error(ItemErrorCode.STORE_SERVICE_ERROR));
+  }
 
+  @ExceptionHandler(value = StoreIdRequiredException.class)
+  public ResponseEntity<Api<Object>> storeIdRequiredException(StoreIdRequiredException e) {
+    log.error("", e);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(Api.error(ItemErrorCode.STORE_ID_REQUIRED));
+  }
+
+  @ExceptionHandler(value = StoreNotOwnedException.class)
+  public ResponseEntity<Api<Object>> storeNotOwnedException(StoreNotOwnedException e) {
+    log.error("", e);
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(Api.error(ItemErrorCode.STORE_NOT_OWNED));
+  }
 
 
 
